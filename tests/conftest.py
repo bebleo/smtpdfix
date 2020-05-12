@@ -14,5 +14,5 @@ def client(request):
     host = getenv("SMTPD_HOST", "127.0.0.1")
     port = int(getenv("SMTPD_PORT", "8025"))
     smtp = SMTP(host=host, port=port)
-    request.addfinalizer(smtp.close)
+    request.addfinalizer(smtp.quit)
     return smtp
