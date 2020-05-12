@@ -1,5 +1,7 @@
 # pytest SMTPD Fixture
 
+![Test](https://github.com/bebleo/bebleo_smtpd_fixture/workflows/Test/badge.svg)
+
 **Not yet uploaded to PyPi. Version 0.1.0 coming soon.**
 
 As simple SMTP server for use as a fixture with pytest. Leans heavily on the work of akheron and published as Gist [here](https://gist.github.com/akheron/cf3863cdc424f08929e4cb7dc365ef23). As with that project, all this does is receives messages and appends them to a list.
