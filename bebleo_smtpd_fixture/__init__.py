@@ -1,2 +1,2 @@
 # Flake8: noqa
-from .fixture import smtpd, SMTPFixture, SMTPServerThread
+from .fixture import smtpd
