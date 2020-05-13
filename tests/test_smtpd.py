@@ -7,7 +7,7 @@ import pytest  # noqa: F401
 def test_init(smtpd):
     host = getenv("SMTPD_HOST", "127.0.0.1")
     port = int(getenv("SMTPD_PORT", "8025"))
-    assert smtpd.host == host
+    assert smtpd.hostname == host
     assert smtpd.port == port
 
 
