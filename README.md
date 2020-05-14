@@ -4,7 +4,7 @@
 
 **Not yet uploaded to PyPi. Version 0.1.0 coming soon.**
 
-As simple SMTP server for use as a fixture with pytest. Leans heavily on the work of akheron and published as Gist [here](https://gist.github.com/akheron/cf3863cdc424f08929e4cb7dc365ef23). As with that project, all this does is receives messages and appends them to a list.
+As simple SMTP server for use as a fixture with pytest. All this does is receives messages and appends them to a list as an `email.Message`.
 
 > **Known Issue:** the order in which fixtures are listed is critical can lead to failures. See known issues below.
 
@@ -13,7 +13,7 @@ As simple SMTP server for use as a fixture with pytest. Leans heavily on the wor
 Installing handled through PyPi:
 
 ```sh
-pip install pytest-smtpd-fixture
+pip install bebleo-smtpd-fixture
 ```
 
 Or, can equally be included in a `setup.py` file:
@@ -23,7 +23,7 @@ setup(
     ...
     tests_require = [
         "pytest",
-        "pytest-smtpd-fixture",
+        "bebleo-smtpd-fixture",
     ],
 )
 ```
@@ -35,7 +35,7 @@ To use the `smtpd` fixture import it into your `conftest.py` file and then use i
 ```python
 # conftest.py
 from smtplib import SMTP
-from pytest_smtpd_fixture import smtpd
+from bebleo_smtpd_fixture import smtpd
 
 @pytest.fixture
 def smtp_client(request):
@@ -69,8 +69,8 @@ Variable | Default
 
 + The order in which fixtures are added to tests makes a difference.
 + Firewalls may interfere with the operation of the smtp server.
-+ No support for SSL, TLS, STARTTLS, or authentication.
++ No support for SSL, TLS, STARTTLS, or authentication, yet.
 
 -----
 
-Written 2020 with ☕ and ❤ in Montreal, QC
+Written 2020 with :coffee: and :heart: in Montreal, QC
