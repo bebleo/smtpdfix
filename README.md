@@ -1,6 +1,6 @@
 # pytest SMTPD Fixture
 
-![Test](https://github.com/bebleo/bebleo_smtpd_fixture/workflows/Test/badge.svg)
+![build](https://github.com/bebleo/bebleo_smtpd_fixture/workflows/build/badge.svg)
 
 **Not yet uploaded to PyPi. Version 0.1.0 coming soon.**
 
