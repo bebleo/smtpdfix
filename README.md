@@ -37,11 +37,6 @@ To use the `smtpd` fixture import it into your `conftest.py` file and then use i
 from smtplib import SMTP
 from bebleo_smtpd_fixture import smtpd
 
-@pytest.fixture
-def smtp_client(request):
-    smtp = SMTP(host='127.0.0.1', port=8025)
-    request.addfinalizer(smtp.close)
-    return smtp
 ```
 
 And then in the test:
@@ -52,7 +47,10 @@ def test_sendmail(smtpd, client):
     from_addr = "from.addr@example.org"
     to_addrs = "to.addr@example.org"
     msg = f"From: {from_addr}\r\nTo: {to_addrs}\r\nSubject: Foo\r\n\r\nFoo bar"
-    client.sendmail(from_addr, to_addrs, msg)
+
+    with SMTP(smtpd.hostname, smtpd.port) as client:
+        client.sendmail(from_addr, to_addrs, msg)
+
     assert len(smtpd.messages) == 1
 ```
 
@@ -67,7 +65,6 @@ Variable | Default
 
 ## Known Issues
 
-+ The order in which fixtures are added to tests makes a difference.
 + Firewalls may interfere with the operation of the smtp server.
 + No support for SSL, TLS, STARTTLS, or authentication, yet.
 
