@@ -43,7 +43,7 @@ And then in the test:
 
 ```python
 # test_mail.py
-def test_sendmail(smtpd, client):
+def test_sendmail(smtpd):
     from_addr = "from.addr@example.org"
     to_addrs = "to.addr@example.org"
     msg = f"From: {from_addr}\r\nTo: {to_addrs}\r\nSubject: Foo\r\n\r\nFoo bar"
