@@ -6,8 +6,6 @@
 
 As simple SMTP server for use as a fixture with pytest. All this does is receives messages and appends them to a list as an `email.Message`.
 
-> **Known Issue:** the order in which fixtures are listed is critical can lead to failures. See known issues below.
-
 ## Installing
 
 Installing handled through PyPi:
