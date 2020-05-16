@@ -1,7 +1,6 @@
 from email.message import EmailMessage
 from os import getenv
 
-import pytest  # noqa: F401
 from smtplib import SMTP
 
 
@@ -10,6 +9,19 @@ def test_init(smtpd):
     port = int(getenv("SMTPD_PORT", "8025"))
     assert smtpd.hostname == host
     assert smtpd.port == port
+
+
+def test_init_ssl(mock_smtpd_use_ssl, smtpd):
+    assert bool(getenv("SMTPD_USE_SSL", "False")) is True
+    assert smtpd.ssl_context is not None
+
+
+def test_init_starttls(mock_smtpd_use_starttls, smtpd):
+    assert bool(getenv("SMTPD_USE_STARTTLS", "False")) is True
+    with SMTP(smtpd.hostname, smtpd.port) as client:
+        client.starttls()
+
+    assert smtpd.tls_context is not None
 
 
 def test_alt_port(mock_smtpd_port, smtpd):
