@@ -14,6 +14,9 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=find_packages(),
+    package_data={
+        "bebleo_smtpd_fixture": ["certs/*.pem"]
+    },
     url="https://github.com/bebleo/bebleo-smtpd-fixture",
     classifiers=[
         "Programming Language :: Python :: 3",
