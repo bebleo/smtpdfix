@@ -5,3 +5,5 @@ venv/
 .coverage
 htmlcov/
 __pycache__/
+build/
+dist/
