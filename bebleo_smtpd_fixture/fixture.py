@@ -2,7 +2,6 @@ import base64
 import errno
 import logging
 import ssl
-from collections import namedtuple
 from distutils.util import strtobool
 from os import getenv, path, strerror
 
@@ -13,8 +12,8 @@ from aiosmtpd.handlers import Message
 from .authenticator import Authenticator
 from .authsmtp import AuthSMTP
 
+# Use the same log as aiosmtpd
 log = logging.getLogger('mail.log')
-User = namedtuple("User", "username, password")
 
 AUTH_FAILED = "530 Authentication failed."
 AUTH_SUCCEEDED = "235 2.7.0 Authentication succeeded."
@@ -175,8 +174,6 @@ class MessageHandler(Message):
         if method is None:
             return "504 Unrecognized authentication type."
         return await method(server, session, envelope, arg)
-        # self._authenticated = True
-        # return "235 2.7.0 Authentication Successful"
 
 
 class AuthController(Controller):

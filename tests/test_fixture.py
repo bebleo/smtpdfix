@@ -1,7 +1,8 @@
 from email.message import EmailMessage
 from os import getenv
+from collections import namedtuple
 
-from smtplib import SMTP
+from smtplib import SMTP, SMTPAuthenticationError
 import pytest
 
 
@@ -13,6 +14,14 @@ def msg():
     msg["To"] = "to.addr@example.org"
     msg.set_content("foo bar")
     return msg
+
+
+@pytest.fixture
+def user():
+    user = namedtuple("User", "username, password")
+    user.username = getenv("SMTPD_USERNAME", "user")
+    user.password = getenv("SMTPD_PASSWORD", "password")
+    return user
 
 
 def test_init(smtpd):
@@ -39,13 +48,19 @@ def test_alt_port(mock_smtpd_port, smtpd):
     assert smtpd.port == 5025
 
 
-def test_init_login(mock_smtpd_use_starttls, smtpd):
-    username = "user"
-    password = "password"
-
+def test_init_login(mock_smtpd_use_starttls, smtpd, login):
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.starttls()
-        assert client.login(username, password)
+        assert client.login(login.username, login.password)
+
+
+def test_init_login_fail(mock_smtpd_use_starttls, smtpd, login):
+    with pytest.raises(SMTPAuthenticationError) as ex:
+        with SMTP(smtpd.hostname, smtpd.port) as client:
+            client.starttls()
+            assert client.login(login.username, login.password[:0:-1])
+
+    assert ex.type is SMTPAuthenticationError
 
 
 def test_no_messages(smtpd):
@@ -59,13 +74,10 @@ def test_send_message(smtpd, msg):
     assert len(smtpd.messages) == 1
 
 
-def test_send_message_logged_in(mock_smtpd_use_starttls, smtpd, msg):
-    username = 'user'
-    password = 'password'
-
+def test_send_message_logged_in(mock_smtpd_use_starttls, smtpd, login, msg):
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.starttls()
-        client.login(username, password)
+        client.login(login.username, login.password)
         client.send_message(msg)
 
     assert len(smtpd.messages) == 1
