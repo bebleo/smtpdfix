@@ -2,11 +2,11 @@
 
 ![build](https://github.com/bebleo/bebleo_smtpd_fixture/workflows/build/badge.svg)
 
-**Not yet uploaded to PyPi. Version 0.1.0 coming soon.**
+**Not yet uploaded to PyPi. Version 0.2.0 coming soon.**
 
-As simple SMTP server for use as a fixture with pytest. All this does is receives messages and appends them to a list as an `email.Message`.
+As simple SMTP server for use as a fixture with pytest that supports encryption and authentication. All this does is receives messages and appends them to a list as an `email.Message`.
 
-## Installing
+<!-- ## Installing
 
 Installing handled through PyPi:
 
@@ -24,7 +24,7 @@ setup(
         "bebleo-smtpd-fixture",
     ],
 )
-```
+``` -->
 
 ## Using
 
@@ -54,17 +54,18 @@ def test_sendmail(smtpd):
 
 ### Configuration
 
-Configuration is handled through two environment variables:
+Configuration can be handled through environment variables:
 
 Variable | Default
 ---------|--------
 `SMTPD_HOST` | `"127.0.0.1"`
 `SMTPD_PORT` | `8025`
+`SMPTD_USERNAME` | `username`
+`SMTPD_PASSWORD` | `password`
 
 ## Known Issues
 
 + Firewalls may interfere with the operation of the smtp server.
-+ No support for SSL, TLS, STARTTLS, or authentication, yet.
 
 -----
 
