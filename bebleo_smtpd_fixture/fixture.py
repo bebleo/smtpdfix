@@ -1,4 +1,3 @@
-import logging
 from os import getenv
 
 import pytest
@@ -6,18 +5,13 @@ import pytest
 from .controller import AuthController
 from .authenticator import Authenticator
 
-# Use the same log as aiosmtpd
-log = logging.getLogger('mail.log')
-
 
 class _Authenticator(Authenticator):
     def validate(self, username, password):
-        if (
+        return (
             username == getenv("SMPTD_LOGINNAME", "user") and
             password == getenv("SMPTD_LOGIN_PASSWORD", "password")
-        ):
-            return True
-        return False
+        )
 
 
 @pytest.fixture

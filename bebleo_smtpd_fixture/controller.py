@@ -22,9 +22,11 @@ def _strtobool(value):
     return bool(strtobool(value))
 
 
-def _get_ssl_context():
-    current_dir = os.path.dirname(__file__)
-    certs_path = getenv("SMTPD_CERTS_PATH", os.path.join(current_dir, "certs"))
+def _get_ssl_context(certs_path=None):
+    if certs_path is None:
+        current_dir = os.path.dirname(__file__)
+        certs_path = getenv("SMTPD_CERTS_PATH",
+                            os.path.join(current_dir, "certs"))
     cert_path = os.path.join(certs_path, 'cert.pem')
     key_path = os.path.join(certs_path, 'key.pem')
 
@@ -49,14 +51,15 @@ class AuthController(Controller):
         self.tls_context = None
 
         self._messages = []
-        self._authenticator = authenticator
-        if self._authenticator is None:
-            self._authenticator = Authenticator()
+        if authenticator is None:
+            authenticator = Authenticator()
 
-        self.handler = AuthMessage(self._messages,
+        self.handler = AuthMessage(messages=self._messages,
                                    authenticator=authenticator)
 
-        super().__init__(self.handler, hostname=hostname, port=port,
+        super().__init__(handler=self.handler,
+                         hostname=hostname,
+                         port=port,
                          ssl_context=self.ssl_context)
 
     def factory(self):

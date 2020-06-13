@@ -1,5 +1,5 @@
 import pytest
-from bebleo_smtpd_fixture.fixture import AuthController
+from bebleo_smtpd_fixture import AuthController
 from os import getenv
 
 
