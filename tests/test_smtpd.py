@@ -1,6 +1,8 @@
+import os
+
 import pytest
+
 from bebleo_smtpd_fixture import AuthController
-from os import getenv
 
 
 def test_bad_certs_path(monkeypatch):
@@ -8,7 +10,7 @@ def test_bad_certs_path(monkeypatch):
     monkeypatch.setenv("SMTPD_CERTS_PATH", "")
 
     with pytest.raises(FileNotFoundError):
-        hostname = getenv("SMTPD_HOST", "127.0.0.1")
-        port = getenv("SMPTD_PORT", "8025")
+        hostname = os.getenv("SMTPD_HOST", "127.0.0.1")
+        port = os.getenv("SMPTD_PORT", "8025")
         with AuthController(hostname, port) as controller:
             assert controller.ssl_context is None

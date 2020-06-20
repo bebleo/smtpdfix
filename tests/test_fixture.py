@@ -1,9 +1,11 @@
-from email.message import EmailMessage
-from os import getenv
+import os
 from collections import namedtuple
-
+from email.message import EmailMessage
 from smtplib import SMTP, SMTPAuthenticationError
+
 import pytest
+
+from bebleo_smtpd_fixture.handlers import _base64_encode as encode
 
 
 @pytest.fixture
@@ -19,29 +21,43 @@ def msg():
 @pytest.fixture
 def user():
     user = namedtuple("User", "username, password")
-    user.username = getenv("SMTPD_USERNAME", "user")
-    user.password = getenv("SMTPD_PASSWORD", "password")
+    user.username = os.getenv("SMTPD_USERNAME", "user")
+    user.password = os.getenv("SMTPD_PASSWORD", "password")
     return user
 
 
 def test_init(smtpd):
-    host = getenv("SMTPD_HOST", "127.0.0.1")
-    port = int(getenv("SMTPD_PORT", "8025"))
+    host = os.getenv("SMTPD_HOST", "127.0.0.1")
+    port = int(os.getenv("SMTPD_PORT", "8025"))
     assert smtpd.hostname == host
     assert smtpd.port == port
 
 
 def test_init_ssl(mock_smtpd_use_ssl, smtpd):
-    assert bool(getenv("SMTPD_USE_SSL", "False")) is True
+    assert bool(os.getenv("SMTPD_USE_SSL", "False")) is True
     assert smtpd.ssl_context is not None
 
 
 def test_init_starttls(mock_smtpd_use_starttls, smtpd):
-    assert bool(getenv("SMTPD_USE_STARTTLS", "False")) is True
+    assert bool(os.getenv("SMTPD_USE_STARTTLS", "False")) is True
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.starttls()
 
     assert smtpd.tls_context is not None
+
+
+def test_HELO(smtpd):
+    with SMTP(smtpd.hostname, smtpd.port) as client:
+        client.helo()
+        helo = client.helo_resp
+        assert helo.startswith(b'AUTH\n')
+
+
+def test_AUTH_unknown_mechanism(mock_smtpd_use_starttls, smtpd):
+    with SMTP(smtpd.hostname, smtpd.port) as client:
+        client.starttls()
+        code, response = client.docmd('AUTH', args='FAKEMECH')
+        assert code == 504
 
 
 def test_alt_port(mock_smtpd_port, smtpd):

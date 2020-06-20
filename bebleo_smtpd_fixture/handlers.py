@@ -71,33 +71,29 @@ class AuthMessage(Message):
         if session.ssl is None:
             return AUTH_UNRECOGNIZED
 
-        args = arg.split()
-        while len(args) < 1:
-            response = await self._get_response(server, "334 ")
-            if response.startswith("*"):
-                return AUTH_FAILED
-            args.append(response)
-        decoded = _base64_decode(args[1])
+        args, login = arg.split(), []
+        for n in range(1, len(args)):
+            login.extend(_base64_decode(args[n]).split(maxsplit=1))
 
-        login = decoded.split()
         while len(login) < 2:
-            response = await self._get_response(
-                server,
-                "334 " + _base64_encode('Password')
-            )
+            prompt = _base64_encode('Password') if len(login) >= 2 else ""
+            response = await self._get_response(server, "334 " + prompt)
             response = _base64_decode(response)
             if response.startswith("*"):
                 return AUTH_FAILED
-            login.append(response)
+            login.extend(response.split(maxsplit=1-len(login)))
 
-        if self._authenticator.validate(login[0], login[1]):
+        username = login[0]
+        password = login[1]
+
+        if self._authenticator.validate(username, password):
             self._authenticated = True
             return AUTH_SUCCEEDED
         return AUTH_FAILED
 
     @authmechanism("PLAIN", requires_encryption=True)
     async def auth_PLAIN(self, server, session, envelope, arg):
-        log.debug("====> AUTH PLAIN received.")
+        log.error("====> AUTH PLAIN received.")
         if session.ssl is None:
             return AUTH_UNRECOGNIZED
 
