@@ -49,7 +49,7 @@ class AuthMessage(Message):
             return False
         return True
 
-    def _get_authmechanisms(self, session):
+    def _get_authmechanisms(self, server, session):
         mechanisms = []
         encrypted = session.ssl is not None
         for name in [n for n in dir(self) if n.startswith('auth_')]:
@@ -124,13 +124,13 @@ class AuthMessage(Message):
 
     async def handle_EHLO(self, server, session, envelope, hostname):
         session.host_name = hostname
-        mechanisms = self._get_authmechanisms(session=session)
+        mechanisms = self._get_authmechanisms(server=server, session=session)
         await server.push(f"250-AUTH {' '.join(mechanisms)}")
         return "250 HELP"
 
     async def handle_HELO(self, server, session, envelope, hostname):
         session.host_name = hostname
-        mechanisms = self._get_authmechanisms(session=session)
+        mechanisms = self._get_authmechanisms(server=server, session=session)
         await server.push(f"250-AUTH {' '.join(mechanisms)}")
         return f"250 {server.hostname}"
 

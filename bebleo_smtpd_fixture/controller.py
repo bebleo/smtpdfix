@@ -9,7 +9,6 @@ from aiosmtpd.controller import Controller
 
 from .smtp import AuthSMTP
 from .handlers import AuthMessage
-from .authenticator import Authenticator
 
 log = logging.getLogger('mail.log')
 
@@ -38,29 +37,28 @@ def _get_ssl_context(certs_path=None):
                                 os.path.abspath(file_))
 
     context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+    context.options &= ssl.OP_ALL
     context.load_cert_chain(cert_path, key_path)
 
     return context
 
 
 class AuthController(Controller):
-    def __init__(self, hostname, port, authenticator=None):
-        self.use_ssl = _strtobool(getenv("SMTPD_USE_SSL", False))
-        self.ssl_context = _get_ssl_context() if self.use_ssl else None
+    def __init__(self, loop=None, hostname=None, port=None,
+                 ready_timeout=1.0, enable_SMTPUTF8=True,
+                 authenticator=None):
         self.use_starttls = _strtobool(getenv("SMTPD_USE_STARTTLS", False))
         self.tls_context = None
 
         self._messages = []
-        if authenticator is None:
-            authenticator = Authenticator()
+        handler = AuthMessage(messages=self._messages,
+                              authenticator=authenticator)
 
-        self.handler = AuthMessage(messages=self._messages,
-                                   authenticator=authenticator)
-
-        super().__init__(handler=self.handler,
+        super().__init__(handler=handler,
                          hostname=hostname,
                          port=port,
-                         ssl_context=self.ssl_context)
+                         ready_timeout=ready_timeout,
+                         enable_SMTPUTF8=enable_SMTPUTF8)
 
     def factory(self):
         if self.use_starttls:

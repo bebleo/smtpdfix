@@ -33,11 +33,6 @@ def test_init(smtpd):
     assert smtpd.port == port
 
 
-def test_init_ssl(mock_smtpd_use_ssl, smtpd):
-    assert bool(os.getenv("SMTPD_USE_SSL", "False")) is True
-    assert smtpd.ssl_context is not None
-
-
 def test_init_starttls(mock_smtpd_use_starttls, smtpd):
     assert bool(os.getenv("SMTPD_USE_STARTTLS", "False")) is True
     with SMTP(smtpd.hostname, smtpd.port) as client:
@@ -50,7 +45,7 @@ def test_HELO(smtpd):
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.helo()
         helo = client.helo_resp
-        assert helo.startswith(b'AUTH\n')
+        assert helo.startswith(b'AUTH')
 
 
 def test_AUTH_unknown_mechanism(mock_smtpd_use_starttls, smtpd):
@@ -58,6 +53,15 @@ def test_AUTH_unknown_mechanism(mock_smtpd_use_starttls, smtpd):
         client.starttls()
         code, response = client.docmd('AUTH', args='FAKEMECH')
         assert code == 504
+
+
+def test_AUTH_PLAIN(mock_smtpd_use_starttls, smtpd, user):
+    enc = encode(f'{user.username} {user.password}')
+    cmd_text = f'PLAIN {enc}'
+    with SMTP(smtpd.hostname, smtpd.port) as client:
+        client.starttls()
+        (code, resp) = client.docmd('AUTH', args=cmd_text)
+        assert code == 235
 
 
 def test_alt_port(mock_smtpd_port, smtpd):
