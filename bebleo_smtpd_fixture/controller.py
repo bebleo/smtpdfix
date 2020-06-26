@@ -1,14 +1,13 @@
-import os
-from os import getenv, strerror
 import errno
+import logging
+import os
 import ssl
 from distutils.util import strtobool
-import logging
 
 from aiosmtpd.controller import Controller
 
-from .smtp import AuthSMTP
 from .handlers import AuthMessage
+from .smtp import AuthSMTP
 
 log = logging.getLogger('mail.log')
 
@@ -24,8 +23,8 @@ def _strtobool(value):
 def _get_ssl_context(certs_path=None):
     if certs_path is None:
         current_dir = os.path.dirname(__file__)
-        certs_path = getenv("SMTPD_CERTS_PATH",
-                            os.path.join(current_dir, "certs"))
+        certs_path = os.getenv("SMTPD_CERTS_PATH",
+                               os.path.join(current_dir, "certs"))
     cert_path = os.path.join(certs_path, 'cert.pem')
     key_path = os.path.join(certs_path, 'key.pem')
 
@@ -33,7 +32,7 @@ def _get_ssl_context(certs_path=None):
         if os.path.isfile(file_):
             log.debug(f"Found {os.path.abspath(file_)}")
             continue
-        raise FileNotFoundError(errno.ENOENT, strerror(errno.ENOENT),
+        raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT),
                                 os.path.abspath(file_))
 
     context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
@@ -47,7 +46,7 @@ class AuthController(Controller):
     def __init__(self, loop=None, hostname=None, port=None,
                  ready_timeout=1.0, enable_SMTPUTF8=True,
                  authenticator=None):
-        self.use_starttls = _strtobool(getenv("SMTPD_USE_STARTTLS", False))
+        self.use_starttls = _strtobool(os.getenv("SMTPD_USE_STARTTLS", False))
         self.tls_context = None
 
         self._messages = []
