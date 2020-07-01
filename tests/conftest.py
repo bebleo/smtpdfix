@@ -11,3 +11,8 @@ def mock_smtpd_port(monkeypatch):
 @pytest.fixture
 def mock_smtpd_use_starttls(monkeypatch):
     monkeypatch.setenv("SMTPD_USE_STARTTLS", "True")
+
+
+@pytest.fixture
+def mock_smtpd_use_ssl(monkeypatch):
+    monkeypatch.setenv("SMTPD_USE_SSL", "True")

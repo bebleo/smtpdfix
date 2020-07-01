@@ -1,7 +1,7 @@
 import os
 from collections import namedtuple
 from email.message import EmailMessage
-from smtplib import SMTP, SMTPAuthenticationError
+from smtplib import SMTP, SMTP_SSL, SMTPAuthenticationError
 
 import pytest
 
@@ -33,12 +33,11 @@ def test_init(smtpd):
     assert smtpd.port == port
 
 
-def test_init_starttls(mock_smtpd_use_starttls, smtpd):
-    assert bool(os.getenv("SMTPD_USE_STARTTLS", "False")) is True
-    with SMTP(smtpd.hostname, smtpd.port) as client:
-        client.starttls()
+def test_init_ssl(mock_smtpd_use_ssl, smtpd, msg):
+    with SMTP_SSL(smtpd.hostname, smtpd.port) as client:
+        client.send_message(msg)
 
-    assert smtpd.tls_context is not None
+    assert len(smtpd.messages) == 1
 
 
 def test_HELO(smtpd):

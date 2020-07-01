@@ -36,7 +36,6 @@ def _get_ssl_context(certs_path=None):
                                 os.path.abspath(file_))
 
     context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-    context.options &= ssl.OP_ALL
     context.load_cert_chain(cert_path, key_path)
 
     return context
@@ -47,26 +46,32 @@ class AuthController(Controller):
                  ready_timeout=1.0, enable_SMTPUTF8=True,
                  authenticator=None):
         self.use_starttls = _strtobool(os.getenv("SMTPD_USE_STARTTLS", False))
-        self.tls_context = None
 
         self._messages = []
         handler = AuthMessage(messages=self._messages,
                               authenticator=authenticator)
 
+        __ssl_context = None
+        print(f"SMTPD_USE_SSL is {os.getenv('SMTPD_USE_SSL', False)}")
+        if _strtobool(os.getenv("SMTPD_USE_SSL", False)):
+            __ssl_context = _get_ssl_context()
+
         super().__init__(handler=handler,
                          hostname=hostname,
                          port=port,
                          ready_timeout=ready_timeout,
-                         enable_SMTPUTF8=enable_SMTPUTF8)
+                         enable_SMTPUTF8=enable_SMTPUTF8,
+                         ssl_context=__ssl_context)
 
     def factory(self):
+        tls_context = None
         if self.use_starttls:
-            self.tls_context = _get_ssl_context()
+            tls_context = _get_ssl_context()
 
         return AuthSMTP(
             handler=self.handler,
             require_starttls=self.use_starttls,
-            tls_context=self.tls_context
+            tls_context=tls_context
         )
 
     @property
