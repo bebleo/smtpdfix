@@ -67,19 +67,24 @@ def test_alt_port(mock_smtpd_port, smtpd):
     assert smtpd.port == 5025
 
 
-def test_init_login(mock_smtpd_use_starttls, smtpd, user):
+def test_login(mock_smtpd_use_starttls, smtpd, user):
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.starttls()
         assert client.login(user.username, user.password)
 
 
-def test_init_login_fail(mock_smtpd_use_starttls, smtpd, user):
+def test_login_fail(mock_smtpd_use_starttls, smtpd, user):
     with pytest.raises(SMTPAuthenticationError) as ex:
         with SMTP(smtpd.hostname, smtpd.port) as client:
             client.starttls()
             assert client.login(user.username, user.password[:0:-1])
 
     assert ex.type is SMTPAuthenticationError
+
+
+def test_login_no_tls(smtpd, user):
+    with SMTP(smtpd.hostname, smtpd.port) as client:
+        assert client.login(user.username, user.password)
 
 
 def test_no_messages(smtpd):

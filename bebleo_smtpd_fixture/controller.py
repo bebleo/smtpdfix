@@ -52,7 +52,6 @@ class AuthController(Controller):
                               authenticator=authenticator)
 
         __ssl_context = None
-        print(f"SMTPD_USE_SSL is {os.getenv('SMTPD_USE_SSL', False)}")
         if _strtobool(os.getenv("SMTPD_USE_SSL", False)):
             __ssl_context = _get_ssl_context()
 

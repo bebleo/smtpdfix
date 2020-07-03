@@ -13,6 +13,9 @@ class _Authenticator(Authenticator):
             password == os.getenv("SMPTD_LOGIN_PASSWORD", "password")
         )
 
+    def get_password(self, username):
+        return os.getenv("SMTPD_LOGIN_PASSWORD", "password")
+
 
 @pytest.fixture
 def smtpd(request):
