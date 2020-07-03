@@ -1,16 +1,20 @@
 from setuptools import setup, find_packages
 
-version = "0.2.0-alpha"
+version = "0.2.1"
 
 with open("README.md", "rt", encoding="utf-8") as f:
     long_description = f.read()
+
+short_description = ("A small smtp server fixture for use with pytest that "
+                     "implements encryption and authentication to mimic a "
+                     "production SMTP server.")
 
 setup(
     name="bebleo-smtpd-fixture",
     version=version,
     author="James Warne",
     author_email="bebleo@yahoo.com",
-    description="A tiny SMTP server for use as a test fixture.",
+    description=short_description,
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=find_packages(),
