@@ -63,6 +63,14 @@ def test_AUTH_PLAIN(mock_smtpd_use_starttls, smtpd, user):
         assert code == 235
 
 
+def test_AUTH_PLAIN_no_encryption(smtpd, user):
+    enc = encode(f'{user.username} {user.password}')
+    cmd_text = f'PLAIN {enc}'
+    with SMTP(smtpd.hostname, smtpd.port) as client:
+        (code, resp) = client.docmd('AUTH', args=cmd_text)
+        assert code == 538
+
+
 def test_alt_port(mock_smtpd_port, smtpd):
     assert smtpd.port == 5025
 

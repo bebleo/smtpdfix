@@ -9,6 +9,8 @@ from aiosmtpd.handlers import Message
 log = logging.getLogger('mail.log')
 
 AUTH_ALREADY_DONE = "530 Already authenticated."
+AUTH_ENCRYPTION_REQUIRED = ("538 Encryption required for requested "
+                            "authentication mechanism")
 AUTH_FAILED = "530 Authentication failed."
 AUTH_REQUIRED = "530 SMTP authentication is required."
 AUTH_UNRECOGNIZED = "504 Unrecognized authentication type."
@@ -32,10 +34,10 @@ def _base64_encode(message):
 
 
 def authmechanism(text, requires_encryption=False):
-    def decorator(f):
-        f.__auth_method__ = text
-        f.__requires_encryption__ = requires_encryption
-        return f
+    def decorator(func):
+        func.__auth_method__ = text
+        func.__requires_encryption__ = requires_encryption
+        return func
     return decorator
 
 
@@ -102,8 +104,6 @@ class AuthMessage(Message):
     @authmechanism("LOGIN", requires_encryption=True)
     async def auth_LOGIN(self, server, session, envelope, arg):
         log.debug("====> AUTH LOGIN received.")
-        if session.ssl is None:
-            return AUTH_UNRECOGNIZED
 
         args, login = arg.split(), []
         for n in range(1, len(args)):
@@ -127,9 +127,7 @@ class AuthMessage(Message):
 
     @authmechanism("PLAIN", requires_encryption=True)
     async def auth_PLAIN(self, server, session, envelope, arg):
-        log.error("====> AUTH PLAIN received.")
-        if session.ssl is None:
-            return AUTH_UNRECOGNIZED
+        log.debug("====> AUTH PLAIN received.")
 
         args = arg.split()
         response = args[1] if len(args) >= 2 else None
@@ -176,4 +174,6 @@ class AuthMessage(Message):
         method = getattr(self, "auth_" + _mechanism, None)
         if method is None:
             return AUTH_UNRECOGNIZED
+        if method.__requires_encryption__ and session.ssl is None:
+            return AUTH_ENCRYPTION_REQUIRED
         return await method(server, session, envelope, arg)
