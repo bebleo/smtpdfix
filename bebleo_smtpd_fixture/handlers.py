@@ -72,30 +72,28 @@ class AuthMessage(Message):
 
     @authmechanism("CRAM-MD5", requires_encryption=False)
     async def auth_CRAM_MD5(self, server, session, envelope, arg):
-        log.error("====> AUTH CRAM-MD5 received.")
+        log.debug("====> AUTH CRAM-MD5 received.")
 
-        # generate challenge
+        # Generate challenge
         secret = secrets.token_hex(8)
         ts = datetime.now().timestamp()
         hostname = server.hostname
         challenge = f"<{secret}{ts}@{hostname}>"
         challenge_b64 = _base64_encode(challenge)
 
+        # Send and get response
         response = await self._get_response(server, "334 " + challenge_b64)
         response = base64.decodebytes(response)
-        log.error(f"Response: {response}")
         if len(response.split()) < 2:
             return AUTH_FAILED
         user, received = response.split()
-        log.error(f"Received: {received}")
         password = self._authenticator.get_password(user)
 
+        # Verify
         mac = hmac.HMAC(password.encode('ascii'),
                         challenge.encode('ascii'),
                         'md5')
         expected = mac.hexdigest().encode('ascii')
-        log.error(f"Expected: {expected}")
-
         if hmac.compare_digest(expected, received):
             self._authenticated = True
             return AUTH_SUCCEEDED
