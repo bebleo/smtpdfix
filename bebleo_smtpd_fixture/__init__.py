@@ -1,6 +1,6 @@
 # Flake8: noqa
-from .fixture import smtpd
-from .controller import AuthController
 from .authenticator import Authenticator
-from .smtp import AuthSMTP
+from .controller import AuthController
+from .fixture import smtpd
 from .handlers import AuthMessage
+from .smtp import AuthSMTP

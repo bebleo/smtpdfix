@@ -1,10 +1,11 @@
-from aiosmtpd.controller import Controller
-from aiosmtpd.handlers import Sink
-from bebleo_smtpd_fixture.smtp import AuthSMTP
-from bebleo_smtpd_fixture.controller import _get_ssl_context
 from smtplib import SMTP
 
 import pytest
+from aiosmtpd.controller import Controller
+from aiosmtpd.handlers import Sink
+
+from bebleo_smtpd_fixture.controller import _get_ssl_context
+from bebleo_smtpd_fixture.smtp import AuthSMTP
 
 
 @pytest.fixture

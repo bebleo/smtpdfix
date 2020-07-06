@@ -2,8 +2,8 @@ import os
 
 import pytest
 
-from .controller import AuthController
 from .authenticator import Authenticator
+from .controller import AuthController
 
 
 class _Authenticator(Authenticator):
