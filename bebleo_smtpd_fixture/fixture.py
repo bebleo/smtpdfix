@@ -1,28 +1,57 @@
-import os
+import logging
+# import os
 
 import pytest
 
 from .authenticator import Authenticator
+from .config import Config
 from .controller import AuthController
 
 
+log = logging.getLogger(__name__)
+
+
 class _Authenticator(Authenticator):
+    def __init__(self, config=Config()):
+        self.config = config
+
     def validate(self, username, password):
-        return (
-            username == os.getenv("SMPTD_LOGINNAME", "user") and
-            password == os.getenv("SMPTD_LOGIN_PASSWORD", "password")
-        )
+        if (
+            username == self.config.SMTPD_LOGIN_NAME and
+            password == self.config.SMTPD_LOGIN_PASSWORD
+        ):
+            log.debug('Validating username and password succeeded.')
+            return True
+
+        log.debug('Validating username and password failed.')
+        return False
 
     def get_password(self, username):
-        return os.getenv("SMTPD_LOGIN_PASSWORD", "password")
+        log.debug("Password retrieved.")
+        return self.config.SMTPD_LOGIN_PASSWORD
 
 
 @pytest.fixture
 def smtpd(request):
+    """A small SMTP server for use when testing applications that send email
+    messages. To access the messages call `smtpd.messages` which returns a copy
+    of the list of messages sent to the server.
+
+    Example:
+        def test_mail(smtpd):
+            from smtplib import SMTP
+            with SMTP(smtpd.hostname, smtpd.port) as client:
+                code, resp = client.noop()
+                assert code == 250
+
+    """
+    config = Config()
+
     fixture = AuthController(
-        hostname=os.getenv("SMTPD_HOST", "127.0.0.1"),
-        port=int(os.getenv("SMTPD_PORT", "8025")),
-        authenticator=_Authenticator()
+        hostname=config.SMTPD_HOST,
+        port=int(config.SMTPD_PORT),
+        config=config,
+        authenticator=_Authenticator(config)
     )
     request.addfinalizer(fixture.stop)
     fixture.start()

@@ -1,21 +1,10 @@
 import os
 from collections import namedtuple
-from email.message import EmailMessage
 from smtplib import SMTP, SMTP_SSL, SMTPAuthenticationError
 
 import pytest
 
 from bebleo_smtpd_fixture.handlers import _base64_encode as encode
-
-
-@pytest.fixture
-def msg():
-    msg = EmailMessage()
-    msg["Subject"] = "Foo"
-    msg["Sender"] = "from.addr@example.org"
-    msg["To"] = "to.addr@example.org"
-    msg.set_content("foo bar")
-    return msg
 
 
 @pytest.fixture

@@ -2,7 +2,7 @@ import logging
 
 from aiosmtpd.smtp import MISSING, SMTP, syntax
 
-log = logging.getLogger('mail.log')
+log = logging.getLogger(__name__)
 
 
 class AuthSMTP(SMTP):

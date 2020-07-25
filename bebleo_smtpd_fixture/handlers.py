@@ -6,7 +6,7 @@ from datetime import datetime
 
 from aiosmtpd.handlers import Message
 
-log = logging.getLogger('mail.log')
+log = logging.getLogger(__name__)
 
 AUTH_ALREADY_DONE = "530 Already authenticated."
 AUTH_ENCRYPTION_REQUIRED = ("538 Encryption required for requested "
@@ -15,21 +15,22 @@ AUTH_FAILED = "530 Authentication failed."
 AUTH_REQUIRED = "530 SMTP authentication is required."
 AUTH_UNRECOGNIZED = "504 Unrecognized authentication type."
 AUTH_SUCCEEDED = "235 2.7.0 Authentication succeeded."
+SMTP_STARTTLS_REQUIRED = "530 5.7.0 Must issue a STARTTLS command first."
 
 
 def _base64_decode(base64_message):
     base64_bytes = base64_message
     if not isinstance(base64_message, bytes):
-        base64_bytes = base64_message.encode('ASCII')
+        base64_bytes = base64_message.encode('ascii')
     message_bytes = base64.b64decode(base64_bytes)
-    message = message_bytes.decode('ASCII')
+    message = message_bytes.decode('ascii')
     return message
 
 
 def _base64_encode(message):
-    message_bytes = message.encode('ASCII')
+    message_bytes = message.encode('ascii')
     base64_bytes = base64.b64encode(message_bytes)
-    base64_message = base64_bytes.decode('ASCII')
+    base64_message = base64_bytes.decode('ascii')
     return base64_message
 
 
@@ -173,5 +174,7 @@ class AuthMessage(Message):
         if method is None:
             return AUTH_UNRECOGNIZED
         if method.__requires_encryption__ and session.ssl is None:
+            if server.require_starttls:
+                return SMTP_STARTTLS_REQUIRED
             return AUTH_ENCRYPTION_REQUIRED
         return await method(server, session, envelope, arg)
