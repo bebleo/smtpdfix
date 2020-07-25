@@ -1,12 +1,16 @@
 import os
 from distutils.util import strtobool
 
+from dotenv import load_dotenv
+
 _current_dir = os.path.dirname(__file__)
+load_dotenv()
 
 
 class Config():
-    def __init__(self):
-        pass
+    def __init__(self, filename=None):
+        if filename:
+            load_dotenv(filename)
 
     def _strtobool(self, value):
         """Method to simplify calling boolean values from env variables."""

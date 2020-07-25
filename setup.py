@@ -33,7 +33,7 @@ setup(
     python_requires='>=3.6',
     install_requires=[
         "aiosmtpd",
-        "dotenv",
+        "python-dotenv <= 0.14.0",
         "pytest"
     ],
 )

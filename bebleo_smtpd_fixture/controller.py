@@ -38,6 +38,8 @@ class AuthController(Controller):
                          enable_SMTPUTF8=enable_SMTPUTF8,
                          ssl_context=__ssl_context)
 
+        log.info(f"SMTPD running on {self.hostname}:{self.port}")
+
     def factory(self):
         tls_context = None
         if self.use_starttls:
