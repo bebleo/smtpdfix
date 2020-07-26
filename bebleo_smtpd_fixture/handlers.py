@@ -9,6 +9,7 @@ from aiosmtpd.handlers import Message
 log = logging.getLogger(__name__)
 
 AUTH_ALREADY_DONE = "530 Already authenticated."
+AUTH_CANCELLED = "501 Syntax error in parameters or arguments."
 AUTH_ENCRYPTION_REQUIRED = ("538 Encryption required for requested "
                             "authentication mechanism")
 AUTH_FAILED = "530 Authentication failed."
@@ -102,18 +103,20 @@ class AuthMessage(Message):
 
     @authmechanism("LOGIN", requires_encryption=True)
     async def auth_LOGIN(self, server, session, envelope, arg):
-        log.debug("====> AUTH LOGIN received.")
+        log.info("AUTH LOGIN received.")
 
         args, login = arg.split(), []
         for n in range(1, len(args)):
             login.extend(_base64_decode(args[n]).split(maxsplit=1))
 
         while len(login) < 2:
-            prompt = _base64_encode('Password') if len(login) >= 2 else ""
+            prompt = _base64_encode('Password') if len(login) >= 1 else ""
             response = await self._get_response(server, "334 " + prompt)
+            if response.startswith(b'*'):
+                log.info(("Client cancelled authentication ",
+                          "process by sending *"))
+                return AUTH_CANCELLED
             response = _base64_decode(response)
-            if response.startswith("*"):
-                return AUTH_FAILED
             login.extend(response.split(maxsplit=1-len(login)))
 
         username = login[0]
@@ -121,7 +124,9 @@ class AuthMessage(Message):
 
         if self._authenticator.validate(username, password):
             self._authenticated = True
+            log.info(f'AUTH LOGIN for {username} succeeded.')
             return AUTH_SUCCEEDED
+        log.info(f'AUTH LOGIN for {username} failed.')
         return AUTH_FAILED
 
     @authmechanism("PLAIN", requires_encryption=True)

@@ -43,6 +43,15 @@ def test_AUTH_unknown_mechanism(mock_smtpd_use_starttls, smtpd):
         assert code == 504
 
 
+def test_AUTH_LOGIN_abort(mock_smtpd_use_starttls, smtpd, user):
+    with SMTP(smtpd.hostname, smtpd.port) as client:
+        client.starttls()
+        code, resp = client.docmd('AUTH', f'LOGIN {encode(user.username)}')
+        assert code == 334
+        code, resp = client.docmd('*')
+        assert code == 501
+
+
 def test_AUTH_PLAIN(mock_smtpd_use_starttls, smtpd, user):
     enc = encode(f'{user.username} {user.password}')
     cmd_text = f'PLAIN {enc}'
