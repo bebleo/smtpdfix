@@ -84,6 +84,15 @@ def test_login_no_tls(smtpd, user):
         assert client.login(user.username, user.password)
 
 
+def test_login_already_done(smtpd, user):
+    with SMTP(smtpd.hostname, smtpd.port) as client:
+        client.login(user.username, user.password)
+        with pytest.raises(SMTPAuthenticationError) as ex:
+            client.login(user.username, user.password)
+
+        assert ex.type is SMTPAuthenticationError
+
+
 def test_no_messages(smtpd):
     assert len(smtpd.messages) == 0
 
