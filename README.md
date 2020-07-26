@@ -61,15 +61,15 @@ Variable | Default | Description
 `SMTPD_PORT` | `8025` | The port that the fixture will listen on.
 `SMPTD_USERNAME` | `user` | 
 `SMTPD_PASSWORD` | `password` | 
-`SMTPD_USE_SSL` | `False` | Whether the fixture should use fixed TLS/SSL for transactions
+`SMTPD_USE_SSL` | `False` | Whether the fixture should use fixed TLS/SSL for transactions. If using smtplib requires that `SMTP_SSL` be used instead of `SMTP`.
 `SMTPD_USE_STARTTLS` | `False` | Whether the fixture should use StartTLS to encrypt the connections. If using `smptlib` requires that the `SMTP.starttls()` be called before other commands are issued.
 
 ## Known Issues
 
 + Firewalls may interfere with the operation of the smtp server.
++ Authenticating with LOGIN and PLAIN mechanisms fails over TLS/SSL, but works with STARTTLS. [Issue #10](https://github.com/bebleo/bebleo_smtpd_fixture/issures/10) 
 + Server will accept messages even if the client is not authenticated. [Issue #5](https://github.com/bebleo/bebleo_smtpd_fixture/issues/5)
 + Currently no support for termination through signals. [Issue #4](https://github.com/bebleo/bebleo_smtpd_fixture/issues/4)
-
------
-
-Written 2020 with :coffee: and :heart: in Montreal, QC
+  
+  
+©2020, Written with ☕ and ❤ in Montreal, QC

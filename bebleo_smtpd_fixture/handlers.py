@@ -178,8 +178,9 @@ class AuthMessage(Message):
         method = getattr(self, "auth_" + _mechanism, None)
         if method is None:
             return AUTH_UNRECOGNIZED
-        if method.__requires_encryption__ and session.ssl is None:
-            if server.require_starttls:
-                return SMTP_STARTTLS_REQUIRED
+        # session.ssl cna detect when there isn't an SSL connection, but fails
+        # in cases where there is. Currently this causes fallback to CRAM_MD5
+        # for authentication.
+        if (method.__requires_encryption__ and session.ssl is None):
             return AUTH_ENCRYPTION_REQUIRED
         return await method(server, session, envelope, arg)
