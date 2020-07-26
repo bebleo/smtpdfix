@@ -6,7 +6,7 @@ log = logging.getLogger(__name__)
 
 
 class AuthSMTP(SMTP):
-    @syntax('AUTH [args]')
+    @syntax('AUTH <mechanism> [args]')
     async def smtp_AUTH(self, arg):
         log.debug("===> AUTH command received.")
         status = await self._call_handler_hook("AUTH", arg)
