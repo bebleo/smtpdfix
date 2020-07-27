@@ -43,8 +43,7 @@ class AuthController(Controller):
     def factory(self):
         tls_context = None
         if self.use_starttls:
-            certs_path = self.config.SMTPD_SSL_CERTS_PATH
-            tls_context = self._get_ssl_context(certs_path)
+            tls_context = self._get_ssl_context()
 
         return AuthSMTP(handler=self.handler,
                         require_starttls=self.use_starttls,
@@ -60,6 +59,7 @@ class AuthController(Controller):
             if os.path.isfile(file_):
                 log.debug(f"Found {os.path.abspath(file_)}")
                 continue
+            log.debug(f"File {os.path.abspath(file_)} not found.")
             raise FileNotFoundError(errno.ENOENT,
                                     os.strerror(errno.ENOENT),
                                     os.path.abspath(file_))
