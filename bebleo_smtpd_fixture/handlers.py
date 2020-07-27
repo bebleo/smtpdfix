@@ -6,6 +6,8 @@ from datetime import datetime
 
 from aiosmtpd.handlers import Message
 
+from .config import Config
+
 log = logging.getLogger(__name__)
 
 AUTH_ALREADY_DONE = "530 Already authenticated."
@@ -44,12 +46,15 @@ def authmechanism(text, requires_encryption=False):
 
 
 class AuthMessage(Message):
-    def __init__(self, messages, authenticator=None, enforce_auth=False):
+    def __init__(self, messages, authenticator=None, enforce_auth=None):
         super().__init__()
         self._messages = messages
         self._authenticated = False
         self._authenticator = authenticator
         self._enforce_auth = enforce_auth
+        if authenticator is not None and self._enforce_auth is None:
+            config = Config()
+            self._enforce_auth = config.SMTPD_ENFORCE_AUTH
 
     def _is_authmechanism(self, method):
         if getattr(method, '__auth_method__', None) is None:
@@ -154,6 +159,7 @@ class AuthMessage(Message):
 
     async def handle_DATA(self, server, session, envelope):
         if (self._enforce_auth is True and self._authenticated is False):
+            log.debug("Authentication not completed, but required.")
             return AUTH_REQUIRED
 
         return await super().handle_DATA(server, session, envelope)

@@ -68,7 +68,7 @@ Variable | Default | Description
 
 + Firewalls may interfere with the operation of the smtp server.
 + Authenticating with LOGIN and PLAIN mechanisms fails over TLS/SSL, but works with STARTTLS. [Issue #10](https://github.com/bebleo/bebleo_smtpd_fixture/issures/10) 
-+ Server will accept messages even if the client is not authenticated. [Issue #5](https://github.com/bebleo/bebleo_smtpd_fixture/issues/5)
++ By default (and design) the fixture will accept messages even if the client is not authenticated. [Issue #5](https://github.com/bebleo/bebleo_smtpd_fixture/issues/5)
 + Currently no support for termination through signals. [Issue #4](https://github.com/bebleo/bebleo_smtpd_fixture/issues/4)
   
   

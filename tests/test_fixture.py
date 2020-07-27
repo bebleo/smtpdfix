@@ -1,6 +1,7 @@
 import os
 from collections import namedtuple
-from smtplib import SMTP, SMTP_SSL, SMTPAuthenticationError
+from smtplib import (SMTP, SMTP_SSL, SMTPAuthenticationError,
+                     SMTPResponseException)
 
 import pytest
 
@@ -13,6 +14,11 @@ def user():
     user.username = os.getenv("SMTPD_USERNAME", "user")
     user.password = os.getenv("SMTPD_PASSWORD", "password")
     return user
+
+
+@pytest.fixture
+def mock_enforce_auth(monkeypatch):
+    monkeypatch.setenv("SMTPD_ENFORCE_AUTH", "True")
 
 
 def test_init(smtpd):
@@ -130,6 +136,13 @@ def test_send_message_logged_in(mock_smtpd_use_starttls, smtpd, user, msg):
         client.send_message(msg)
 
     assert len(smtpd.messages) == 1
+
+
+def test_send_messaged_auth_not_compete(mock_enforce_auth, smtpd, msg):
+    with pytest.raises(SMTPResponseException) as er:
+        with SMTP(smtpd.hostname, smtpd.port) as client:
+            client.send_message(msg)
+    assert er.match(r"^\(530")
 
 
 def test_sendmail(smtpd):
