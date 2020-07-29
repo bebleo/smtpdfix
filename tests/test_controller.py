@@ -1,11 +1,14 @@
 import logging
-from smtplib import SMTP, SMTPSenderRefused, SMTPServerDisconnected
+from smtplib import SMTP, SMTPSenderRefused
 
 import pytest
 from aiosmtpd.controller import Controller
 from aiosmtpd.handlers import Sink
 
 from bebleo_smtpd_fixture.smtp import AuthSMTP
+from bebleo_smtpd_fixture.controller import AuthController
+from bebleo_smtpd_fixture.config import Config
+from bebleo_smtpd_fixture.fixture import _Authenticator
 
 log = logging.getLogger(__name__)
 
@@ -40,8 +43,18 @@ def test_use_starttls(mock_smtpd_use_starttls, smtpd, msg):
             code, resp = client.send_message(msg)
 
 
-def test_missing_certs(mock_certs, smtpd, msg):
-    with pytest.raises(SMTPServerDisconnected) as error:
-        with SMTP(smtpd.hostname, smtpd.port) as client:
+def test_missing_certs(mock_certs, request, msg):
+    with pytest.raises(FileNotFoundError) as error:
+        _config = Config()
+        _authenticator = _Authenticator(config=_config)
+        server = AuthController(hostname=_config.SMTPD_HOST,
+                                port=_config.SMTPD_PORT,
+                                config=_config,
+                                authenticator=_authenticator)
+        request.addfinalizer(server.stop)
+        server.start()
+
+        with SMTP(server.hostname, server.port) as client:
             client.send_message(msg)
-    assert error.type == SMTPServerDisconnected
+
+    assert error.type == FileNotFoundError

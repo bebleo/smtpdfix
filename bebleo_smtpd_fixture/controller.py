@@ -38,16 +38,17 @@ class AuthController(Controller):
                          enable_SMTPUTF8=enable_SMTPUTF8,
                          ssl_context=__ssl_context)
 
+        self._starttls_context = None
+        if config.SMTPD_USE_STARTTLS:
+            certs = self._get_ssl_context(config.SMTPD_SSL_CERTS_PATH)
+            self._starttls_context = certs
+
         log.info(f"SMTPD running on {self.hostname}:{self.port}")
 
     def factory(self):
-        tls_context = None
-        if self.use_starttls:
-            tls_context = self._get_ssl_context()
-
         return AuthSMTP(handler=self.handler,
                         require_starttls=self.use_starttls,
-                        tls_context=tls_context)
+                        tls_context=self._starttls_context)
 
     def _get_ssl_context(self, certs_path=None):
         if certs_path is None:
