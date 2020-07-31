@@ -10,7 +10,7 @@ from .config import Config
 
 log = logging.getLogger(__name__)
 
-AUTH_ALREADY_DONE = "530 Already authenticated."
+AUTH_ALREADY_DONE = "503 Already authenticated."
 AUTH_CANCELLED = "501 Syntax error in parameters or arguments."
 AUTH_ENCRYPTION_REQUIRED = ("538 Encryption required for requested "
                             "authentication mechanism")

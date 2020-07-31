@@ -112,10 +112,11 @@ def test_login_no_tls(smtpd, user):
 def test_login_already_done(smtpd, user):
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.login(user.username, user.password)
-        with pytest.raises(SMTPAuthenticationError) as ex:
-            client.login(user.username, user.password)
-
-        assert ex.type is SMTPAuthenticationError
+        # we need to explicitly get the response from the the second AUTH
+        # command because smtplib doesn't treat it as an error.
+        code, resp = client.docmd("AUTH")
+        assert code == 503
+        assert resp == b"Already authenticated."
 
 
 def test_no_messages(smtpd):
