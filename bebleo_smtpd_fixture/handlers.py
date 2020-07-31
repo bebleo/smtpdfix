@@ -118,7 +118,7 @@ class AuthMessage(Message):
             prompt = _base64_encode('Password') if len(login) >= 1 else ""
             response = await self._get_response(server, "334 " + prompt)
             if response.startswith(b'*'):
-                log.info(("Client cancelled authentication ",
+                log.info(("Client cancelled authentication "
                           "process by sending *"))
                 return AUTH_CANCELLED
             response = _base64_decode(response)
@@ -159,9 +159,10 @@ class AuthMessage(Message):
 
     async def handle_DATA(self, server, session, envelope):
         if (self._enforce_auth is True and self._authenticated is False):
-            log.debug("Authentication not completed, but required.")
+            log.debug("Successul authentication required before DATA command")
             return AUTH_REQUIRED
-
+        # aiosmptd.handlers.Message from which this class inherits has a
+        # handle_DATA method so we return it here.
         return await super().handle_DATA(server, session, envelope)
 
     async def handle_EHLO(self, server, session, envelope, hostname):
