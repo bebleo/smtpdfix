@@ -85,6 +85,25 @@ def test_AUTH_PLAIN_no_encryption(smtpd, user):
         assert code == 538
 
 
+def test_VRFY(smtpd, user):
+    with SMTP(smtpd.hostname, smtpd.port) as client:
+        code, resp = client.verify(user.username)
+        assert code == 252  # to be verified
+
+
+def test_VRFY_enforce_auth(mock_enforce_auth, smtpd, user):
+    with SMTP(smtpd.hostname, smtpd.port) as client:
+        code, resp = client.verify(user.username)
+        assert code == 530
+
+
+def test_VRFY_failure(smtpd):
+    with SMTP(smtpd.hostname, smtpd.port) as client:
+        client.help()
+        code, resp = client.verify("failure@example.org")
+        assert code == 502
+
+
 def test_alt_port(mock_smtpd_port, smtpd):
     assert smtpd.port == 5025
 

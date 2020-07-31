@@ -18,6 +18,9 @@ AUTH_FAILED = "530 Authentication failed."
 AUTH_REQUIRED = "530 SMTP authentication is required."
 AUTH_UNRECOGNIZED = "504 Unrecognized authentication type."
 AUTH_SUCCEEDED = "235 2.7.0 Authentication succeeded."
+AUTH_VERIFIED = ('252 Cannot VRFY user, but will accept message '
+                 'and attempt delivery')
+AUTH_UNVERIFIED = "502 Could not VRFY"
 SMTP_STARTTLS_REQUIRED = "530 5.7.0 Must issue a STARTTLS command first."
 
 
@@ -159,11 +162,22 @@ class AuthMessage(Message):
 
     async def handle_DATA(self, server, session, envelope):
         if (self._enforce_auth is True and self._authenticated is False):
-            log.debug("Successul authentication required before DATA command")
+            log.debug("Successful authentication required before DATA command")
             return AUTH_REQUIRED
         # aiosmptd.handlers.Message from which this class inherits has a
         # handle_DATA method so we return it here.
         return await super().handle_DATA(server, session, envelope)
+
+    async def handle_VRFY(self, server, session, envelope, address):
+        if (self._enforce_auth is True and self._authenticated is False):
+            log.debug("Successful authentication required before VRFY command")
+            return AUTH_REQUIRED
+        # no handler for VRFY exists in aiosmtpd.handlers.Message so this must
+        # return a 252 status upon success.
+        if self._authenticator.verify(address):
+            return AUTH_VERIFIED
+
+        return ' '.join([AUTH_UNVERIFIED, address])
 
     async def handle_EHLO(self, server, session, envelope, hostname):
         session.host_name = hostname
