@@ -20,14 +20,15 @@ class _Authenticator(Authenticator):
             username == self.config.SMTPD_LOGIN_NAME and
             password == self.config.SMTPD_LOGIN_PASSWORD
         ):
-            log.debug('Validating username and password succeeded.')
+            log.debug((f"Validating username and password for {username} "
+                       "succeeded."))
             return True
 
-        log.debug('Validating username and password failed.')
+        log.debug(f'Validating username and password for {username} failed.')
         return False
 
     def get_password(self, username):
-        log.debug("Password retrieved.")
+        log.debug(f"Password retrieved for {username}.")
         return self.config.SMTPD_LOGIN_PASSWORD
 
 
