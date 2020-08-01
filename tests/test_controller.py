@@ -33,6 +33,7 @@ def mock_certs(monkeypatch):
 
 def test_missing_auth_handler(no_auth):
     with SMTP(no_auth.hostname, no_auth.port) as client:
+        client.helo()
         code, resp = client.docmd('AUTH', "PSEUDOMECH")
         assert code == 502
 

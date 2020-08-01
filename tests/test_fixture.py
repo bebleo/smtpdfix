@@ -45,6 +45,7 @@ def test_HELO(smtpd):
 def test_AUTH_unknown_mechanism(mock_smtpd_use_starttls, smtpd):
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.starttls()
+        client.ehlo()
         code, response = client.docmd('AUTH', args='FAKEMECH')
         assert code == 504
 
@@ -52,6 +53,7 @@ def test_AUTH_unknown_mechanism(mock_smtpd_use_starttls, smtpd):
 def test_AUTH_LOGIN_abort(mock_smtpd_use_starttls, smtpd, user):
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.starttls()
+        client.ehlo()
         code, resp = client.docmd('AUTH', f'LOGIN {encode(user.username)}')
         assert code == 334
         code, resp = client.docmd('*')
@@ -61,6 +63,7 @@ def test_AUTH_LOGIN_abort(mock_smtpd_use_starttls, smtpd, user):
 def test_AUTH_LOGIN_success(mock_smtpd_use_starttls, smtpd, user):
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.starttls()
+        client.ehlo()
         code, resp = client.docmd('AUTH', f'LOGIN {encode(user.username)}')
         assert code == 334
         assert resp == bytes(encode('Password'), 'ascii')
@@ -73,6 +76,7 @@ def test_AUTH_PLAIN(mock_smtpd_use_starttls, smtpd, user):
     cmd_text = f'PLAIN {enc}'
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.starttls()
+        client.ehlo()
         (code, resp) = client.docmd('AUTH', args=cmd_text)
         assert code == 235
 
@@ -81,6 +85,7 @@ def test_AUTH_PLAIN_no_encryption(smtpd, user):
     enc = encode(f'{user.username} {user.password}')
     cmd_text = f'PLAIN {enc}'
     with SMTP(smtpd.hostname, smtpd.port) as client:
+        client.ehlo()
         (code, resp) = client.docmd('AUTH', args=cmd_text)
         assert code == 538
 
@@ -88,13 +93,7 @@ def test_AUTH_PLAIN_no_encryption(smtpd, user):
 def test_VRFY(smtpd, user):
     with SMTP(smtpd.hostname, smtpd.port) as client:
         code, resp = client.verify(user.username)
-        assert code == 252  # to be verified
-
-
-def test_VRFY_enforce_auth(mock_enforce_auth, smtpd, user):
-    with SMTP(smtpd.hostname, smtpd.port) as client:
-        code, resp = client.verify(user.username)
-        assert code == 530
+        assert code == 252
 
 
 def test_VRFY_failure(smtpd):

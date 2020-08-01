@@ -52,7 +52,6 @@ class AuthMessage(Message):
     def __init__(self, messages, authenticator=None, enforce_auth=None):
         super().__init__()
         self._messages = messages
-        self._authenticated = False
         self._authenticator = authenticator
         self._enforce_auth = enforce_auth
         if authenticator is not None and self._enforce_auth is None:
@@ -105,7 +104,7 @@ class AuthMessage(Message):
                         'md5')
         expected = mac.hexdigest().encode('ascii')
         if hmac.compare_digest(expected, received):
-            self._authenticated = True
+            session.authenticated = True
             return AUTH_SUCCEEDED
         return AUTH_FAILED
 
@@ -131,7 +130,7 @@ class AuthMessage(Message):
         password = login[1]
 
         if self._authenticator.validate(username, password):
-            self._authenticated = True
+            session.authenticated = True
             log.info(f'AUTH LOGIN for {username} succeeded.')
             return AUTH_SUCCEEDED
         log.info(f'AUTH LOGIN for {username} failed.')
@@ -153,25 +152,14 @@ class AuthMessage(Message):
             len(response) >= 2 and
             self._authenticator.validate(response[0], response[-1])
         ):
-            self._authenticated = True
+            session.authenticated = True
             return AUTH_SUCCEEDED
         return AUTH_FAILED
 
     def handle_message(self, message):
         self._messages.append(message)
 
-    async def handle_DATA(self, server, session, envelope):
-        if (self._enforce_auth is True and self._authenticated is False):
-            log.debug("Successful authentication required before DATA command")
-            return AUTH_REQUIRED
-        # aiosmptd.handlers.Message from which this class inherits has a
-        # handle_DATA method so we return it here.
-        return await super().handle_DATA(server, session, envelope)
-
     async def handle_VRFY(self, server, session, envelope, address):
-        if (self._enforce_auth is True and self._authenticated is False):
-            log.debug("Successful authentication required before VRFY command")
-            return AUTH_REQUIRED
         # no handler for VRFY exists in aiosmtpd.handlers.Message so this must
         # return a 252 status upon success.
         if self._authenticator.verify(address):
@@ -192,7 +180,7 @@ class AuthMessage(Message):
         return f"250 {server.hostname}"
 
     async def handle_AUTH(self, server, session, envelope, arg):
-        if self._authenticated:
+        if session.authenticated:
             return AUTH_ALREADY_DONE
         _args = arg.split()
         _mechanism = _args[0].replace('-', '_')
