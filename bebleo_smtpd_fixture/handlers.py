@@ -124,7 +124,7 @@ class AuthMessage(Message):
                           "process by sending *"))
                 return AUTH_CANCELLED
             response = _base64_decode(response)
-            login.extend(response.split(maxsplit=1-len(login)))
+            login.extend(response.split(maxsplit=1 - len(login)))
 
         username = login[0]
         password = login[1]
