@@ -2,7 +2,7 @@
 
 ## Version 0.2.2
 
-Release date: *Unreleased*
+Release date: 2020-08-01
 
 - Adds a changelog.
 - Adds support for `.env` files with `python-dotenv`.
