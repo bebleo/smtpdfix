@@ -1,13 +1,13 @@
 from setuptools import setup, find_packages
 
-version = "0.2.2"
+version = "0.2.3"
 
 with open("README.md", "rt", encoding="utf-8") as f:
     long_description = f.read()
 
-short_description = ("A small SMTP server fixture for use with pytest that "
-                     "implements encryption and authentication to mimic a "
-                     "real world SMTP server.")
+short_description = ("A mock SMTP server designed for use as a test fixture "
+                     "that implements encryption and authentication to mimic "
+                     "a real world server.")
 
 setup(
     name="bebleo-smtpd-fixture",

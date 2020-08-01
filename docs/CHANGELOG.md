@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.2.3
+
+Release date: _unreleased_
+
 ## Version 0.2.2
 
 Release date: 2020-08-01
