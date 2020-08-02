@@ -1,8 +1,16 @@
 # Change Log
 
+## Version 0.2.4
+
+Release date: 2020-08-02
+
+- Corrects issue with default certs not being copied.
+
 ## Version 0.2.3
 
 Release date: 2020-08-02
+
+> Last release as bebleo_smtpd_fixture. Future releases will use smtpdfix.
 
 - Adds deprecation warning to the fixture announcing change of project name to smtpdfix moving forward.
 

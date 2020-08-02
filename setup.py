@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = "0.2.3"
+version = "0.2.4"
 
 with open("README.md", "rt", encoding="utf-8") as f:
     long_description = f.read()
@@ -19,7 +19,7 @@ setup(
     long_description_content_type="text/markdown",
     packages=find_packages(),
     package_data={
-        "bebleo_smtpd_fixture": ["certs/*.pem"]
+        "smtpdfix": ["certs/*.pem"]
     },
     url="https://github.com/bebleo/smtpdfix",
     classifiers=[
