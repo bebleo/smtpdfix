@@ -10,7 +10,7 @@ short_description = ("A mock SMTP server designed for use as a test fixture "
                      "a real world server.")
 
 setup(
-    name="bebleo-smtpd-fixture",
+    name="smtpdfix",
     version=version,
     author="James Warne",
     author_email="bebleo@yahoo.com",
@@ -21,7 +21,7 @@ setup(
     package_data={
         "bebleo_smtpd_fixture": ["certs/*.pem"]
     },
-    url="https://github.com/bebleo/bebleo-smtpd-fixture",
+    url="https://github.com/bebleo/smtpdfix",
     classifiers=[
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.6",

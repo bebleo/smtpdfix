@@ -5,7 +5,7 @@ from smtplib import (SMTP, SMTP_SSL, SMTPAuthenticationError,
 
 import pytest
 
-from bebleo_smtpd_fixture.handlers import _base64_encode as encode
+from smtpdfix.handlers import _base64_encode as encode
 
 
 @pytest.fixture

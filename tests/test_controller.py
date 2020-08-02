@@ -5,10 +5,10 @@ import pytest
 from aiosmtpd.controller import Controller
 from aiosmtpd.handlers import Sink
 
-from bebleo_smtpd_fixture.smtp import AuthSMTP
-from bebleo_smtpd_fixture.controller import AuthController
-from bebleo_smtpd_fixture.config import Config
-from bebleo_smtpd_fixture.fixture import _Authenticator
+from smtpdfix.smtp import AuthSMTP
+from smtpdfix.controller import AuthController
+from smtpdfix.config import Config
+from smtpdfix.fixture import _Authenticator
 
 log = logging.getLogger(__name__)
 

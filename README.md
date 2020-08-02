@@ -12,17 +12,17 @@ This fisture is intended to address use-cases where to test an application that 
 Install using pip:
 
 ```sh
-pip install bebleo-smtpd-fixture
+pip install smtpdfix
 ```
 
-Or, if you're using setuptools it can be included in the `tests_require` section of a `setup.py` file:
+Or, if you're using setuptools, it can be included in the `tests_require` section of a `setup.py` file:
 
 ```python
 setup(
     ...
     tests_require = [
         "pytest",
-        "bebleo-smtpd-fixture",
+        "smtpdfix",
     ],
 )
 ```

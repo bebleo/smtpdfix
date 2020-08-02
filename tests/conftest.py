@@ -2,7 +2,7 @@ from email.message import EmailMessage
 
 import pytest
 
-from bebleo_smtpd_fixture import smtpd  # noqa: F401
+from smtpdfix import smtpd  # noqa: F401
 
 
 @pytest.fixture
