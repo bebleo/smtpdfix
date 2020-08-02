@@ -1,4 +1,5 @@
 import logging
+from warnings import warn
 
 import pytest
 
@@ -63,6 +64,8 @@ def smtpd(request):
                 assert code == 250
 
     """
+    warn(("bebleo-smtpd-fixture has been replaced by smtpdfix as of version "
+          "0.2.3"), DeprecationWarning)
     config = Config()
 
     fixture = AuthController(

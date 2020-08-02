@@ -2,7 +2,9 @@
 
 ## Version 0.2.3
 
-Release date: _unreleased_
+Release date: 2020-08-02
+
+- Adds deprecation warning to the fixture announcing change of project name to smtpdfix moving forward.
 
 ## Version 0.2.2
 
