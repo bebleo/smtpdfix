@@ -1,5 +1,11 @@
 # Change Log
 
+## Unreleased
+
+Release date: Pending
+
+- Corrects imports in `README.md` examples.
+
 ## Version 0.2.4
 
 Release date: 2020-08-02

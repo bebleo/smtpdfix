@@ -35,7 +35,7 @@ To use the `smtpd` fixture import it into your test file and then use it like an
 # test_mail.py
 from smtplib import SMTP
 
-from bebleo_smtpd_fixture import smtpd
+from smtpdfix import smtpd
 
 
 def test_sendmail(smtpd):
@@ -55,7 +55,7 @@ To use STARTTLS:
 from smtplib import SMTP
 
 import pytest
-from bebleo_smtpd_fixture import smtpd
+from smtpdfix import smtpd
 
 
 @pytest.fixture
