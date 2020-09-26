@@ -1,7 +1,6 @@
-# pytest SMTPD Fixture
+# SMTPDFix: Test email, locally
 
 ![build](https://github.com/bebleo/bebleo_smtpd_fixture/workflows/build/badge.svg)
-
 
 A simple SMTP server based on `aiosmtpd` for use as a fixture with pytest that supports encryption and authentication. All this does is receives messages and appends them to a list as an `email.Message`.
 
@@ -84,19 +83,19 @@ Variable | Default | Description
 ---------|---------|------------
 `SMTPD_HOST` | `127.0.0.1` | The hostname that the fixture will listen on.
 `SMTPD_PORT` | `8025` | The port that the fixture will listen on.
-`SMPTD_USERNAME` | `user` | 
-`SMTPD_PASSWORD` | `password` | 
+`SMPTD_USERNAME` | `user` |  
+`SMTPD_PASSWORD` | `password` |  
 `SMTPD_USE_SSL` | `False` | Whether the fixture should use fixed TLS/SSL for transactions. If using smtplib requires that `SMTP_SSL` be used instead of `SMTP`.
 `SMTPD_USE_STARTTLS` | `False` | Whether the fixture should use StartTLS to encrypt the connections. If using `smptlib` requires that the `SMTP.starttls()` be called before other commands are issued.
 `SMTPD_ENFORCE_AUTH` | `False` | If set to true then the fixture refuses MAIL, RCPT, DATA commands until authentication is completed.
 `SMTPD_SSL_CERTS_PATH` | `\certs\` | The path to the key and certificate for encrypted communication.
 
-If these variables are included in a `.env` file they'll be loaded automatically.
+> If these variables are included in a `.env` file they'll be loaded automatically.
 
 ## Known Issues
 
 + Firewalls may interfere with the operation of the smtp server.
-+ Authenticating with LOGIN and PLAIN mechanisms fails over TLS/SSL, but works with STARTTLS. [Issue #10](https://github.com/bebleo/bebleo_smtpd_fixture/issures/10) 
++ Authenticating with LOGIN and PLAIN mechanisms fails over TLS/SSL, but works with STARTTLS. [Issue #10](https://github.com/bebleo/bebleo_smtpd_fixture/issures/10)
 + Currently no support for termination through signals. [Issue #4](https://github.com/bebleo/bebleo_smtpd_fixture/issues/4)
 + Key and certificate for encrypted communications must be called key.pem and cert.pem respectively. [Issue #15](https://github.com/bebleo/bebleo_smtpd_fixture/issues/15)  
   
