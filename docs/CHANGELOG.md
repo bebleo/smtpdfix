@@ -5,6 +5,7 @@
 Release date: Pending
 
 - Corrects imports in `README.md` examples.
+- Adds support for python 3.9.
 
 ## Version 0.2.4
 
