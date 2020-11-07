@@ -1,4 +1,4 @@
-#!/bin/env/sh
+#!/bin/sh
 
 # Generates new key and certificate in the folder based on the information
 # in req.cnf and good for 10 years. Default is a certificate usable for

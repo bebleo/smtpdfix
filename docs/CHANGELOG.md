@@ -6,6 +6,7 @@ Release date: Pending
 
 - Corrects imports in `README.md` examples.
 - Adds support for python 3.9.
+- Corrects line endings on gen_certs.sh to LF and adds `.getattributes` to prevent git changing them back to CRLF.
 
 ## Version 0.2.4
 
