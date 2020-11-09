@@ -16,11 +16,6 @@ def user():
     return user
 
 
-@pytest.fixture
-def mock_enforce_auth(monkeypatch):
-    monkeypatch.setenv("SMTPD_ENFORCE_AUTH", "True")
-
-
 def test_init(smtpd):
     host = os.getenv("SMTPD_HOST", "127.0.0.1")
     port = int(os.getenv("SMTPD_PORT", "8025"))

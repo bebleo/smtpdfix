@@ -6,6 +6,11 @@ from smtpdfix import smtpd  # noqa: F401
 
 
 @pytest.fixture
+def mock_enforce_auth(monkeypatch):
+    monkeypatch.setenv("SMTPD_ENFORCE_AUTH", "True")
+
+
+@pytest.fixture
 def mock_smtpd_port(monkeypatch):
     monkeypatch.setenv("SMTPD_PORT", "5025")
 
