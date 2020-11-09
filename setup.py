@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 version = "0.2.5a"
 
@@ -35,6 +35,7 @@ setup(
     install_requires=[
         "aiosmtpd < 1.2.3",
         "python-dotenv < 0.16.0",
-        "pytest"
+        "pytest",
+        "pytest-asyncio < 0.15"
     ],
 )
