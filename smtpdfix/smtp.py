@@ -1,6 +1,6 @@
 import logging
 
-from aiosmtpd.smtp import MISSING, Session, SMTP, syntax
+from aiosmtpd.smtp import MISSING, SMTP, Session, syntax
 
 from .config import Config
 from .handlers import AUTH_REQUIRED

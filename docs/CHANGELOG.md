@@ -4,9 +4,10 @@
 
 Release date: Pending
 
-- Corrects imports in `README.md` examples.
+- Corrects imports in README.md examples.
 - Adds support for python 3.9.
-- Corrects line endings on gen_certs.sh to LF and adds `.getattributes` to prevent git changing them back to CRLF.
+- Corrects line endings on gen_certs.sh to LF and adds a .getattributes file to prevent git changing them back to CRLF.
+- Bumps `aiosmtpd`version to 1.2.2
 
 ## Version 0.2.4
 

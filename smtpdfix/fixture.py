@@ -6,7 +6,6 @@ from .authenticator import Authenticator
 from .config import Config
 from .controller import AuthController
 
-
 log = logging.getLogger(__name__)
 
 
