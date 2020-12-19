@@ -8,6 +8,8 @@ Release date: Pending
 - Adds support for python 3.9.
 - Corrects line endings on gen_certs.sh to LF and adds a .getattributes file to prevent git changing them back to CRLF.
 - Bumps `aiosmtpd`version to 1.2.2
+- Adds async tests using pytest-asyncio
+- Adds coverage support using pytest-cov
 
 ## Version 0.2.4
 

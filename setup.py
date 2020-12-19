@@ -34,8 +34,14 @@ setup(
     python_requires='>=3.6',
     install_requires=[
         "aiosmtpd < 1.2.3",
-        "python-dotenv < 0.16.0",
         "pytest",
-        "pytest-asyncio < 0.15"
+        "python-dotenv < 0.16.0",
     ],
+    extras_require={
+        "dev": [
+            "flake8",
+            "isort",
+            "pytest-asyncio",
+        ],
+    },
 )

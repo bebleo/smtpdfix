@@ -4,7 +4,7 @@
 
 A simple SMTP server based on `aiosmtpd` for use as a fixture with pytest that supports encryption and authentication. All this does is receives messages and appends them to a list as an `email.Message`.
 
-This fisture is intended to address use-cases where to test an application that sends an email it needs to be intercepted for subsequent processing. For example, sending an email with a code for password reset or two-factor authentication. This fixture allows a test to trigger the email being sent, ensure that it's sent, and read the code from the email.
+This fixture is intended to address use-cases where to test an application that sends an email it needs to be intercepted for subsequent processing. For example, sending an email with a code for password reset or two-factor authentication. This fixture allows a test to trigger the email being sent, ensure that it's sent, and read the code from the email.
 
 ## Installing
 
@@ -91,6 +91,32 @@ Variable | Default | Description
 `SMTPD_SSL_CERTS_PATH` | `\certs\` | The path to the key and certificate for encrypted communication.
 
 > If these variables are included in a `.env` file they'll be loaded automatically.
+
+## Developing
+
+To develop and test smtpdfix you will need to install [pytest-asyncio](https://github.com/pytest-dev/pytest-asyncio) to run asynchronous tests, [isort](https://pycqa.github.io/isort/) to sort imports and [flake8](https://flake8.pycqa.org/en/latest/) to lint. To install in a virtual environment for development:
+
+```sh
+python -m venv venv
+./venv/scripts/activate
+pip install -e .[dev]
+```
+
+Code is tested using pytest:
+
+```sh
+pytest
+```
+
+Before submitting a pull request with your changes you should ensure that all imports are sorted and that the code passes linting with flake8.
+
+```sh
+# Sorting the imports
+isort .
+
+# Linting the code
+flake8 .
+```
 
 ## Known Issues
 
