@@ -10,18 +10,18 @@ from .config import Config
 
 log = logging.getLogger(__name__)
 
-AUTH_ALREADY_DONE = "503 Already authenticated."
-AUTH_CANCELLED = "501 Syntax error in parameters or arguments."
+AUTH_ALREADY_DONE = "503 Already authenticated"
+AUTH_CANCELLED = "501 Syntax error in parameters or arguments"
 AUTH_ENCRYPTION_REQUIRED = ("538 Encryption required for requested "
                             "authentication mechanism")
-AUTH_FAILED = "530 Authentication failed."
-AUTH_REQUIRED = "530 SMTP authentication is required."
-AUTH_UNRECOGNIZED = "504 Unrecognized authentication type."
-AUTH_SUCCEEDED = "235 2.7.0 Authentication succeeded."
-AUTH_VERIFIED = ('252 Cannot VRFY user, but will accept message '
-                 'and attempt delivery')
+AUTH_FAILED = "530 Authentication failed"
+AUTH_REQUIRED = "530 SMTP authentication is required"
+AUTH_UNRECOGNIZED = "504 Unrecognized authentication type"
+AUTH_SUCCEEDED = "235 2.7.0 Authentication succeeded"
+AUTH_VERIFIED = ("252 Cannot VRFY user, but will accept message "
+                 "and attempt delivery")
 AUTH_UNVERIFIED = "502 Could not VRFY"
-SMTP_STARTTLS_REQUIRED = "530 5.7.0 Must issue a STARTTLS command first."
+SMTP_STARTTLS_REQUIRED = "530 5.7.0 Must issue a STARTTLS command first"
 
 
 def _base64_decode(base64_message):
@@ -81,7 +81,7 @@ class AuthMessage(Message):
 
     @authmechanism("CRAM-MD5", requires_encryption=False)
     async def auth_CRAM_MD5(self, server, session, envelope, arg):
-        log.debug("====> AUTH CRAM-MD5 received.")
+        log.debug("AUTH CRAM-MD5 received")
 
         # Generate challenge
         secret = secrets.token_hex(8)
@@ -110,7 +110,7 @@ class AuthMessage(Message):
 
     @authmechanism("LOGIN", requires_encryption=True)
     async def auth_LOGIN(self, server, session, envelope, arg):
-        log.info("AUTH LOGIN received.")
+        log.info("AUTH LOGIN received")
 
         args, login = arg.split(), []
         for n in range(1, len(args)):
@@ -138,7 +138,7 @@ class AuthMessage(Message):
 
     @authmechanism("PLAIN", requires_encryption=True)
     async def auth_PLAIN(self, server, session, envelope, arg):
-        log.debug("====> AUTH PLAIN received.")
+        log.debug("AUTH PLAIN received")
 
         args = arg.split()
         response = args[1] if len(args) >= 2 else None

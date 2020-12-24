@@ -60,7 +60,7 @@ class AuthController(Controller):
             if os.path.isfile(file_):
                 log.debug(f"Found {os.path.abspath(file_)}")
                 continue
-            log.debug(f"File {os.path.abspath(file_)} not found.")
+            log.debug(f"File {os.path.abspath(file_)} not found")
             raise FileNotFoundError(errno.ENOENT,
                                     os.strerror(errno.ENOENT),
                                     os.path.abspath(file_))

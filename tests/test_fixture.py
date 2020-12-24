@@ -129,7 +129,7 @@ def test_login_already_done(smtpd, user):
         # command because smtplib doesn't treat it as an error.
         code, resp = client.docmd("AUTH")
         assert code == 503
-        assert resp == b"Already authenticated."
+        assert resp == b"Already authenticated"
 
 
 def test_no_messages(smtpd):
