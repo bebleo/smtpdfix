@@ -29,7 +29,7 @@ class AuthController(Controller):
 
         __ssl_context = None
         if config.SMTPD_USE_SSL or config.SMTPD_USE_TLS:
-            __ssl_context = self._get_ssl_context(config.SMTPD_SSL_CERTS_PATH)
+            __ssl_context = self._get_ssl_context()
 
         super().__init__(handler=handler,
                          hostname=hostname,
@@ -40,7 +40,7 @@ class AuthController(Controller):
 
         self._starttls_context = None
         if config.SMTPD_USE_STARTTLS:
-            certs = self._get_ssl_context(config.SMTPD_SSL_CERTS_PATH)
+            certs = self._get_ssl_context()
             self._starttls_context = certs
 
         log.info(f"SMTPD running on {self.hostname}:{self.port}")
@@ -50,9 +50,8 @@ class AuthController(Controller):
                         require_starttls=self.use_starttls,
                         tls_context=self._starttls_context)
 
-    def _get_ssl_context(self, certs_path=None):
-        if certs_path is None:
-            certs_path = self.config.SMTPD_SSL_CERTS_PATH
+    def _get_ssl_context(self):
+        certs_path = self.config.SMTPD_SSL_CERTS_PATH
         cert_path = os.path.join(certs_path, 'cert.pem')
         key_path = os.path.join(certs_path, 'key.pem')
 
