@@ -75,4 +75,4 @@ async def test_config_file(request, msg):
     with SMTP(server.hostname, server.port) as client:
         client.send_message(msg)
 
-    assert server.hostname == "localhost"
+    assert server.port == "5025"
