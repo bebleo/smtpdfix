@@ -10,14 +10,7 @@ load_dotenv()
 class Config():
     def __init__(self, filename=None):
         if filename:
-            load_dotenv(filename)
-
-    def _strtobool(self, value):
-        """Method to simplify calling boolean values from env variables."""
-        if isinstance(value, bool):
-            return value
-
-        return bool(strtobool(value))
+            load_dotenv(filename, override=True)
 
     @property
     def SMTPD_HOST(self):
@@ -37,7 +30,7 @@ class Config():
 
     @property
     def SMTPD_ENFORCE_AUTH(self):
-        return self._strtobool(os.getenv("SMTPD_ENFORCE_AUTH", False))
+        return strtobool(os.getenv("SMTPD_ENFORCE_AUTH", False))
 
     @property
     def SMTPD_SSL_CERTS_PATH(self):
@@ -46,12 +39,12 @@ class Config():
 
     @property
     def SMTPD_USE_STARTTLS(self):
-        return self._strtobool(os.getenv("SMTPD_USE_STARTTLS", False))
+        return strtobool(os.getenv("SMTPD_USE_STARTTLS", False))
 
     @property
     def SMTPD_USE_TLS(self):
-        return self._strtobool(os.getenv("SMTPD_USE_TLS", False))
+        return strtobool(os.getenv("SMTPD_USE_TLS", False))
 
     @property
     def SMTPD_USE_SSL(self):
-        return self._strtobool(os.getenv("SMTPD_USE_SSL", False))
+        return strtobool(os.getenv("SMTPD_USE_SSL", False))

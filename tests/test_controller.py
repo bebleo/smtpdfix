@@ -1,4 +1,5 @@
 import logging
+from pathlib import Path
 from smtplib import SMTP, SMTPSenderRefused
 
 import pytest
@@ -35,7 +36,7 @@ async def mock_certs(monkeypatch):
 async def test_missing_auth_handler(no_auth):
     with SMTP(no_auth.hostname, no_auth.port) as client:
         client.helo()
-        code, resp = client.docmd('AUTH', "PSEUDOMECH")
+        code, resp = client.docmd("AUTH", "PSEUDOMECH")
         assert code == 502
 
 
@@ -60,3 +61,18 @@ async def test_missing_certs(mock_certs, request, msg):
             client.send_message(msg)
 
     assert error.type == FileNotFoundError
+
+
+async def test_config_file(request, msg):
+    config_file = Path(__file__).parent.joinpath("assets/test.env")
+    _config = Config(filename=config_file)
+    server = AuthController(hostname=_config.SMTPD_HOST,
+                            port=_config.SMTPD_PORT,
+                            config=_config)
+    request.addfinalizer(server.stop)
+    server.start()
+
+    with SMTP(server.hostname, server.port) as client:
+        client.send_message(msg)
+
+    assert server.hostname == "0.0.0.0"
