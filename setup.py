@@ -42,6 +42,7 @@ setup(
             "flake8",
             "isort",
             "pytest-asyncio",
+            "pytest-cov",
         ],
     },
 )
