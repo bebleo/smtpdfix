@@ -8,9 +8,9 @@ load_dotenv()
 
 
 class Config():
-    def __init__(self, filename=None):
+    def __init__(self, filename=None, override=False):
         if filename:
-            load_dotenv(filename, override=True)
+            load_dotenv(filename, override=override)
 
     @property
     def SMTPD_HOST(self):

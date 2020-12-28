@@ -10,6 +10,7 @@ Release date: Pending
 - Bumps `aiosmtpd`version to 1.2.2
 - Adds async tests using pytest-asyncio
 - Adds coverage support using pytest-cov
+- Allows .env files to override environment variables
 
 ## Version 0.2.4
 

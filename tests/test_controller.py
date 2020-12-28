@@ -1,4 +1,5 @@
 import logging
+import os
 from pathlib import Path
 from smtplib import SMTP, SMTPSenderRefused
 
@@ -64,8 +65,9 @@ async def test_missing_certs(mock_certs, request, msg):
 
 
 async def test_config_file(request, msg):
-    config_file = Path(__file__).parent.joinpath("assets/test.env")
-    _config = Config(filename=config_file)
+    _original_env = os.environ.copy()
+    config_file = Path(__file__).parent.joinpath("assets/.test.env")
+    _config = Config(filename=config_file, override=True)
     server = AuthController(hostname=_config.SMTPD_HOST,
                             port=_config.SMTPD_PORT,
                             config=_config)
@@ -76,3 +78,6 @@ async def test_config_file(request, msg):
         client.send_message(msg)
 
     assert server.port == "5025"
+
+    os.environ.clear()
+    os.environ.update(_original_env)
