@@ -1,14 +1,14 @@
 # Change Log
 
-## Unreleased
+## Version 0.2.5
 
-Release date: Pending
+Release date: 2020-12-28
 
 - Corrects imports in README.md examples.
 - Adds support for python 3.9.
 - Corrects line endings on gen_certs.sh to LF and adds a .getattributes file to prevent git changing them back to CRLF.
 - Bumps `aiosmtpd`version to 1.2.2
-- Adds async tests using pytest-asyncio
+- Adds async test support using pytest-asyncio
 - Adds coverage support using pytest-cov
 - Allows .env files to override environment variables
 

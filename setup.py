@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-version = "0.2.5a"
+version = "0.2.5"
 
 with open("README.md", "rt", encoding="utf-8") as f:
     long_description = f.read()
@@ -31,7 +31,7 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.6',
+    python_requires='>= 3.6',
     install_requires=[
         "aiosmtpd < 1.2.3",
         "pytest",
