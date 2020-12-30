@@ -121,8 +121,9 @@ flake8 .
 ## Known Issues
 
 + Firewalls may interfere with the operation of the smtp server.
-+ Authenticating with LOGIN and PLAIN mechanisms fails over TLS/SSL, but works with STARTTLS. [Issue #10](https://github.com/bebleo/bebleo_smtpd_fixture/issures/10)
-+ Currently no support for termination through signals. [Issue #4](https://github.com/bebleo/bebleo_smtpd_fixture/issues/4)
-+ Key and certificate for encrypted communications must be called key.pem and cert.pem respectively. [Issue #15](https://github.com/bebleo/bebleo_smtpd_fixture/issues/15)  
++ Authenticating with LOGIN and PLAIN mechanisms fails over TLS/SSL, but works with STARTTLS. [Issue #10](https://github.com/bebleo/smtpdfix/issues/10)
++ Currently no support for termination through signals. [Issue #4](https://github.com/bebleo/smtpdfix/issues/4)
++ Key and certificate for encrypted communications must be called key.pem and cert.pem respectively. [Issue #15](https://github.com/bebleo/smtpdfix/issues/15)
++ Environment variables set after test initialization are ignored. [Issue #22](https://github.com/bebleo/smtpdfix/issues/22)
   
 ©2020, Written with ☕ and ❤ in Montreal, QC
