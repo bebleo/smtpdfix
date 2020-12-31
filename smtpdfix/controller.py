@@ -6,11 +6,13 @@ import ssl
 from aiosmtpd.controller import Controller
 
 from .handlers import AuthMessage
+from .lazy import lazy_class
 from .smtp import AuthSMTP
 
 log = logging.getLogger(__name__)
 
 
+@lazy_class
 class AuthController(Controller):
     def __init__(self,
                  loop=None,

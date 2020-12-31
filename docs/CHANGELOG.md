@@ -4,7 +4,7 @@
 
 Release date: pending
 
-- 
+- Enables use of `mock.patch` and `monkeypatch` to set environment variables on individual tests. [Issue #22](https://github.com/bebleo/smtpdfix/issues/22)
 
 ## Version 0.2.5
 

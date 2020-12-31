@@ -22,17 +22,17 @@ class _Authenticator(Authenticator):
                        "succeeded"))
             return True
 
-        log.debug(f'Validating username and password for {username} failed')
+        log.debug(f"Validating username and password for {username} failed")
         return False
 
     def verify(self, address):
         """Method to verify that an address or username is correct.
 
         Possible inputs are:
-        - a user name (e.g. 'user')
-        - an email address (e.g. 'user@example.org')
+        - a user name (e.g. "user")
+        - an email address (e.g. "user@example.org")
 
-        Should return a string in the form of 'User <user@example.org>' if
+        Should return a string in the form of "User <user@example.org>" if
         the address provided is valid. If there the valid is invalid return
         None. In this case we are returning a boolean true instead.
         """
@@ -60,7 +60,6 @@ def smtpd(request):
             with SMTP(smtpd.hostname, smtpd.port) as client:
                 code, resp = client.noop()
                 assert code == 250
-
     """
     config = Config()
 
@@ -70,6 +69,6 @@ def smtpd(request):
         config=config,
         authenticator=_Authenticator(config)
     )
-    request.addfinalizer(fixture.stop)
     fixture.start()
-    return fixture
+    yield fixture
+    fixture.stop()

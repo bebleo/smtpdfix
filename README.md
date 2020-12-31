@@ -57,11 +57,8 @@ import pytest
 from smtpdfix import smtpd
 
 
-@pytest.fixture
-def mock_use_starttls(monkeypatch):
+def test_sendmail(monkeypatch, smtpd):
     monkeypatch.setenv('SMTPD_USE_STARTTLS', 'True')
-
-def test_sendmail(mock_use_starttls, smtpd):
     from_ = "from.addr@example.org"
     to_ = "to.addr@example.org"
     msg = f"From: {from_}\r\nTo: {to_}\r\nSubject: Foo\r\n\r\nFoo bar"
