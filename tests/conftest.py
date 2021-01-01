@@ -2,8 +2,8 @@ from email.message import EmailMessage
 
 import pytest
 
-from smtpdfix import smtpd  # noqa: F401
-# pytest_plugins = "smtpdfix.fixture"
+# Register plugions as per pytest documentation preferring this over import.
+pytest_plugins = "smtpdfix"
 
 
 @pytest.fixture

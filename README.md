@@ -54,7 +54,8 @@ To use STARTTLS:
 from smtplib import SMTP
 
 import pytest
-from smtpdfix import smtpd
+
+pytest_plugins = "smtpdfix"
 
 
 def test_sendmail(monkeypatch, smtpd):
@@ -121,6 +122,5 @@ flake8 .
 + Authenticating with LOGIN and PLAIN mechanisms fails over TLS/SSL, but works with STARTTLS. [Issue #10](https://github.com/bebleo/smtpdfix/issues/10)
 + Currently no support for termination through signals. [Issue #4](https://github.com/bebleo/smtpdfix/issues/4)
 + Key and certificate for encrypted communications must be called key.pem and cert.pem respectively. [Issue #15](https://github.com/bebleo/smtpdfix/issues/15)
-+ Environment variables set after test initialization are ignored. [Issue #22](https://github.com/bebleo/smtpdfix/issues/22)
   
 ©2020, Written with ☕ and ❤ in Montreal, QC
