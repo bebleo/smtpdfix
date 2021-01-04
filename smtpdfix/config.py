@@ -30,7 +30,7 @@ class Config():
 
     @property
     def SMTPD_ENFORCE_AUTH(self):
-        return strtobool(os.getenv("SMTPD_ENFORCE_AUTH", False))
+        return strtobool(os.getenv("SMTPD_ENFORCE_AUTH", "False"))
 
     @property
     def SMTPD_SSL_CERTS_PATH(self):
@@ -39,12 +39,12 @@ class Config():
 
     @property
     def SMTPD_USE_STARTTLS(self):
-        return strtobool(os.getenv("SMTPD_USE_STARTTLS", False))
+        return strtobool(os.getenv("SMTPD_USE_STARTTLS", "False"))
 
     @property
     def SMTPD_USE_TLS(self):
-        return strtobool(os.getenv("SMTPD_USE_TLS", False))
+        return strtobool(os.getenv("SMTPD_USE_TLS", "False"))
 
     @property
     def SMTPD_USE_SSL(self):
-        return strtobool(os.getenv("SMTPD_USE_SSL", False))
+        return strtobool(os.getenv("SMTPD_USE_SSL", "False"))
