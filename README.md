@@ -28,7 +28,7 @@ setup(
 
 ## Using
 
-To use the `smtpd` fixture import it into your test file and then use it like any other pytest fixture. for example:
+To use the `smtpd` add `pytest_plugins = "smtpfix"` to your code. for example:
 
 ```python
 # test_mail.py
@@ -123,4 +123,4 @@ flake8 .
 + Currently no support for termination through signals. [Issue #4](https://github.com/bebleo/smtpdfix/issues/4)
 + Key and certificate for encrypted communications must be called key.pem and cert.pem respectively. [Issue #15](https://github.com/bebleo/smtpdfix/issues/15)
   
-©2020, Written with ☕ and ❤ in Montreal, QC
+©2020-2021, Written with ☕ and ❤ in Montreal, QC
