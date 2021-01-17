@@ -43,8 +43,10 @@ async def test_missing_auth_handler(no_auth):
 
 async def test_use_starttls(mock_smtpd_use_starttls, smtpd, msg):
     with SMTP(smtpd.hostname, smtpd.port) as client:
-        with pytest.raises(SMTPSenderRefused):
+        with pytest.raises(SMTPSenderRefused) as error:
             code, resp = client.send_message(msg)
+
+    assert error.type == SMTPSenderRefused
 
 
 async def test_missing_certs(mock_certs, request, msg):

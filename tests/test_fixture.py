@@ -2,6 +2,7 @@ import os
 from collections import namedtuple
 from smtplib import (SMTP, SMTP_SSL, SMTPAuthenticationError,
                      SMTPResponseException)
+from unittest import mock
 
 import pytest
 
@@ -21,6 +22,7 @@ def test_init(smtpd):
     port = int(os.getenv("SMTPD_PORT", "8025"))
     assert smtpd.hostname == host
     assert smtpd.port == port
+    assert len(smtpd.messages) == 0
 
 
 def test_init_ssl(mock_smtpd_use_ssl, smtpd, msg):
@@ -34,14 +36,14 @@ def test_HELO(smtpd):
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.helo()
         helo = client.helo_resp
-        assert helo.startswith(b'AUTH')
+        assert helo.startswith(b"AUTH")
 
 
 def test_AUTH_unknown_mechanism(mock_smtpd_use_starttls, smtpd):
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.starttls()
         client.ehlo()
-        code, response = client.docmd('AUTH', args='FAKEMECH')
+        code, response = client.docmd("AUTH", args="FAKEMECH")
         assert code == 504
 
 
@@ -49,9 +51,9 @@ def test_AUTH_LOGIN_abort(mock_smtpd_use_starttls, smtpd, user):
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.starttls()
         client.ehlo()
-        code, resp = client.docmd('AUTH', f'LOGIN {encode(user.username)}')
+        code, resp = client.docmd("AUTH", f"LOGIN {encode(user.username)}")
         assert code == 334
-        code, resp = client.docmd('*')
+        code, resp = client.docmd("*")
         assert code == 501
 
 
@@ -59,29 +61,29 @@ def test_AUTH_LOGIN_success(mock_smtpd_use_starttls, smtpd, user):
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.starttls()
         client.ehlo()
-        code, resp = client.docmd('AUTH', f'LOGIN {encode(user.username)}')
+        code, resp = client.docmd("AUTH", f"LOGIN {encode(user.username)}")
         assert code == 334
-        assert resp == bytes(encode('Password'), 'ascii')
-        code, resp = client.docmd(f'{encode(user.password)}')
+        assert resp == bytes(encode("Password"), "ascii")
+        code, resp = client.docmd(f"{encode(user.password)}")
         assert code == 235
 
 
 def test_AUTH_PLAIN(mock_smtpd_use_starttls, smtpd, user):
-    enc = encode(f'{user.username} {user.password}')
-    cmd_text = f'PLAIN {enc}'
+    enc = encode(f"{user.username} {user.password}")
+    cmd_text = f"PLAIN {enc}"
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.starttls()
         client.ehlo()
-        (code, resp) = client.docmd('AUTH', args=cmd_text)
+        (code, resp) = client.docmd("AUTH", args=cmd_text)
         assert code == 235
 
 
 def test_AUTH_PLAIN_no_encryption(smtpd, user):
-    enc = encode(f'{user.username} {user.password}')
-    cmd_text = f'PLAIN {enc}'
+    enc = encode(f"{user.username} {user.password}")
+    cmd_text = f"PLAIN {enc}"
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.ehlo()
-        (code, resp) = client.docmd('AUTH', args=cmd_text)
+        (code, resp) = client.docmd("AUTH", args=cmd_text)
         assert code == 538
 
 
@@ -168,3 +170,21 @@ def test_sendmail(smtpd):
         client.sendmail(from_addr, to_addr, msg)
 
     assert len(smtpd.messages) == 1
+
+
+@mock.patch.dict(os.environ, {"SMTPD_ENFORCE_AUTH": "True"})
+def test_mock_patch(smtpd):
+    with SMTP(smtpd.hostname, smtpd.port) as client:
+        client.helo()
+        code, repl = client.docmd("DATA", "")
+        assert code == 530
+        assert repl.startswith(b"SMTP authentication is required")
+
+
+def test_monkeypatch(monkeypatch, smtpd):
+    monkeypatch.setenv("SMTPD_ENFORCE_AUTH", "True")
+    with SMTP(smtpd.hostname, smtpd.port) as client:
+        client.helo()
+        code, repl = client.docmd("DATA", "")
+        assert code == 530
+        assert repl.startswith(b"SMTP authentication is required")

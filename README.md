@@ -28,7 +28,7 @@ setup(
 
 ## Using
 
-To use the `smtpd` fixture import it into your test file and then use it like any other pytest fixture. for example:
+To use the `smtpd` add `pytest_plugins = "smtpfix"` to your code. for example:
 
 ```python
 # test_mail.py
@@ -54,14 +54,12 @@ To use STARTTLS:
 from smtplib import SMTP
 
 import pytest
-from smtpdfix import smtpd
+
+pytest_plugins = "smtpdfix"
 
 
-@pytest.fixture
-def mock_use_starttls(monkeypatch):
+def test_sendmail(monkeypatch, smtpd):
     monkeypatch.setenv('SMTPD_USE_STARTTLS', 'True')
-
-def test_sendmail(mock_use_starttls, smtpd):
     from_ = "from.addr@example.org"
     to_ = "to.addr@example.org"
     msg = f"From: {from_}\r\nTo: {to_}\r\nSubject: Foo\r\n\r\nFoo bar"
@@ -121,8 +119,8 @@ flake8 .
 ## Known Issues
 
 + Firewalls may interfere with the operation of the smtp server.
-+ Authenticating with LOGIN and PLAIN mechanisms fails over TLS/SSL, but works with STARTTLS. [Issue #10](https://github.com/bebleo/bebleo_smtpd_fixture/issures/10)
-+ Currently no support for termination through signals. [Issue #4](https://github.com/bebleo/bebleo_smtpd_fixture/issues/4)
-+ Key and certificate for encrypted communications must be called key.pem and cert.pem respectively. [Issue #15](https://github.com/bebleo/bebleo_smtpd_fixture/issues/15)  
++ Authenticating with LOGIN and PLAIN mechanisms fails over TLS/SSL, but works with STARTTLS. [Issue #10](https://github.com/bebleo/smtpdfix/issues/10)
++ Currently no support for termination through signals. [Issue #4](https://github.com/bebleo/smtpdfix/issues/4)
++ Key and certificate for encrypted communications must be called key.pem and cert.pem respectively. [Issue #15](https://github.com/bebleo/smtpdfix/issues/15)
   
-©2020, Written with ☕ and ❤ in Montreal, QC
+©2020-2021, Written with ☕ and ❤ in Montreal, QC
