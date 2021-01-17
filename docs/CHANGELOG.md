@@ -1,8 +1,8 @@
 # Change Log
 
-## Unreleased
+## Version 0.2.6
 
-Release date: pending
+Release date: 2021-01-17
 
 - Enables use of `mock.patch` and `monkeypatch` to set environment variables on individual tests. [Issue #22](https://github.com/bebleo/smtpdfix/issues/22)
 - updates `Config` to fix bug with Boolean values where values aren't set in a .env file. [Issue #24](https://github.com/bebleo/smtpdfix/issues/24)
