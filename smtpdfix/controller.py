@@ -1,7 +1,8 @@
 import errno
 import logging
-import os
 import ssl
+from os import strerror
+from pathlib import Path
 
 from aiosmtpd.controller import Controller
 
@@ -53,18 +54,18 @@ class AuthController(Controller):
                         tls_context=self._starttls_context)
 
     def _get_ssl_context(self):
-        certs_path = self.config.SMTPD_SSL_CERTS_PATH
-        cert_path = os.path.join(certs_path, 'cert.pem')
-        key_path = os.path.join(certs_path, 'key.pem')
+        certs_path = Path(self.config.SMTPD_SSL_CERTS_PATH).resolve()
+        cert_path = certs_path.joinpath("cert.pem")
+        key_path = certs_path.joinpath("key.pem")
 
         for file_ in [cert_path, key_path]:
-            if os.path.isfile(file_):
-                log.debug(f"Found {os.path.abspath(file_)}")
+            if file_.is_file():
+                log.debug(f"Found {str(file_)}")
                 continue
-            log.debug(f"File {os.path.abspath(file_)} not found")
+            log.debug(f"File {str(file_)} not found")
             raise FileNotFoundError(errno.ENOENT,
-                                    os.strerror(errno.ENOENT),
-                                    os.path.abspath(file_))
+                                    strerror(errno.ENOENT),
+                                    file_)
 
         context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
         context.load_cert_chain(cert_path, key_path)

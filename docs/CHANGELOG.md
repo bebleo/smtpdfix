@@ -1,5 +1,11 @@
 # Change Log
 
+## Unreleased Changes
+
+Release date: TBD
+
+- Certificates are now dynamically generated per session rather than stored in the package.
+
 ## Version 0.2.6
 
 Release date: 2021-01-17

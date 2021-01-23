@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-version = "0.2.6"
+version = "0.2.7-alpha"
 
 with open("README.md", "rt", encoding="utf-8") as f:
     long_description = f.read()
@@ -30,10 +30,12 @@ setup(
         "Programming Language :: Python :: 3.9",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
+        "Framework :: Pytest",
     ],
     python_requires=">= 3.6",
     install_requires=[
         "aiosmtpd",
+        "cryptography",
         "lazy-object-proxy",
         "pytest",
         "python-dotenv",

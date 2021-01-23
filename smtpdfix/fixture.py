@@ -1,6 +1,9 @@
 import logging
+import os
 
 import pytest
+
+from smtpdfix.certs import generate_certs
 
 from .authenticator import Authenticator
 from .config import Config
@@ -49,7 +52,7 @@ class _Authenticator(Authenticator):
 
 
 @pytest.fixture
-def smtpd(request):
+def smtpd(tmp_path_factory):
     """A small SMTP server for use when testing applications that send email
     messages. To access the messages call `smtpd.messages` which returns a copy
     of the list of messages sent to the server.
@@ -62,6 +65,11 @@ def smtpd(request):
                 assert code == 250
     """
     config = Config()
+
+    if os.getenv("SMTPD_SSL_CERTS_PATH") is None:
+        path = tmp_path_factory.mktemp("certs")
+        generate_certs(path)
+        os.environ["SMTPD_SSL_CERTS_PATH"] = str(path.resolve())
 
     fixture = AuthController(
         hostname=config.SMTPD_HOST,
