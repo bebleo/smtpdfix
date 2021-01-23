@@ -34,6 +34,7 @@ setup(
     python_requires=">= 3.6",
     install_requires=[
         "aiosmtpd",
+        "cryptography",
         "lazy-object-proxy",
         "pytest",
         "python-dotenv",
