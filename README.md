@@ -28,13 +28,11 @@ setup(
 
 ## Using
 
-To use the `smtpd` fixture, add `pytest_plugins = "smtpfix"` to your code. for example:
+The `SMTPDFix` plugin, `smtpd`, automatically registers for use with pytest when you install smptdfix. To use it simply add to you test method.
 
 ```python
 # test_mail.py
 from smtplib import SMTP
-
-pytest_plugins = "smtpdfix"
 
 
 def test_sendmail(smtpd):
@@ -53,10 +51,6 @@ To use STARTTLS:
 ```python
 from smtplib import SMTP
 
-import pytest
-
-pytest_plugins = "smtpdfix"
-
 
 def test_sendmail(monkeypatch, smtpd):
     monkeypatch.setenv('SMTPD_USE_STARTTLS', 'True')
@@ -70,6 +64,8 @@ def test_sendmail(monkeypatch, smtpd):
 
     assert len(smtpd.messages) == 1
 ```
+
+> Before version 0.2.7 the plugin did not automatically register and it was necessary to include it manually by adding `pytest_plugins = "smtpdfix"` to the module or conftest.py.
 
 The certificates included with the fixture will work for addresses localhost, localhost.localdomain, 127.0.0.1, 0.0.0.1, ::1. If using other addresses the key (key.pem) and certificate (cert.pem) must be in a location specified under `SMTP_SSL_CERTS_PATH`.
 

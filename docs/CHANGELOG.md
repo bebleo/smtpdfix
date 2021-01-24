@@ -6,6 +6,7 @@ Release date: TBD
 
 - Certificates are now dynamically generated per session rather than stored in the package.
 - Adds an `SMTPDFix` class for with `with` blocks.
+- The fixture now automatically loads as a plugin with pytest.
 
 ## Version 0.2.6
 

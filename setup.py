@@ -48,4 +48,7 @@ setup(
             "pytest-cov",
         ],
     },
+    entry_points={
+        "pytest11": ["smtpd = smtpdfix.fixture"]
+    },
 )
