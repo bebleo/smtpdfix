@@ -5,6 +5,7 @@
 Release date: TBD
 
 - Certificates are now dynamically generated per session rather than stored in the package.
+- Adds an `SMTPDFix` class for with `with` blocks.
 
 ## Version 0.2.6
 

@@ -28,13 +28,13 @@ setup(
 
 ## Using
 
-To use the `smtpd` add `pytest_plugins = "smtpfix"` to your code. for example:
+To use the `smtpd` fixture, add `pytest_plugins = "smtpfix"` to your code. for example:
 
 ```python
 # test_mail.py
 from smtplib import SMTP
 
-from smtpdfix import smtpd
+pytest_plugins = "smtpdfix"
 
 
 def test_sendmail(smtpd):
@@ -72,6 +72,35 @@ def test_sendmail(monkeypatch, smtpd):
 ```
 
 The certificates included with the fixture will work for addresses localhost, localhost.localdomain, 127.0.0.1, 0.0.0.1, ::1. If using other addresses the key (key.pem) and certificate (cert.pem) must be in a location specified under `SMTP_SSL_CERTS_PATH`.
+
+### Not as a fixture
+
+> Currently available only in the unreleased version.
+
+In some situations it may be desirable to not use the fixture which is initialized before entering the test. This can be accomplished by using the `SMTPDFix` class.
+
+```python
+from smtplib import SMTP
+
+from smtpdfix import SMTPDFix
+
+
+def test_smtpdfix(msg):
+    hostname, port = "127.0.0.1", 8025
+
+    with SMTPDFix(hostname, port) as smtpd:
+        with SMTP(hostname, port) as client:
+            from_addr = "foo@example.org"
+            to_addrs = "bar@example.org"
+            msg = (f"From: {from_addr}\r\n"
+                   f"To: {to_addrs}\r\n"
+                   f"Subject: Foo\r\n\r\n"
+                   f"Foo bar")
+
+            client.sendmail(from_addr, to_addrs, msg)
+
+        assert len(smtpd.messages) == 1
+```
 
 ### Configuration
 
@@ -119,6 +148,7 @@ flake8 .
 ## Known Issues
 
 + Firewalls may interfere with the operation of the smtp server.
++ Using "localhost" as the hostname may resolve to ::1 which in some cases, depending on the system configuration, does not work.
 + Authenticating with LOGIN and PLAIN mechanisms fails over TLS/SSL, but works with STARTTLS. [Issue #10](https://github.com/bebleo/smtpdfix/issues/10)
 + Currently no support for termination through signals. [Issue #4](https://github.com/bebleo/smtpdfix/issues/4)
 + Key and certificate for encrypted communications must be called key.pem and cert.pem respectively. [Issue #15](https://github.com/bebleo/smtpdfix/issues/15)

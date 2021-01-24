@@ -3,9 +3,8 @@ import os
 
 import pytest
 
-from smtpdfix.certs import generate_certs
-
 from .authenticator import Authenticator
+from .certs import generate_certs
 from .config import Config
 from .controller import AuthController
 
@@ -49,6 +48,28 @@ class _Authenticator(Authenticator):
     def get_password(self, username):
         log.debug(f"Password retrieved for {username}")
         return self.config.SMTPD_LOGIN_PASSWORD
+
+
+class SMTPDFix():
+    def __init__(self, hostname, port, config=None):
+        self.hostname = hostname
+        self.port = port
+        self.config = config or Config()
+
+    def __enter__(self):
+        self.controller = AuthController(
+            hostname=self.hostname,
+            port=int(self.port),
+            config=self.config,
+            authenticator=_Authenticator(self.config)
+        )
+        log.debug("Enter called on SMTPDFix")
+        self.controller.start()
+        return self.controller
+
+    def __exit__(self, type, value, traceback):
+        log.debug("Exit called on SMTPDFix")
+        self.controller.stop()
 
 
 @pytest.fixture
