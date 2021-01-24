@@ -2,9 +2,6 @@ from email.message import EmailMessage
 
 import pytest
 
-# Register plugions as per pytest documentation preferring this over import.
-pytest_plugins = "smtpdfix"
-
 
 @pytest.fixture
 def mock_enforce_auth(monkeypatch):
