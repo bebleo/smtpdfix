@@ -3,6 +3,7 @@
 venv/
 *.egg-info
 .coverage
+.coverage.*
 coverage*.xml
 htmlcov/
 __pycache__/
