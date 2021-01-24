@@ -2,6 +2,10 @@ from email.message import EmailMessage
 
 import pytest
 
+# Because we need to test the fixture we include the plugin here, but generally
+# this is not necessary and the fixture is loaded automatically.
+pytest_plugins = "smtpdfix"
+
 
 @pytest.fixture
 def mock_enforce_auth(monkeypatch):
