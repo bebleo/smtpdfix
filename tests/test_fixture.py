@@ -154,7 +154,8 @@ def test_send_message_logged_in(mock_smtpd_use_starttls, smtpd, user, msg):
     assert len(smtpd.messages) == 1
 
 
-def test_send_messaged_auth_not_compete(mock_enforce_auth, smtpd, msg):
+def test_send_messaged_auth_not_compete(monkeypatch, smtpd, msg):
+    monkeypatch.setenv("SMTPD_ENFORCE_AUTH", "True")
     with pytest.raises(SMTPResponseException) as er:
         with SMTP(smtpd.hostname, smtpd.port) as client:
             client.send_message(msg)
