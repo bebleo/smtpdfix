@@ -13,7 +13,12 @@ Release date: 2021-01-29
 This release has been motivated by recent breaking changes to aiosmtpd.
 
 - Certificates are now dynamically generated per session rather than stored in the package.
+<<<<<<< HEAD
 - Fixes aiosmtpd to version 1.2.2 or below.
+=======
+- Adds an `SMTPDFix` class for with `with` blocks.
+- The fixture now automatically loads as a plugin with pytest.
+>>>>>>> 5b84a698cc01d31d66fb05ca42f345a7a04f90f9
 
 ## Version 0.2.6
 
