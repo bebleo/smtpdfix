@@ -7,6 +7,11 @@ import pytest
 pytest_plugins = "smtpdfix"
 
 
+def pytest_collection_modifyitems(items):
+    for item in items:
+        item.add_marker(pytest.mark.timeout(5))
+
+
 @pytest.fixture
 def mock_smtpd_port(monkeypatch):
     monkeypatch.setenv("SMTPD_PORT", "5025")
