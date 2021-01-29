@@ -34,7 +34,7 @@ setup(
     ],
     python_requires=">= 3.6",
     install_requires=[
-        "aiosmtpd <= 1.2.2",
+        "aiosmtpd < 1.2.5",
         "cryptography",
         "lazy-object-proxy",
         "pytest",

@@ -1,4 +1,4 @@
-aiosmtpd==1.2.2
+aiosmtpd==1.2.4
 atpublic==2.1.2
 attrs==20.3.0
 cffi==1.14.4
