@@ -128,7 +128,7 @@ pip install -e .[dev]
 Code is tested using pytest:
 
 ```sh
-pytest
+pytest -p no:smtpd --cov
 ```
 
 Before submitting a pull request with your changes you should ensure that all imports are sorted and that the code passes linting with flake8.
