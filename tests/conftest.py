@@ -4,12 +4,13 @@ import pytest
 
 # Because we need to test the fixture we include the plugin here, but generally
 # this is not necessary and the fixture is loaded automatically.
-pytest_plugins = "smtpdfix"
+pytest_plugins = ["smtpdfix", "pytester"]
 
 
 def pytest_collection_modifyitems(items):
     for item in items:
-        item.add_marker(pytest.mark.timeout(5))
+        if item.get_closest_marker("timeout") is None:
+            item.add_marker(pytest.mark.timeout(5))
 
 
 @pytest.fixture
