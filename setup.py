@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-version = "0.2.7-alpha"
+version = "0.2.7"
 
 with open("README.md", "rt", encoding="utf-8") as f:
     long_description = f.read()
@@ -34,7 +34,7 @@ setup(
     ],
     python_requires=">= 3.6",
     install_requires=[
-        "aiosmtpd",
+        "aiosmtpd <= 1.2.2",
         "cryptography",
         "lazy-object-proxy",
         "pytest",
