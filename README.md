@@ -122,5 +122,6 @@ flake8 .
 + Authenticating with LOGIN and PLAIN mechanisms fails over TLS/SSL, but works with STARTTLS. [Issue #10](https://github.com/bebleo/smtpdfix/issues/10)
 + Currently no support for termination through signals. [Issue #4](https://github.com/bebleo/smtpdfix/issues/4)
 + Key and certificate for encrypted communications must be called key.pem and cert.pem respectively. [Issue #15](https://github.com/bebleo/smtpdfix/issues/15)
++ Is incompatible with [aiosmtpd](https://github.com/aio-libs/aiosmtpd) versions 1.2.3 or above. Version 0.2.7 of SMTPDFix requires that aiosmtpd be version 1.2.2 or less, but previous versions do not include the same constraint. [Issue #34](https://github.com/bebleo/smtpdfix/issues/34)
   
 ©2020-2021, Written with ☕ and ❤ in Montreal, QC

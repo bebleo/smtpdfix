@@ -1,5 +1,11 @@
 # Change Log
 
+## Unreleased Changes
+
+Release date: unknown
+
+
+
 ## Version 0.2.7
 
 Release date: 2021-01-29
@@ -7,7 +13,7 @@ Release date: 2021-01-29
 This release has been motivated by recent breaking changes to aiosmtpd.
 
 - Certificates are now dynamically generated per session rather than stored in the package.
-- fixes aiosmtpd to version 1.2.2 or below.
+- Fixes aiosmtpd to version 1.2.2 or below.
 
 ## Version 0.2.6
 
