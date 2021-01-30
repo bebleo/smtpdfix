@@ -37,6 +37,7 @@ class AuthController(Controller):
         super().__init__(handler=handler,
                          hostname=hostname,
                          port=port,
+                         loop=loop,
                          ready_timeout=ready_timeout,
                          enable_SMTPUTF8=enable_SMTPUTF8,
                          ssl_context=__ssl_context)

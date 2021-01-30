@@ -104,7 +104,7 @@ class AuthMessage(Message):
                         'md5')
         expected = mac.hexdigest().encode('ascii')
         if hmac.compare_digest(expected, received):
-            session.authenticated = True
+            session.login_data = user
             return AUTH_SUCCEEDED
         return AUTH_FAILED
 
@@ -130,7 +130,7 @@ class AuthMessage(Message):
         password = login[1]
 
         if self._authenticator.validate(username, password):
-            session.authenticated = True
+            session.login_data = username
             log.info(f'AUTH LOGIN for {username} succeeded.')
             return AUTH_SUCCEEDED
         log.info(f'AUTH LOGIN for {username} failed.')
@@ -152,7 +152,7 @@ class AuthMessage(Message):
             len(response) >= 2 and
             self._authenticator.validate(response[0], response[-1])
         ):
-            session.authenticated = True
+            session.login_data = response[0]
             return AUTH_SUCCEEDED
         return AUTH_FAILED
 

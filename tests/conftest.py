@@ -8,9 +8,13 @@ pytest_plugins = ["smtpdfix", "pytester"]
 
 
 def pytest_collection_modifyitems(items):
+    # Mark each test as timing out after 15 seconds to prevent the server
+    # hanging on errors. Note that this can lead to the entire test run
+    # failing.
+    timeout_secs = 15
     for item in items:
         if item.get_closest_marker("timeout") is None:
-            item.add_marker(pytest.mark.timeout(5))
+            item.add_marker(pytest.mark.timeout(timeout_secs))
 
 
 @pytest.fixture

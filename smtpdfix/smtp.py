@@ -1,6 +1,6 @@
 import logging
 
-from aiosmtpd.smtp import MISSING, SMTP, Session, syntax
+from aiosmtpd.smtp import MISSING, SMTP, syntax
 
 from .config import Config
 from .handlers import AUTH_REQUIRED
@@ -8,22 +8,12 @@ from .handlers import AUTH_REQUIRED
 log = logging.getLogger(__name__)
 
 
-class AuthSession(Session):
-    def __init__(self, loop):
-        super().__init__(loop)
-        self.authenticated = False
-
-
 class AuthSMTP(SMTP):
-    def _create_session(self):
-        # Override the _create_session method to return an AuthSession object.
-        return AuthSession(self.loop)
-
     def _set_rset_state(self):
         super()._set_rset_state()
         # Set the authenticated state on the session to be False if it exists
         if self.session:
-            self.session.authenticated = False
+            self.session.login_data = None
 
     @syntax('AUTH <mechanism> [args]')
     async def smtp_AUTH(self, arg):
