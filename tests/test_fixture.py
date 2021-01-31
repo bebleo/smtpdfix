@@ -34,9 +34,8 @@ def test_init_ssl(mock_smtpd_use_ssl, smtpd, msg):
 
 def test_HELO(smtpd):
     with SMTP(smtpd.hostname, smtpd.port) as client:
-        client.helo()
-        helo = client.helo_resp
-        assert helo.startswith(b"AUTH")
+        code, _ = client.helo()
+        assert code == 250
 
 
 def test_AUTH_unknown_mechanism(mock_smtpd_use_starttls, smtpd):
@@ -87,6 +86,27 @@ def test_AUTH_PLAIN_no_encryption(smtpd, user):
         assert code == 538
 
 
+def test_AUTH_PLAIN_two_parts(mock_smtpd_use_starttls, smtpd, user):
+    with SMTP(smtpd.hostname, smtpd.port) as client:
+        client.starttls()
+        client.ehlo()
+        code, resp = client.docmd("AUTH", "PLAIN")
+        assert (code, resp) == (334, b"")
+        enc = encode(f"{user.username} {user.password}")
+        code, resp = client.docmd(enc)
+        assert code == 235
+
+
+def test_AUTH_PLAIN_failure(mock_smtpd_use_starttls, smtpd, user):
+    with SMTP(smtpd.hostname, smtpd.port) as client:
+        client.starttls()
+        client.ehlo()
+        enc = encode(f"{user.username} {user.password[:0:-1]}")
+        code, resp = client.docmd("AUTH", f"PLAIN {enc}")
+        assert code == 535
+        assert resp == b"5.7.8 Authentication credentials invalid"
+
+
 def test_VRFY(smtpd, user):
     with SMTP(smtpd.hostname, smtpd.port) as client:
         code, resp = client.verify(user.username)
@@ -110,7 +130,8 @@ def test_login(mock_smtpd_use_starttls, smtpd, user):
         assert client.login(user.username, user.password)
 
 
-def test_login_fail(mock_smtpd_use_starttls, smtpd, user):
+def test_login_fail(monkeypatch, smtpd, user):
+    monkeypatch.setenv("SMTPD_USE_STARTTLS", "True")
     with pytest.raises(SMTPAuthenticationError) as ex:
         with SMTP(smtpd.hostname, smtpd.port) as client:
             client.starttls()
@@ -119,17 +140,21 @@ def test_login_fail(mock_smtpd_use_starttls, smtpd, user):
     assert ex.type is SMTPAuthenticationError
 
 
-def test_login_no_tls(smtpd, user):
+def test_login_no_tls(monkeypatch, smtpd, user):
+    monkeypatch.setenv("SMTPD_AUTH_REQUIRE_TLS", "False")
     with SMTP(smtpd.hostname, smtpd.port) as client:
         assert client.login(user.username, user.password)
 
 
-def test_login_already_done(smtpd, user):
+def test_login_already_done(monkeypatch, smtpd, user):
+    monkeypatch.setenv("SMTPD_ENFORCE_AUTH", "True")
+    monkeypatch.setenv("SMTPD_USE_STARTTLS", "True")
     with SMTP(smtpd.hostname, smtpd.port) as client:
+        client.starttls()
         client.login(user.username, user.password)
         # we need to explicitly get the response from the the second AUTH
         # command because smtplib doesn't treat it as an error.
-        code, resp = client.docmd("AUTH")
+        code, resp = client.docmd("AUTH", "LOGIN")
         assert code == 503
         assert resp == b"Already authenticated"
 
@@ -145,7 +170,8 @@ def test_send_message(smtpd, msg):
     assert len(smtpd.messages) == 1
 
 
-def test_send_message_logged_in(mock_smtpd_use_starttls, smtpd, user, msg):
+def test_send_message_logged_in(monkeypatch, smtpd, user, msg):
+    monkeypatch.setenv("SMTPD_USE_STARTTLS", "True")
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.starttls()
         client.login(user.username, user.password)
@@ -154,7 +180,7 @@ def test_send_message_logged_in(mock_smtpd_use_starttls, smtpd, user, msg):
     assert len(smtpd.messages) == 1
 
 
-def test_send_messaged_auth_not_compete(monkeypatch, smtpd, msg):
+def test_send_messaged_auth_not_complete(monkeypatch, smtpd, msg):
     monkeypatch.setenv("SMTPD_ENFORCE_AUTH", "True")
     with pytest.raises(SMTPResponseException) as er:
         with SMTP(smtpd.hostname, smtpd.port) as client:
@@ -179,7 +205,7 @@ def test_mock_patch(smtpd):
         client.helo()
         code, repl = client.docmd("DATA", "")
         assert code == 530
-        assert repl.startswith(b"SMTP authentication is required")
+        assert repl.startswith(b"5.7.0 Authentication required")
 
 
 def test_monkeypatch(monkeypatch, smtpd):
@@ -188,4 +214,4 @@ def test_monkeypatch(monkeypatch, smtpd):
         client.helo()
         code, repl = client.docmd("DATA", "")
         assert code == 530
-        assert repl.startswith(b"SMTP authentication is required")
+        assert repl.startswith(b"5.7.0 Authentication required")

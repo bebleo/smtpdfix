@@ -5,10 +5,10 @@ from os import strerror
 from pathlib import Path
 
 from aiosmtpd.controller import Controller
+from aiosmtpd.smtp import SMTP
 
 from .handlers import AuthMessage
 from .lazy import lazy_class
-from .smtp import AuthSMTP
 
 log = logging.getLogger(__name__)
 
@@ -50,9 +50,16 @@ class AuthController(Controller):
         log.info(f"SMTPD running on {self.hostname}:{self.port}")
 
     def factory(self):
-        return AuthSMTP(handler=self.handler,
-                        require_starttls=self.use_starttls,
-                        tls_context=self._starttls_context)
+        auth_required = self.config.SMTPD_ENFORCE_AUTH
+        auth_require_tls = self.config.SMTPD_AUTH_REQUIRE_TLS
+        use_starttls = self.config.SMTPD_USE_STARTTLS
+        certs = self._get_ssl_context() if use_starttls else None
+
+        return SMTP(handler=self.handler,
+                    require_starttls=use_starttls,
+                    auth_required=auth_required,
+                    auth_require_tls=auth_require_tls,
+                    tls_context=certs)
 
     def _get_ssl_context(self):
         certs_path = Path(self.config.SMTPD_SSL_CERTS_PATH).resolve()
