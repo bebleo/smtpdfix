@@ -7,6 +7,7 @@ from pathlib import Path
 from aiosmtpd.controller import Controller
 from aiosmtpd.smtp import SMTP
 
+from .config import Config
 from .handlers import AuthMessage
 from .lazy import lazy_class
 
@@ -23,15 +24,15 @@ class AuthController(Controller):
                  enable_SMTPUTF8=True,
                  config=None,
                  authenticator=None):
-        self.use_starttls = config.SMTPD_USE_STARTTLS
-        self.config = config
+        self.config = config or Config()
+        self.use_starttls = self.config.SMTPD_USE_STARTTLS
 
         self._messages = []
         handler = AuthMessage(messages=self._messages,
                               authenticator=authenticator)
 
         __ssl_context = None
-        if config.SMTPD_USE_SSL or config.SMTPD_USE_TLS:
+        if self.config.SMTPD_USE_SSL or self.config.SMTPD_USE_TLS:
             __ssl_context = self._get_ssl_context()
 
         super().__init__(handler=handler,
