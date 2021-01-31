@@ -6,6 +6,8 @@ Release date: unknown
 
 - Adds an `SMTPDFix` class for with `with` blocks.
 - The fixture now automatically loads as a plugin with pytest.
+- Aiosmtpd version 1.2.4 or greater now required.
+- Command responses now standard with aiosmtpd with the exception of AUTH mechanisms.
 
 ## Version 0.2.7
 
