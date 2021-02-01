@@ -1,12 +1,12 @@
 import logging
 import os
-from pathlib import Path
-from smtpdfix.certs import generate_certs
-from smtplib import SMTP, SMTPSenderRefused
 import ssl
+from pathlib import Path
+from smtplib import SMTP, SMTPSenderRefused
 
 import pytest
 
+from smtpdfix.certs import generate_certs
 from smtpdfix.config import Config
 from smtpdfix.controller import AuthController
 from smtpdfix.fixture import _Authenticator
