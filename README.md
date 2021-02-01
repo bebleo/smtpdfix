@@ -109,7 +109,7 @@ Variable | Default | Description
 `SMPTD_USERNAME` | `user` |  
 `SMTPD_PASSWORD` | `password` |  
 `SMTPD_USE_SSL` | `False` | Whether the fixture should use fixed TLS/SSL for transactions. If using smtplib requires that `SMTP_SSL` be used instead of `SMTP`.
-`SMTPD_USE_STARTTLS` | `False` | Whether the fixture should use StartTLS to encrypt the connections. If using `smptlib` requires that the `SMTP.starttls()` be called before other commands are issued.
+`SMTPD_USE_STARTTLS` | `False` | Whether the fixture should use StartTLS to encrypt the connections. If using `smptlib` requires that the `SMTP.starttls()` be called before other commands are issued. Overrides `SMTPD_USE_SSL` as the preferred method for securing communications with the client.
 `SMTPD_ENFORCE_AUTH` | `False` | If set to true then the fixture refuses MAIL, RCPT, DATA commands until authentication is completed.
 `SMTPD_SSL_CERTS_PATH` | `\certs\` | The path to the key and certificate for encrypted communication.
 

@@ -1,7 +1,9 @@
 import logging
 import os
 from pathlib import Path
+from smtpdfix.certs import generate_certs
 from smtplib import SMTP, SMTPSenderRefused
+import ssl
 
 import pytest
 
@@ -34,6 +36,35 @@ async def test_use_starttls(monkeypatch, smtpd, msg):
             code, resp = client.send_message(msg)
 
     assert error.type == SMTPSenderRefused
+
+
+async def test_custom_ssl_context(monkeypatch, request, tmp_path_factory, msg):
+    if os.getenv("SMTPD_SSL_CERTS_PATH") is None:
+        path = tmp_path_factory.mktemp("certs")
+        generate_certs(path)
+        os.environ["SMTPD_SSL_CERTS_PATH"] = str(path.resolve())
+
+    _config = Config()
+    certs_path = Path(_config.SMTPD_SSL_CERTS_PATH).resolve()
+    cert_path = certs_path.joinpath("cert.pem")
+    key_path = certs_path.joinpath("key.pem")
+
+    _context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+    _context.load_cert_chain(cert_path, key_path)
+
+    server = AuthController(hostname=_config.SMTPD_HOST,
+                            port=_config.SMTPD_PORT,
+                            config=_config,
+                            ssl_context=_context)
+    request.addfinalizer(server.stop)
+    server.start()
+
+    monkeypatch.setenv("SMTPD_USE_STARTTLS", "True")
+    with SMTP(server.hostname, server.port) as client:
+        client.starttls()
+        client.send_message(msg)
+
+    assert len(server.messages) == 1
 
 
 async def test_missing_certs(mock_certs, request, msg):

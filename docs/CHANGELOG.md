@@ -8,6 +8,7 @@ Release date: unknown
 - The fixture now automatically loads as a plugin with pytest.
 - Aiosmtpd version 1.2.4 or greater now required.
 - Command responses now standard with aiosmtpd with the exception of AUTH mechanisms.
+- Prefers StartTLS to TLS or SSL to avoid a case where if both where specified the SMTP server would report a fault.
 
 ## Version 0.2.7
 
