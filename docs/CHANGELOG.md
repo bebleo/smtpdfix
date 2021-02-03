@@ -9,6 +9,7 @@ Release date: unknown
 - Aiosmtpd version 1.2.4 or greater now required.
 - Command responses now standard with aiosmtpd with the exception of AUTH mechanisms.
 - Prefers StartTLS to TLS or SSL to avoid a case where if both where specified the SMTP server would report a fault.
+- Minor performance enhancements from removing the lazy object proxy and setting key size to 2048 bits instead of 4096.
 
 ## Version 0.2.7
 

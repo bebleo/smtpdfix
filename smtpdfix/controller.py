@@ -9,12 +9,10 @@ from aiosmtpd.smtp import SMTP
 
 from .config import Config
 from .handlers import AuthMessage
-from .lazy import lazy_class
 
 log = logging.getLogger(__name__)
 
 
-@lazy_class
 class AuthController(Controller):
     def __init__(self,
                  loop=None,
