@@ -92,12 +92,15 @@ def smtpd(tmp_path_factory):
         generate_certs(path)
         os.environ["SMTPD_SSL_CERTS_PATH"] = str(path.resolve())
 
-    fixture = AuthController(
-        hostname=config.SMTPD_HOST,
-        port=int(config.SMTPD_PORT),
-        config=config,
-        authenticator=_Authenticator(config)
-    )
-    fixture.start()
-    yield fixture
-    fixture.stop()
+    # fixture = AuthController(
+    #     hostname=config.SMTPD_HOST,
+    #     port=int(config.SMTPD_PORT),
+    #     config=config,
+    #     authenticator=_Authenticator(config)
+    # )
+    # fixture.start()
+    # yield fixture
+    # fixture.stop()
+
+    with SMTPDFix(config.SMTPD_HOST, config.SMTPD_PORT) as fixture:
+        yield fixture
