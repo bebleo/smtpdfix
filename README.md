@@ -8,22 +8,32 @@ This fixture is intended to address use-cases where to test an application that 
 
 ## Installing
 
-Install using pip:
+To install using pip, first upgrade to the latest version to avoid any issues installing `cryptography`:
 
 ```sh
+python -m pip install --upgrade pip
 pip install smtpdfix
 ```
 
-Or, if you're using setuptools, it can be included in the `tests_require` section of a `setup.py` file:
+Or, if you're using setuptools, it can be included in the `extras_require` argument of a `setup.py` file:
 
 ```python
 setup(
     ...
-    tests_require = [
-        "pytest",
-        "smtpdfix",
-    ],
+    extras_require={
+        "test": [
+            "pytest",
+            "smtpdfix",
+        ],
+    },
 )
+```
+
+and then insalled with pip:
+
+```sh
+python -m pip install --upgrade pip
+pip install .[test]
 ```
 
 ## Using
@@ -38,7 +48,10 @@ from smtplib import SMTP
 def test_sendmail(smtpd):
     from_addr = "from.addr@example.org"
     to_addrs = "to.addr@example.org"
-    msg = f"From: {from_addr}\r\nTo: {to_addrs}\r\nSubject: Foo\r\n\r\nFoo bar"
+    msg = (f"From: {from_addr}\r\n"
+           f"To: {to_addrs}\r\n"
+           f"\\Subject: Foo\r\n\r\n"
+           f"Foo bar")
 
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.sendmail(from_addr, to_addrs, msg)
@@ -56,7 +69,10 @@ def test_sendmail(monkeypatch, smtpd):
     monkeypatch.setenv('SMTPD_USE_STARTTLS', 'True')
     from_ = "from.addr@example.org"
     to_ = "to.addr@example.org"
-    msg = f"From: {from_}\r\nTo: {to_}\r\nSubject: Foo\r\n\r\nFoo bar"
+    msg = (f"From: {from_}\r\n"
+           f"To: {to_}\r\n"
+           f"Subject: Foo\r\n\r\n
+           f"Foo bar")
 
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.starttls()  # Note that you need to call starttls first.
@@ -109,7 +125,7 @@ Variable | Default | Description
 `SMPTD_USERNAME` | `user` |  
 `SMTPD_PASSWORD` | `password` |  
 `SMTPD_USE_SSL` | `False` | Whether the fixture should use fixed TLS/SSL for transactions. If using smtplib requires that `SMTP_SSL` be used instead of `SMTP`.
-`SMTPD_USE_STARTTLS` | `False` | Whether the fixture should use StartTLS to encrypt the connections. If using `smptlib` requires that the `SMTP.starttls()` be called before other commands are issued. Overrides `SMTPD_USE_SSL` as the preferred method for securing communications with the client.
+`SMTPD_USE_STARTTLS` | `False` | Whether the fixture should use StartTLS to encrypt the connections. If using `smptlib` requires that `SMTP.starttls()` is called before other commands are issued. Overrides `SMTPD_USE_SSL` as the preferred method for securing communications with the client.
 `SMTPD_ENFORCE_AUTH` | `False` | If set to true then the fixture refuses MAIL, RCPT, DATA commands until authentication is completed.
 `SMTPD_SSL_CERTS_PATH` | `\certs\` | The path to the key and certificate for encrypted communication.
 
@@ -148,6 +164,6 @@ flake8 .
 + Authenticating with LOGIN and PLAIN mechanisms fails over TLS/SSL, but works with STARTTLS. [Issue #10](https://github.com/bebleo/smtpdfix/issues/10)
 + Currently no support for termination through signals. [Issue #4](https://github.com/bebleo/smtpdfix/issues/4)
 + Key and certificate for encrypted communications must be called key.pem and cert.pem respectively. [Issue #15](https://github.com/bebleo/smtpdfix/issues/15)
-+ Is incompatible with [aiosmtpd](https://github.com/aio-libs/aiosmtpd) versions 1.2.3 or above. Version 0.2.7 of SMTPDFix requires that aiosmtpd be version 1.2.2 or less, but previous versions do not include the same constraint. [Issue #34](https://github.com/bebleo/smtpdfix/issues/34)
-  
++ Is incompatible with [aiosmtpd](https://github.com/aio-libs/aiosmtpd) versions 1.2.3 or above. Version 0.2.7 of SMTPDFix requires that aiosmtpd version 1.2.2 or below, but previous versions do not include the constraint. [Issue #34](https://github.com/bebleo/smtpdfix/issues/34)
+
 ©2020-2021, Written with ☕ and ❤ in Montreal, QC
