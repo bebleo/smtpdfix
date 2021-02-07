@@ -18,9 +18,6 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=find_packages(),
-    package_data={
-        "smtpdfix": ["certs/*.pem"]
-    },
     url="https://github.com/bebleo/smtpdfix",
     classifiers=[
         "Programming Language :: Python :: 3",
@@ -34,9 +31,8 @@ setup(
     ],
     python_requires=">= 3.6",
     install_requires=[
-        "aiosmtpd <= 1.2.2",
+        "aiosmtpd >= 1.2.4",
         "cryptography",
-        "lazy-object-proxy",
         "pytest",
         "python-dotenv",
     ],
@@ -46,6 +42,10 @@ setup(
             "isort",
             "pytest-asyncio",
             "pytest-cov",
+            "pytest-timeout",
         ],
+    },
+    entry_points={
+        "pytest11": ["smtpd = smtpdfix.fixture"]
     },
 )

@@ -2,23 +2,24 @@ from email.message import EmailMessage
 
 import pytest
 
-# Register plugions as per pytest documentation preferring this over import.
-pytest_plugins = "smtpdfix"
+# Because we need to test the fixture we include the plugin here, but generally
+# this is not necessary and the fixture is loaded automatically.
+pytest_plugins = ["smtpdfix", "pytester"]
 
 
-@pytest.fixture
-def mock_enforce_auth(monkeypatch):
-    monkeypatch.setenv("SMTPD_ENFORCE_AUTH", "True")
+def pytest_collection_modifyitems(items):
+    # Mark each test as timing out after 15 seconds to prevent the server
+    # hanging on errors. Note that this can lead to the entire test run
+    # failing.
+    timeout_secs = 10
+    for item in items:
+        if item.get_closest_marker("timeout") is None:
+            item.add_marker(pytest.mark.timeout(timeout_secs))
 
 
 @pytest.fixture
 def mock_smtpd_port(monkeypatch):
     monkeypatch.setenv("SMTPD_PORT", "5025")
-
-
-@pytest.fixture
-def mock_smtpd_use_starttls(monkeypatch):
-    monkeypatch.setenv("SMTPD_USE_STARTTLS", "True")
 
 
 @pytest.fixture

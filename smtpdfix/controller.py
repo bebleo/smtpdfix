@@ -5,62 +5,72 @@ from os import strerror
 from pathlib import Path
 
 from aiosmtpd.controller import Controller
+from aiosmtpd.smtp import SMTP
 
+from .config import Config
 from .handlers import AuthMessage
-from .lazy import lazy_class
-from .smtp import AuthSMTP
 
 log = logging.getLogger(__name__)
 
 
-@lazy_class
 class AuthController(Controller):
     def __init__(self,
                  loop=None,
                  hostname=None,
-                 port=None,
+                 port=8025,
                  ready_timeout=1.0,
-                 enable_SMTPUTF8=True,
+                 ssl_context=None,
                  config=None,
                  authenticator=None):
-        self.use_starttls = config.SMTPD_USE_STARTTLS
-        self.config = config
-
+        self.config = config or Config()
         self._messages = []
+        self._ssl_context = ssl_context
+
         handler = AuthMessage(messages=self._messages,
                               authenticator=authenticator)
 
-        __ssl_context = None
-        if config.SMTPD_USE_SSL or config.SMTPD_USE_TLS:
-            __ssl_context = self._get_ssl_context()
+        def context_or_none():
+            # Determines whether to return a sslContext or None to avoid a
+            # situation where both could be used. Prefers STARTTLS to TLS.
+            if (
+                (self.config.SMTPD_USE_TLS or
+                 self.config.SMTPD_USE_SSL) and
+                not self.config.SMTPD_USE_STARTTLS
+            ):
+                return ssl_context or self._get_ssl_context()
+            return None
 
         super().__init__(handler=handler,
                          hostname=hostname,
                          port=port,
+                         loop=loop,
                          ready_timeout=ready_timeout,
-                         enable_SMTPUTF8=enable_SMTPUTF8,
-                         ssl_context=__ssl_context)
+                         ssl_context=context_or_none())
 
-        self._starttls_context = None
-        if config.SMTPD_USE_STARTTLS:
-            certs = self._get_ssl_context()
-            self._starttls_context = certs
-
-        log.info(f"SMTPD running on {self.hostname}:{self.port}")
+        log.info(f"SMTPDFix running on {self.hostname}:{self.port}")
 
     def factory(self):
-        return AuthSMTP(handler=self.handler,
-                        require_starttls=self.use_starttls,
-                        tls_context=self._starttls_context)
+        auth_required = self.config.SMTPD_ENFORCE_AUTH
+        auth_require_tls = self.config.SMTPD_AUTH_REQUIRE_TLS
+        use_starttls = self.config.SMTPD_USE_STARTTLS
+        certs = self._get_ssl_context() if use_starttls else None
+
+        return SMTP(handler=self.handler,
+                    require_starttls=use_starttls,
+                    auth_required=auth_required,
+                    auth_require_tls=auth_require_tls,
+                    tls_context=certs)
 
     def _get_ssl_context(self):
+        if self._ssl_context is not None:
+            return self._ssl_context
+
         certs_path = Path(self.config.SMTPD_SSL_CERTS_PATH).resolve()
         cert_path = certs_path.joinpath("cert.pem")
         key_path = certs_path.joinpath("key.pem")
 
         for file_ in [cert_path, key_path]:
             if file_.is_file():
-                log.debug(f"Found {str(file_)}")
                 continue
             log.debug(f"File {str(file_)} not found")
             raise FileNotFoundError(errno.ENOENT,

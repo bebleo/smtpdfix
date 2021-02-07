@@ -33,6 +33,10 @@ class Config():
         return strtobool(os.getenv("SMTPD_ENFORCE_AUTH", "False"))
 
     @property
+    def SMTPD_AUTH_REQUIRE_TLS(self):
+        return strtobool(os.getenv("SMTPD_AUTH_REQUIRE_TLS", "True"))
+
+    @property
     def SMTPD_SSL_CERTS_PATH(self):
         return os.getenv("SMTPD_SSL_CERTS_PATH",
                          os.path.join(_current_dir, "certs"))

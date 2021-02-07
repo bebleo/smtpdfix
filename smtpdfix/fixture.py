@@ -3,9 +3,8 @@ import os
 
 import pytest
 
-from smtpdfix.certs import generate_certs
-
 from .authenticator import Authenticator
+from .certs import generate_certs
 from .config import Config
 from .controller import AuthController
 
@@ -51,6 +50,28 @@ class _Authenticator(Authenticator):
         return self.config.SMTPD_LOGIN_PASSWORD
 
 
+class SMTPDFix():
+    def __init__(self, hostname, port, config=None):
+        self.hostname = hostname
+        self.port = port
+        self.config = config or Config()
+
+    def __enter__(self):
+        self.controller = AuthController(
+            hostname=self.hostname,
+            port=int(self.port),
+            config=self.config,
+            authenticator=_Authenticator(self.config)
+        )
+        log.debug("Enter called on SMTPDFix")
+        self.controller.start()
+        return self.controller
+
+    def __exit__(self, type, value, traceback):
+        log.debug("Exit called on SMTPDFix")
+        self.controller.stop()
+
+
 @pytest.fixture
 def smtpd(tmp_path_factory):
     """A small SMTP server for use when testing applications that send email
@@ -71,12 +92,15 @@ def smtpd(tmp_path_factory):
         generate_certs(path)
         os.environ["SMTPD_SSL_CERTS_PATH"] = str(path.resolve())
 
-    fixture = AuthController(
-        hostname=config.SMTPD_HOST,
-        port=int(config.SMTPD_PORT),
-        config=config,
-        authenticator=_Authenticator(config)
-    )
-    fixture.start()
-    yield fixture
-    fixture.stop()
+    # fixture = AuthController(
+    #     hostname=config.SMTPD_HOST,
+    #     port=int(config.SMTPD_PORT),
+    #     config=config,
+    #     authenticator=_Authenticator(config)
+    # )
+    # fixture.start()
+    # yield fixture
+    # fixture.stop()
+
+    with SMTPDFix(config.SMTPD_HOST, config.SMTPD_PORT) as fixture:
+        yield fixture
