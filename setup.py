@@ -1,13 +1,12 @@
 from setuptools import find_packages, setup
 
-version = "0.2.8-dev"
+version = "0.2.8"
 
 with open("README.md", "rt", encoding="utf-8") as f:
     long_description = f.read()
 
 short_description = ("A mock SMTP server designed for use as a test fixture "
-                     "that implements encryption and authentication to mimic "
-                     "a real world server.")
+                     "that implements encryption and authentication.")
 
 setup(
     name="smtpdfix",

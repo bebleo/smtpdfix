@@ -1,8 +1,8 @@
 # Change Log
 
-## Unreleased Changes
+## Version 0.2.8
 
-Release date: unknown
+Release date: 2021-02-07
 
 - Adds an `SMTPDFix` class for use in `with` blocks.
 - The fixture now automatically loads as a plugin with pytest.
@@ -10,7 +10,7 @@ Release date: unknown
 - Command responses now standard with aiosmtpd with the exception of AUTH mechanisms.
 - Prefers StartTLS to TLS/SSL to avoid a case where if both where specified the SMTP server would report a fault.
 - Minor performance enhancements from removing the lazy object proxy and setting key size to 2048 bits instead of 4096.
-- Allows for late changes to StartTLS and TLS/SSL environment variables.
+- Allows for late changes to StartTLS environment variables.
 
 ## Version 0.2.7
 
