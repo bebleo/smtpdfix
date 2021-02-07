@@ -38,7 +38,8 @@ def test_HELO(smtpd):
         assert code == 250
 
 
-def test_AUTH_unknown_mechanism(mock_smtpd_use_starttls, smtpd):
+def test_AUTH_unknown_mechanism(monkeypatch, smtpd):
+    monkeypatch.setenv("SMTPD_USE_STARTTLS", "True")
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.starttls()
         client.ehlo()
@@ -46,7 +47,8 @@ def test_AUTH_unknown_mechanism(mock_smtpd_use_starttls, smtpd):
         assert code == 504
 
 
-def test_AUTH_LOGIN_abort(mock_smtpd_use_starttls, smtpd, user):
+def test_AUTH_LOGIN_abort(monkeypatch, smtpd, user):
+    monkeypatch.setenv("SMTPD_USE_STARTTLS", "True")
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.starttls()
         client.ehlo()
@@ -56,7 +58,8 @@ def test_AUTH_LOGIN_abort(mock_smtpd_use_starttls, smtpd, user):
         assert code == 501
 
 
-def test_AUTH_LOGIN_success(mock_smtpd_use_starttls, smtpd, user):
+def test_AUTH_LOGIN_success(monkeypatch, smtpd, user):
+    monkeypatch.setenv("SMTPD_USE_STARTTLS", "True")
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.starttls()
         client.ehlo()
@@ -67,7 +70,8 @@ def test_AUTH_LOGIN_success(mock_smtpd_use_starttls, smtpd, user):
         assert code == 235
 
 
-def test_AUTH_PLAIN(mock_smtpd_use_starttls, smtpd, user):
+def test_AUTH_PLAIN(monkeypatch, smtpd, user):
+    monkeypatch.setenv("SMTPD_USE_STARTTLS", "True")
     enc = encode(f"{user.username} {user.password}")
     cmd_text = f"PLAIN {enc}"
     with SMTP(smtpd.hostname, smtpd.port) as client:
@@ -86,7 +90,8 @@ def test_AUTH_PLAIN_no_encryption(smtpd, user):
         assert code == 538
 
 
-def test_AUTH_PLAIN_two_parts(mock_smtpd_use_starttls, smtpd, user):
+def test_AUTH_PLAIN_two_parts(monkeypatch, smtpd, user):
+    monkeypatch.setenv("SMTPD_USE_STARTTLS", "True")
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.starttls()
         client.ehlo()
@@ -97,7 +102,8 @@ def test_AUTH_PLAIN_two_parts(mock_smtpd_use_starttls, smtpd, user):
         assert code == 235
 
 
-def test_AUTH_PLAIN_failure(mock_smtpd_use_starttls, smtpd, user):
+def test_AUTH_PLAIN_failure(monkeypatch, smtpd, user):
+    monkeypatch.setenv("SMTPD_USE_STARTTLS", "True")
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.starttls()
         client.ehlo()
@@ -124,7 +130,8 @@ def test_alt_port(mock_smtpd_port, smtpd):
     assert smtpd.port == 5025
 
 
-def test_login(mock_smtpd_use_starttls, smtpd, user):
+def test_login(monkeypatch, smtpd, user):
+    monkeypatch.setenv("SMTPD_USE_STARTTLS", "True")
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.starttls()
         assert client.login(user.username, user.password)
