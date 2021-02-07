@@ -4,11 +4,11 @@
 
 A simple SMTP server based on `aiosmtpd` for use as a fixture with pytest that supports encryption and authentication. All this does is receives messages and appends them to a list as an `email.Message`.
 
-This fixture is intended to address use-cases where to test an application that sends an email it needs to be intercepted for subsequent processing. For example, sending an email with a code for password reset or two-factor authentication. This fixture allows a test to trigger the email being sent, ensure that it's sent, and read the code from the email.
+This fixture is intended to address use-cases where to test an application that sends an email it needs to be intercepted for subsequent processing. For example, sending an email with a code for password reset or two-factor authentication. This fixture allows a test to trigger the email being sent, ensure that it's sent, and read the email.
 
 ## Installing
 
-To install using pip, first upgrade to the latest version to avoid any issues installing `cryptography`:
+To install using pip, first upgrade pip to the latest version to avoid any issues installing `cryptography`:
 
 ```sh
 python -m pip install --upgrade pip
@@ -50,7 +50,7 @@ def test_sendmail(smtpd):
     to_addrs = "to.addr@example.org"
     msg = (f"From: {from_addr}\r\n"
            f"To: {to_addrs}\r\n"
-           f"\\Subject: Foo\r\n\r\n"
+           f"Subject: Foo\r\n\r\n"
            f"Foo bar")
 
     with SMTP(smtpd.hostname, smtpd.port) as client:
@@ -71,7 +71,7 @@ def test_sendmail(monkeypatch, smtpd):
     to_ = "to.addr@example.org"
     msg = (f"From: {from_}\r\n"
            f"To: {to_}\r\n"
-           f"Subject: Foo\r\n\r\n
+           f"Subject: Foo\r\n\r\n"
            f"Foo bar")
 
     with SMTP(smtpd.hostname, smtpd.port) as client:
@@ -164,6 +164,5 @@ flake8 .
 + Authenticating with LOGIN and PLAIN mechanisms fails over TLS/SSL, but works with STARTTLS. [Issue #10](https://github.com/bebleo/smtpdfix/issues/10)
 + Currently no support for termination through signals. [Issue #4](https://github.com/bebleo/smtpdfix/issues/4)
 + Key and certificate for encrypted communications must be called key.pem and cert.pem respectively. [Issue #15](https://github.com/bebleo/smtpdfix/issues/15)
-+ Is incompatible with [aiosmtpd](https://github.com/aio-libs/aiosmtpd) versions 1.2.3 or above. Version 0.2.7 of SMTPDFix requires that aiosmtpd version 1.2.2 or below, but previous versions do not include the constraint. [Issue #34](https://github.com/bebleo/smtpdfix/issues/34)
 
 ©2020-2021, Written with ☕ and ❤ in Montreal, QC
