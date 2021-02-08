@@ -87,8 +87,6 @@ The certificates included with the fixture will work for addresses localhost, lo
 
 ### Not as a fixture
 
-> Currently available only in the unreleased version.
-
 In some situations it may be desirable to not use the fixture which is initialized before entering the test. This can be accomplished by using the `SMTPDFix` class.
 
 ```python
