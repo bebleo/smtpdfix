@@ -1,6 +1,6 @@
 # Change Log
 
-## Unreleased
+## Version 0.2.9
 
 Release date: 2021-02-11
 
