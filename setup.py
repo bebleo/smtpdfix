@@ -30,8 +30,8 @@ setup(
     ],
     python_requires=">= 3.6",
     install_requires=[
-        "aiosmtpd >= 1.2.4",
-        "cryptography",
+        "aiosmtpd == 1.3.0",
+        "cryptography >= 3.4.4",
         "pytest",
         "python-dotenv",
     ],

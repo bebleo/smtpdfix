@@ -1,5 +1,12 @@
 # Change Log
 
+## Unreleased
+
+Release date: 2021-02-11
+
+- Now requires cryptography version 3.4.4 in response to security reports
+- Upgrades Aiosmtpd to version 1.3.0 or greater to take advantages of updated `AUTH` handling. Versions of aiosmtpd below 1.3.0 are no longer comaptible
+
 ## Version 0.2.8
 
 Release date: 2021-02-07

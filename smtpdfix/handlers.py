@@ -5,7 +5,7 @@ import secrets
 from datetime import datetime
 
 from aiosmtpd.handlers import Message
-from aiosmtpd.smtp import MISSING, auth_mechanism
+from aiosmtpd.smtp import MISSING, AuthResult, auth_mechanism
 
 from .config import Config
 
@@ -73,7 +73,9 @@ class AuthMessage(Message):
                         'md5')
         expected = mac.hexdigest().encode('ascii')
         if hmac.compare_digest(expected, received):
-            return user
+            log.debug("CRAM MD5 successful")
+            return AuthResult(success=True, handled=True, auth_data=user)
+        log.debug("CRAM MD5 unsuccessful, returning false")
         return MISSING
 
     async def auth_LOGIN(self, server, args):
@@ -99,7 +101,7 @@ class AuthMessage(Message):
 
         if self._authenticator.validate(username, password):
             log.info(f'AUTH LOGIN for {username} succeeded.')
-            return username
+            return AuthResult(success=True, handled=True, auth_data=username)
         log.info(f'AUTH LOGIN for {username} failed.')
         return MISSING
 
@@ -108,7 +110,7 @@ class AuthMessage(Message):
 
         response = args[1] if len(args) >= 2 else None
         if response is None:
-            response = await self._get_response(server, "334")
+            response = await self._get_response(server, "334 ")
         response = _base64_decode(response).rstrip()
         response = response.split()
         if len(response) < 2:
@@ -117,7 +119,7 @@ class AuthMessage(Message):
             len(response) >= 2 and
             self._authenticator.validate(response[0], response[-1])
         ):
-            return response[0]
+            return AuthResult(success=True, handled=True)
         return MISSING
 
     def handle_message(self, message):
