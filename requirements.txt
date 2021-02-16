@@ -1,5 +1,5 @@
 aiosmtpd==1.3.0
-atpublic==2.1.2
+atpublic==2.1.3
 attrs==20.3.0
 cffi==1.14.4
 cryptography==3.4.5
