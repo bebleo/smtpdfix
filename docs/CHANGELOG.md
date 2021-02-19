@@ -4,7 +4,7 @@
 
 Release date: unreleased
 
-- Allows aiosmtpd version 1.3.1.
+- Allows aiosmtpd version 1.3.2.
 
 
 ## Version 0.2.9
