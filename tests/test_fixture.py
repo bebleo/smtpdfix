@@ -198,7 +198,10 @@ def test_send_messaged_auth_not_complete(monkeypatch, smtpd, msg):
 def test_sendmail(smtpd):
     from_addr = "from.addr@example.org"
     to_addr = "to.addr@example.org"
-    msg = f"From: {from_addr}\r\nTo: {to_addr}\r\nSubject: Foo\r\n\r\nFoo bar"
+    msg = (f"From: {from_addr}\r\n"
+           f"To: {to_addr}\r\n"
+           f"Subject: Foo\r\n\r\n"
+           f"Foo bar")
 
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.sendmail(from_addr, to_addr, msg)
