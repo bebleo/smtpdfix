@@ -1,3 +1,5 @@
+import os
+from collections import namedtuple
 from email.message import EmailMessage
 
 import pytest
@@ -35,3 +37,11 @@ def msg():
     msg["To"] = "to.addr@example.org"
     msg.set_content("foo bar")
     return msg
+
+
+@pytest.fixture
+def user():
+    user = namedtuple("User", "username, password")
+    user.username = os.getenv("SMTPD_USERNAME", "user")
+    user.password = os.getenv("SMTPD_PASSWORD", "password")
+    return user

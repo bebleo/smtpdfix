@@ -1,5 +1,4 @@
 import os
-from collections import namedtuple
 from smtplib import (SMTP, SMTP_SSL, SMTPAuthenticationError,
                      SMTPResponseException)
 from unittest import mock
@@ -7,14 +6,6 @@ from unittest import mock
 import pytest
 
 from smtpdfix.handlers import _base64_encode as encode
-
-
-@pytest.fixture
-def user():
-    user = namedtuple("User", "username, password")
-    user.username = os.getenv("SMTPD_USERNAME", "user")
-    user.password = os.getenv("SMTPD_PASSWORD", "password")
-    return user
 
 
 def test_init(smtpd):
