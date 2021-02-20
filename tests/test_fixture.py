@@ -32,12 +32,6 @@ def test_init_ssl(mock_smtpd_use_ssl, smtpd, msg):
     assert len(smtpd.messages) == 1
 
 
-def test_HELO(smtpd):
-    with SMTP(smtpd.hostname, smtpd.port) as client:
-        code, _ = client.helo()
-        assert code == 250
-
-
 def test_AUTH_unknown_mechanism(monkeypatch, smtpd):
     monkeypatch.setenv("SMTPD_USE_STARTTLS", "True")
     with SMTP(smtpd.hostname, smtpd.port) as client:
