@@ -51,24 +51,22 @@ class _Authenticator(Authenticator):
 
 
 class SMTPDFix():
-    def __init__(self, hostname, port, config=None):
+    def __init__(self, hostname=None, port=8025, config=None):
         self.hostname = hostname
-        self.port = port
+        self.port = int(port) if port is not None else 8025
         self.config = config or Config()
 
     def __enter__(self):
         self.controller = AuthController(
             hostname=self.hostname,
-            port=int(self.port),
+            port=self.port,
             config=self.config,
             authenticator=_Authenticator(self.config)
         )
-        log.debug("Enter called on SMTPDFix")
         self.controller.start()
         return self.controller
 
     def __exit__(self, type, value, traceback):
-        log.debug("Exit called on SMTPDFix")
         self.controller.stop()
 
 
@@ -92,15 +90,6 @@ def smtpd(tmp_path_factory):
         generate_certs(path)
         os.environ["SMTPD_SSL_CERTS_PATH"] = str(path.resolve())
 
-    # fixture = AuthController(
-    #     hostname=config.SMTPD_HOST,
-    #     port=int(config.SMTPD_PORT),
-    #     config=config,
-    #     authenticator=_Authenticator(config)
-    # )
-    # fixture.start()
-    # yield fixture
-    # fixture.stop()
-
     with SMTPDFix(config.SMTPD_HOST, config.SMTPD_PORT) as fixture:
+        log.debug(f"Port is an {type(fixture.port)}")
         yield fixture

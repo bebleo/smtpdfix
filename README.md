@@ -11,8 +11,8 @@ This fixture is intended to address use-cases where to test an application that 
 To install using pip, first upgrade pip to the latest version to avoid any issues installing `cryptography`:
 
 ```sh
-python -m pip install --upgrade pip
-pip install smtpdfix
+$ python -m pip install --upgrade pip
+$ pip install smtpdfix
 ```
 
 Or, if you're using setuptools, it can be included in the `extras_require` argument of a `setup.py` file:
@@ -29,11 +29,11 @@ setup(
 )
 ```
 
-and then insalled with pip:
+and then installed with pip (-e assumes that you want your project to be editable):
 
 ```sh
-python -m pip install --upgrade pip
-pip install .[test]
+$ python -m pip install --upgrade pip
+$ pip install -e .[test]
 ```
 
 ## Using
@@ -41,7 +41,6 @@ pip install .[test]
 The `SMTPDFix` plugin, `smtpd`, automatically registers for use with pytest when you install smptdfix. To use it simply add to you test method.
 
 ```python
-# test_mail.py
 from smtplib import SMTP
 
 
@@ -81,7 +80,7 @@ def test_sendmail(monkeypatch, smtpd):
     assert len(smtpd.messages) == 1
 ```
 
-> Before version 0.2.7 the plugin did not automatically register and it was necessary to include it manually by adding `pytest_plugins = "smtpdfix"` to the module or conftest.py.
+> As of version 0.2.7 the plugin automatically registers and it is not necessary to include it manually by adding `pytest_plugins = "smtpdfix"` to the module or conftest.py.
 
 The certificates included with the fixture will work for addresses localhost, localhost.localdomain, 127.0.0.1, 0.0.0.1, ::1. If using other addresses the key (key.pem) and certificate (cert.pem) must be in a location specified under `SMTP_SSL_CERTS_PATH`.
 
@@ -118,7 +117,7 @@ Configuration can be handled through environment variables:
 
 Variable | Default | Description
 ---------|---------|------------
-`SMTPD_HOST` | `127.0.0.1` | The hostname that the fixture will listen on.
+`SMTPD_HOST` | `127.0.0.1` or `::1` | The hostname that the fixture will listen on.
 `SMTPD_PORT` | `8025` | The port that the fixture will listen on.
 `SMPTD_USERNAME` | `user` |  
 `SMTPD_PASSWORD` | `password` |  
@@ -134,31 +133,33 @@ Variable | Default | Description
 To develop and test smtpdfix you will need to install [pytest-asyncio](https://github.com/pytest-dev/pytest-asyncio) to run asynchronous tests, [isort](https://pycqa.github.io/isort/) to sort imports and [flake8](https://flake8.pycqa.org/en/latest/) to lint. To install in a virtual environment for development:
 
 ```sh
-python -m venv venv
-./venv/scripts/activate
-pip install -e .[dev]
+$ python -m venv venv
+$ ./venv/scripts/activate
+$ pip install -e .[dev]
 ```
 
 Code is tested using pytest:
 
 ```sh
-pytest -p no:smtpd --cov
+$ pytest -p no:smtpd --cov
 ```
 
 Before submitting a pull request with your changes you should ensure that all imports are sorted and that the code passes linting with flake8.
 
 ```sh
-# Sorting the imports
-isort .
+$ isort .
+$ flake8 .
+```
 
-# Linting the code
-flake8 .
+If you have upgraded or added any requirements you should add them manually along with the minimal constraints needed for the functionality. The requirements.txt file can then be updated by running:
+
+```sh
+$ bash ./utils/fix-requirements.sh .
 ```
 
 ## Known Issues
 
 + Firewalls may interfere with the operation of the smtp server.
-+ Using "localhost" as the hostname may resolve to ::1 which in some cases, depending on the system configuration, does not work.
 + Authenticating with LOGIN and PLAIN mechanisms fails over TLS/SSL, but works with STARTTLS. [Issue #10](https://github.com/bebleo/smtpdfix/issues/10)
 + Currently no support for termination through signals. [Issue #4](https://github.com/bebleo/smtpdfix/issues/4)
 + Key and certificate for encrypted communications must be called key.pem and cert.pem respectively. [Issue #15](https://github.com/bebleo/smtpdfix/issues/15)

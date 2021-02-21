@@ -97,7 +97,7 @@ async def test_config_file(request, msg):
     with SMTP(server.hostname, server.port) as client:
         client.send_message(msg)
 
-    assert server.port == "5025"
+    assert server.port == 5025
 
     os.environ.clear()
     os.environ.update(_original_env)

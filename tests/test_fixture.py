@@ -9,10 +9,7 @@ from smtpdfix.handlers import _base64_encode as encode
 
 
 def test_init(smtpd):
-    host = os.getenv("SMTPD_HOST", "127.0.0.1")
-    port = int(os.getenv("SMTPD_PORT", "8025"))
-    assert smtpd.hostname == host
-    assert smtpd.port == port
+    assert smtpd
     assert len(smtpd.messages) == 0
 
 

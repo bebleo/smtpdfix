@@ -26,8 +26,10 @@ class AuthController(Controller):
         self._messages = []
         self._ssl_context = ssl_context
 
-        handler = AuthMessage(messages=self._messages,
-                              authenticator=authenticator)
+        _handler = AuthMessage(messages=self._messages,
+                               authenticator=authenticator)
+        _hostname = hostname or self.config.SMTPD_HOST
+        _port = int(port or self.config.SMTPD_PORT or 8025)
 
         def context_or_none():
             # Determines whether to return a sslContext or None to avoid a
@@ -40,9 +42,9 @@ class AuthController(Controller):
                 return ssl_context or self._get_ssl_context()
             return None
 
-        super().__init__(handler=handler,
-                         hostname=hostname,
-                         port=port,
+        super().__init__(handler=_handler,
+                         hostname=_hostname,
+                         port=_port,
                          loop=loop,
                          ready_timeout=ready_timeout,
                          ssl_context=context_or_none())

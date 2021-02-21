@@ -14,11 +14,11 @@ class Config():
 
     @property
     def SMTPD_HOST(self):
-        return os.getenv("SMTPD_HOST", "127.0.0.1")
+        return os.getenv("SMTPD_HOST")
 
     @property
     def SMTPD_PORT(self):
-        return os.getenv("SMTPD_PORT", 8025)
+        return os.getenv("SMTPD_PORT")
 
     @property
     def SMTPD_LOGIN_NAME(self):
