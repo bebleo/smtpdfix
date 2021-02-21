@@ -7,7 +7,7 @@ if [[ -z $1 ]]; then path="."; else path=$1; fi
 if [[ ! -f "$path/setup.py" ]]
   then
     echo -e "\033[1;31mError: File setup.py not found at $path/\033[0m"
-    exit
+    exit 1
 fi
 
 echo -e "\033[1;36mGenerating requirements.txt file for core dependencies.\033[0m"
