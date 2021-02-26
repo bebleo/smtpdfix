@@ -4,7 +4,7 @@
 
 Release date: unreleased
 
-- Allows aiosmtpd version 1.3.2.
+- Updates requirements to aiosmtpd version 1.3.1 or above.
 - `SMPTDFix` can now be initialized without providing a hostname and port which defaults to localhost: 8025.
 - Better compatibility with AUTH in aiosmtpd by using `AuthResult` as return from AUTH mechanism handlers and the `Authenticator` for processing.
 
