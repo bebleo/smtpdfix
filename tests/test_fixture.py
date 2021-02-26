@@ -103,19 +103,6 @@ def test_AUTH_PLAIN_failure(monkeypatch, smtpd, user):
         assert resp == b"5.7.8 Authentication credentials invalid"
 
 
-def test_VRFY(smtpd, user):
-    with SMTP(smtpd.hostname, smtpd.port) as client:
-        code, resp = client.verify(user.username)
-        assert code == 252
-
-
-def test_VRFY_failure(smtpd):
-    with SMTP(smtpd.hostname, smtpd.port) as client:
-        client.help()
-        code, resp = client.verify("failure@example.org")
-        assert code == 502
-
-
 def test_alt_port(mock_smtpd_port, smtpd):
     assert smtpd.port == 5025
 

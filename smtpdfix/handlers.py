@@ -9,10 +9,6 @@ from aiosmtpd.smtp import MISSING, AuthResult, auth_mechanism
 
 log = logging.getLogger(__name__)
 
-AUTH_VERIFIED = ("252 Cannot VRFY user, but will accept message "
-                 "and attempt delivery")
-AUTH_UNVERIFIED = "502 Could not VRFY"
-
 
 class AuthMessage(Message):
     def __init__(self, messages):
@@ -89,11 +85,3 @@ class AuthMessage(Message):
 
     def handle_message(self, message):
         self._messages.append(message)
-
-    async def handle_VRFY(self, server, session, envelope, address):
-        # no handler for VRFY exists in aiosmtpd.handlers.Message so this must
-        # return a 252 status upon success.
-        if server._authenticator.verify(address):
-            return AUTH_VERIFIED
-
-        return ' '.join([AUTH_UNVERIFIED, address])

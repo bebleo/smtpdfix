@@ -27,24 +27,6 @@ class _Authenticator(Authenticator):
         log.debug(f"Validating username and password for {username} failed")
         return False
 
-    def verify(self, address):
-        """Method to verify that an address or username is correct.
-
-        Possible inputs are:
-        - a user name (e.g. "user")
-        - an email address (e.g. "user@example.org")
-
-        Should return a string in the form of "User <user@example.org>" if
-        the address provided is valid. If there the valid is invalid return
-        None. In this case we are returning a boolean true instead.
-        """
-        if (address == self.config.SMTPD_LOGIN_NAME):
-            log.debug(f"Verified that username {address} is a valid user")
-            return True
-
-        log.debug(f"Verified that {address} is not a valid user")
-        return None
-
     def get_password(self, username):
         log.debug(f"Password retrieved for {username}")
         return self.config.SMTPD_LOGIN_PASSWORD
