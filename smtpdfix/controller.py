@@ -25,9 +25,9 @@ class AuthController(Controller):
         self.config = config or Config()
         self._messages = []
         self._ssl_context = ssl_context
+        self._authenticator = authenticator
 
-        _handler = AuthMessage(messages=self._messages,
-                               authenticator=authenticator)
+        _handler = AuthMessage(messages=self._messages)
         _hostname = hostname or self.config.SMTPD_HOST
         _port = int(port or self.config.SMTPD_PORT or 8025)
 
@@ -47,7 +47,8 @@ class AuthController(Controller):
                          port=_port,
                          loop=loop,
                          ready_timeout=ready_timeout,
-                         ssl_context=context_or_none())
+                         ssl_context=context_or_none(),
+                         authenticator=self._authenticator)
 
         log.info(f"SMTPDFix running on {self.hostname}:{self.port}")
 
@@ -61,7 +62,8 @@ class AuthController(Controller):
                     require_starttls=use_starttls,
                     auth_required=auth_required,
                     auth_require_tls=auth_require_tls,
-                    tls_context=certs)
+                    tls_context=certs,
+                    authenticator=self._authenticator)
 
     def _get_ssl_context(self):
         if self._ssl_context is not None:

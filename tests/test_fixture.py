@@ -1,11 +1,17 @@
 import os
+from base64 import b64encode
 from smtplib import (SMTP, SMTP_SSL, SMTPAuthenticationError,
                      SMTPResponseException)
 from unittest import mock
 
 import pytest
 
-from smtpdfix.handlers import _base64_encode as encode
+
+def encode(message):
+    message_bytes = message.encode()
+    base64_bytes = b64encode(message_bytes)
+    base64_message = base64_bytes.decode()
+    return base64_message
 
 
 def test_init(smtpd):
@@ -42,13 +48,15 @@ def test_AUTH_LOGIN_abort(monkeypatch, smtpd, user):
 
 def test_AUTH_LOGIN_success(monkeypatch, smtpd, user):
     monkeypatch.setenv("SMTPD_USE_STARTTLS", "True")
+    username = encode(user.username)
+    password = encode(user.password)
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.starttls()
         client.ehlo()
-        code, resp = client.docmd("AUTH", f"LOGIN {encode(user.username)}")
+        code, resp = client.docmd("AUTH", f"LOGIN {username}")
         assert code == 334
         assert resp == bytes(encode("Password"), "ascii")
-        code, resp = client.docmd(f"{encode(user.password)}")
+        code, resp = client.docmd(f"{password}")
         assert code == 235
 
 
@@ -124,7 +132,7 @@ def test_login_fail(monkeypatch, smtpd, user):
     with pytest.raises(SMTPAuthenticationError) as ex:
         with SMTP(smtpd.hostname, smtpd.port) as client:
             client.starttls()
-            assert client.login(user.username, user.password[:0:-1])
+            client.login(user.username, user.password[:0:-1])
 
     assert ex.type is SMTPAuthenticationError
 
