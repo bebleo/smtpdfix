@@ -10,7 +10,7 @@ This fixture is intended to address use-cases where to test an application that 
 
 To install using pip, first upgrade pip to the latest version to avoid any issues installing `cryptography`:
 
-```sh
+```bash
 $ python -m pip install --upgrade pip
 $ pip install smtpdfix
 ```
@@ -31,7 +31,7 @@ setup(
 
 and then installed with pip (-e assumes that you want your project to be editable):
 
-```sh
+```bash
 $ python -m pip install --upgrade pip
 $ pip install -e .[test]
 ```
@@ -132,28 +132,34 @@ Variable | Default | Description
 
 To develop and test smtpdfix you will need to install [pytest-asyncio](https://github.com/pytest-dev/pytest-asyncio) to run asynchronous tests, [isort](https://pycqa.github.io/isort/) to sort imports and [flake8](https://flake8.pycqa.org/en/latest/) to lint. To install in a virtual environment for development:
 
-```sh
+```bash
 $ python -m venv venv
 $ ./venv/scripts/activate
 $ pip install -e .[dev]
 ```
 
-Code is tested using pytest:
+Code is tested using tox:
 
-```sh
+```bash
+$ tox
+```
+
+Quick tests can be handled by running pytest directly:
+
+```bash
 $ pytest -p no:smtpd --cov
 ```
 
 Before submitting a pull request with your changes you should ensure that all imports are sorted and that the code passes linting with flake8.
 
-```sh
+```bash
 $ isort .
 $ flake8 .
 ```
 
 If you have upgraded or added any requirements you should add them manually along with the minimal constraints needed for the functionality. The requirements.txt file can then be updated by running:
 
-```sh
+```bash
 $ bash ./utils/fix-requirements.sh .
 ```
 

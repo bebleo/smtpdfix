@@ -9,3 +9,5 @@ htmlcov/
 __pycache__/
 build/
 dist/
+.tox/
+.python-version

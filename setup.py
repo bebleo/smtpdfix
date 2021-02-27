@@ -42,6 +42,7 @@ setup(
             "pytest-asyncio",
             "pytest-cov",
             "pytest-timeout",
+            "tox",
         ],
     },
     entry_points={
