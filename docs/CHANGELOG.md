@@ -4,16 +4,18 @@
 
 Release date: unreleased
 
-**Potentially Breaking Changes:**
+**Includes Potentially Breaking Changes:**
 
 As of version 0.2.10 smtpdfix uses the standard aiosmtpd VRFY handler that will always return "252 Cannot VRFY user, but will accept message and attempt delivery" if an address is provided or "502 Cannot VRFY {address provided}" if not. Version 0.2.9. and earlier of smptdfix would return a 252 coded response if the username provided was verified and in all other cases a 502 error response.
-
-**Changes:**
 
 - Updates requirements to aiosmtpd version 1.3.1 or above.
 - `SMPTDFix` can now be initialized without providing a hostname and port which defaults to localhost: 8025.
 - Better compatibility with AUTH in aiosmtpd by using `AuthResult` as return from AUTH mechanism handlers and the `Authenticator` for processing.
 - Uses default aiosmtpd VRFY handling and responses.
+
+### Contributions
+
+- [John T. Wodder II (@jwodder)](https://github.com/jwodder) Fix errors and typos in README.md [PR #49](https://github.com/bebleo/smtpdfix/pull/49)
 
 ## Version 0.2.9
 

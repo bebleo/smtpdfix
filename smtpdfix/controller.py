@@ -70,8 +70,8 @@ class AuthController(Controller):
             return self._ssl_context
 
         certs_path = Path(self.config.SMTPD_SSL_CERTS_PATH).resolve()
-        cert_path = certs_path.joinpath("cert.pem")
-        key_path = certs_path.joinpath("key.pem")
+        cert_path = certs_path.joinpath("cert.pem").resolve()
+        key_path = certs_path.joinpath("key.pem").resolve()
 
         for file_ in [cert_path, key_path]:
             if file_.is_file():
@@ -82,7 +82,10 @@ class AuthController(Controller):
                                     file_)
 
         context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-        context.load_cert_chain(cert_path, key_path)
+        
+        # Becuase PYPY3 doesn't support Path objects when loading the
+        # certificate and keys we cast them to a string.
+        context.load_cert_chain(str(cert_path), keyfile=str(key_path))
 
         return context
 

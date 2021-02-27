@@ -46,11 +46,11 @@ async def test_custom_ssl_context(monkeypatch, request, tmp_path_factory, msg):
 
     _config = Config()
     certs_path = Path(_config.SMTPD_SSL_CERTS_PATH).resolve()
-    cert_path = certs_path.joinpath("cert.pem")
-    key_path = certs_path.joinpath("key.pem")
+    cert_path = certs_path.joinpath("cert.pem").resolve()
+    key_path = certs_path.joinpath("key.pem").resolve()
 
     _context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-    _context.load_cert_chain(cert_path, key_path)
+    _context.load_cert_chain(str(cert_path), str(key_path))
 
     server = AuthController(hostname=_config.SMTPD_HOST,
                             port=_config.SMTPD_PORT,
