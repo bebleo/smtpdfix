@@ -38,7 +38,7 @@ $ pip install -e .[test]
 
 ## Using
 
-The `SMTPDFix` plugin, `smtpd`, automatically registers for use with pytest when you install smptdfix. To use it simply add to you test method.
+The `SMTPDFix` plugin, `smtpd`, automatically registers for use with pytest when you install smtpdfix. To use it simply add to you test method.
 
 ```python
 from smtplib import SMTP
@@ -119,10 +119,10 @@ Variable | Default | Description
 ---------|---------|------------
 `SMTPD_HOST` | `127.0.0.1` or `::1` | The hostname that the fixture will listen on.
 `SMTPD_PORT` | `8025` | The port that the fixture will listen on.
-`SMPTD_USERNAME` | `user` |  
-`SMTPD_PASSWORD` | `password` |  
+`SMTPD_LOGIN_NAME` | `user` |  
+`SMTPD_LOGIN_PASSWORD` | `password` |  
 `SMTPD_USE_SSL` | `False` | Whether the fixture should use fixed TLS/SSL for transactions. If using smtplib requires that `SMTP_SSL` be used instead of `SMTP`.
-`SMTPD_USE_STARTTLS` | `False` | Whether the fixture should use StartTLS to encrypt the connections. If using `smptlib` requires that `SMTP.starttls()` is called before other commands are issued. Overrides `SMTPD_USE_SSL` as the preferred method for securing communications with the client.
+`SMTPD_USE_STARTTLS` | `False` | Whether the fixture should use StartTLS to encrypt the connections. If using `smtplib` requires that `SMTP.starttls()` is called before other commands are issued. Overrides `SMTPD_USE_SSL` as the preferred method for securing communications with the client.
 `SMTPD_ENFORCE_AUTH` | `False` | If set to true then the fixture refuses MAIL, RCPT, DATA commands until authentication is completed.
 `SMTPD_SSL_CERTS_PATH` | `\certs\` | The path to the key and certificate for encrypted communication.
 
