@@ -12,6 +12,7 @@ As of version 0.2.10 smtpdfix uses the standard aiosmtpd VRFY handler that will 
 - `SMPTDFix` can now be initialized without providing a hostname and port which defaults to localhost: 8025.
 - Better compatibility with AUTH in aiosmtpd by using `AuthResult` as return from AUTH mechanism handlers and the `Authenticator` for processing.
 - Uses default aiosmtpd VRFY handling and responses.
+- Adds unofficial support for PyPy3 in response to. [Issue #51](https://github.com/bebleo/smtpdfix/issues/51)
 
 ### Contributions
 
