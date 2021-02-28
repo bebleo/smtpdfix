@@ -13,6 +13,7 @@ As of version 0.2.10 smtpdfix uses the standard aiosmtpd VRFY handler that will 
 - Better compatibility with AUTH in aiosmtpd by using `AuthResult` as return from AUTH mechanism handlers and the `Authenticator` for processing.
 - Uses default aiosmtpd VRFY handling and responses.
 - Adds unofficial support for PyPy3 in response to. [Issue #51](https://github.com/bebleo/smtpdfix/issues/51)
+- Adds exception handling to prevent cases where unhandled exceptions cause the fixture to hang. Now returns a 421 error and closes the connection. [Issue #51](https://github.com/bebleo/smtpdfix/issues/51)
 
 ### Contributions
 

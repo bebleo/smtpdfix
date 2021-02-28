@@ -1,3 +1,4 @@
+import asyncio
 import errno
 import logging
 import ssl
@@ -30,6 +31,8 @@ class AuthController(Controller):
         _handler = AuthMessage(messages=self._messages)
         _hostname = hostname or self.config.SMTPD_HOST
         _port = int(port or self.config.SMTPD_PORT or 8025)
+        _loop = loop or asyncio.new_event_loop()
+        _loop.set_exception_handler(self.handle_exception)
 
         def context_or_none():
             # Determines whether to return a sslContext or None to avoid a
@@ -45,7 +48,7 @@ class AuthController(Controller):
         super().__init__(handler=_handler,
                          hostname=_hostname,
                          port=_port,
-                         loop=loop,
+                         loop=_loop,
                          ready_timeout=ready_timeout,
                          ssl_context=context_or_none(),
                          authenticator=self._authenticator)
@@ -82,12 +85,20 @@ class AuthController(Controller):
                                     file_)
 
         context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-        
+
         # Becuase PYPY3 doesn't support Path objects when loading the
         # certificate and keys we cast them to a string.
         context.load_cert_chain(str(cert_path), keyfile=str(key_path))
 
         return context
+
+    def handle_exception(self, loop, context):
+        loop.default_exception_handler(context)
+
+        status = "421 Service not available. Closing connection."
+        asyncio.ensure_future(self.smtpd.push(status))
+        self.smtpd.transport.close()
+        self.server.close()
 
     @property
     def messages(self):
