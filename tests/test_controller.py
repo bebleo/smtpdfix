@@ -101,3 +101,20 @@ async def test_config_file(request, msg):
 
     os.environ.clear()
     os.environ.update(_original_env)
+
+
+async def test_exception_handler(request, msg):
+    def raise_error():
+        raise Exception("Deliberately raised error.")
+
+    server = AuthController()
+    request.addfinalizer(server.stop)
+    server.start()
+
+    with pytest.raises(Exception):
+        with SMTP(server.hostname, server.port) as client:
+            client.ehlo()
+            server.loop.call_soon_threadsafe(raise_error)
+            client.send_message(msg)
+
+        assert len(server.messages) == 1
