@@ -169,5 +169,6 @@ $ bash ./utils/fix-requirements.sh .
 + Authenticating with LOGIN and PLAIN mechanisms fails over TLS/SSL, but works with STARTTLS. [Issue #10](https://github.com/bebleo/smtpdfix/issues/10)
 + Currently no support for termination through signals. [Issue #4](https://github.com/bebleo/smtpdfix/issues/4)
 + Key and certificate for encrypted communications must be called key.pem and cert.pem respectively. [Issue #15](https://github.com/bebleo/smtpdfix/issues/15)
++ Setting the environment variable for SMTPD_USE_TLS or SMTPD_USE_SSL after the fixture is initialized does not change the behaviour. [Issue #50](https://github.com/bebleo/smtpdfix/issues/50)
 
 ©2020-2021, Written with ☕ and ❤ in Montreal, QC
