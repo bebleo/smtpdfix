@@ -2,7 +2,7 @@
 
 ## Version 0.2.10
 
-Release date: unreleased
+Release date: 2021-03-05
 
 **Includes Potentially Breaking Changes:**
 
