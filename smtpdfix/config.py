@@ -14,11 +14,11 @@ class Config():
 
     @property
     def SMTPD_HOST(self):
-        return os.getenv("SMTPD_HOST", "127.0.0.1")
+        return os.getenv("SMTPD_HOST")
 
     @property
     def SMTPD_PORT(self):
-        return os.getenv("SMTPD_PORT", 8025)
+        return os.getenv("SMTPD_PORT")
 
     @property
     def SMTPD_LOGIN_NAME(self):
@@ -31,6 +31,10 @@ class Config():
     @property
     def SMTPD_ENFORCE_AUTH(self):
         return strtobool(os.getenv("SMTPD_ENFORCE_AUTH", "False"))
+
+    @property
+    def SMTPD_AUTH_REQUIRE_TLS(self):
+        return strtobool(os.getenv("SMTPD_AUTH_REQUIRE_TLS", "True"))
 
     @property
     def SMTPD_SSL_CERTS_PATH(self):

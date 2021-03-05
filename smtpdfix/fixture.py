@@ -3,9 +3,8 @@ import os
 
 import pytest
 
-from smtpdfix.certs import generate_certs
-
 from .authenticator import Authenticator
+from .certs import generate_certs
 from .config import Config
 from .controller import AuthController
 
@@ -28,27 +27,29 @@ class _Authenticator(Authenticator):
         log.debug(f"Validating username and password for {username} failed")
         return False
 
-    def verify(self, address):
-        """Method to verify that an address or username is correct.
-
-        Possible inputs are:
-        - a user name (e.g. "user")
-        - an email address (e.g. "user@example.org")
-
-        Should return a string in the form of "User <user@example.org>" if
-        the address provided is valid. If there the valid is invalid return
-        None. In this case we are returning a boolean true instead.
-        """
-        if (address == self.config.SMTPD_LOGIN_NAME):
-            log.debug(f"Verified that username {address} is a valid user")
-            return True
-
-        log.debug(f"Verified that {address} is not a valid user")
-        return None
-
     def get_password(self, username):
         log.debug(f"Password retrieved for {username}")
         return self.config.SMTPD_LOGIN_PASSWORD
+
+
+class SMTPDFix():
+    def __init__(self, hostname=None, port=8025, config=None):
+        self.hostname = hostname
+        self.port = int(port) if port is not None else 8025
+        self.config = config or Config()
+
+    def __enter__(self):
+        self.controller = AuthController(
+            hostname=self.hostname,
+            port=self.port,
+            config=self.config,
+            authenticator=_Authenticator(self.config)
+        )
+        self.controller.start()
+        return self.controller
+
+    def __exit__(self, type, value, traceback):
+        self.controller.stop()
 
 
 @pytest.fixture
@@ -71,12 +72,6 @@ def smtpd(tmp_path_factory):
         generate_certs(path)
         os.environ["SMTPD_SSL_CERTS_PATH"] = str(path.resolve())
 
-    fixture = AuthController(
-        hostname=config.SMTPD_HOST,
-        port=int(config.SMTPD_PORT),
-        config=config,
-        authenticator=_Authenticator(config)
-    )
-    fixture.start()
-    yield fixture
-    fixture.stop()
+    with SMTPDFix(config.SMTPD_HOST, config.SMTPD_PORT) as fixture:
+        log.debug(f"Port is an {type(fixture.port)}")
+        yield fixture

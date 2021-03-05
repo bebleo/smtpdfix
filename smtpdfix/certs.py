@@ -15,9 +15,11 @@ from cryptography.x509.oid import NameOID
 log = logging.getLogger(__name__)
 
 
-def generate_certs(path, days=3652):
+def generate_certs(path, days=3652, key_size=2048):
+    # DO NOT USE THIS FOR ANYTHING PRODUCTION RELATED, EVER!
     # Generate private key
-    key = rsa.generate_private_key(public_exponent=65537, key_size=4096)
+    # 2048 is the minimum that works as of 3.9
+    key = rsa.generate_private_key(public_exponent=65537, key_size=key_size)
     key_path = Path(path).joinpath("key.pem")
     with open(key_path, "wb") as f:
         f.write(key.private_bytes(

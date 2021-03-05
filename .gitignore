@@ -3,8 +3,11 @@
 venv/
 *.egg-info
 .coverage
+.coverage.*
 coverage*.xml
 htmlcov/
 __pycache__/
 build/
 dist/
+.tox/
+.python-version
