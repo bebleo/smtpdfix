@@ -128,6 +128,13 @@ Variable | Default | Description
 
 > If these variables are included in a `.env` file they'll be loaded automatically.
 
+## Alternatives
+
+Many libraries for send email have built-in means to test the mail and these are generally preferable to using this application. Some known solutions:
+
++ **fastapi-mail**: has a `record_messsages()` method to intercept the mail. Instructions on how to suppress the sending of mail and implement it can be seen at [https://sabuhish.github.io/fastapi-mail/example/#unittests-using-fastapimail](https://sabuhish.github.io/fastapi-mail/example/#unittests-using-fastapimail)
++ **flask=mail**: has a method to intercept the email for testing purposes. [Instructions](https://pythonhosted.org/Flask-Mail/#unit-tests-and-suppressing-emails)
+
 ## Developing
 
 To develop and test smtpdfix you will need to install [pytest-asyncio](https://github.com/pytest-dev/pytest-asyncio) to run asynchronous tests, [isort](https://pycqa.github.io/isort/) to sort imports and [flake8](https://flake8.pycqa.org/en/latest/) to lint. To install in a virtual environment for development:
