@@ -1,5 +1,11 @@
 # Change Log
 
+## Version 0.2.11 (Pending)
+
+Release date: Unreleased
+
+- Removes redundant certificate generation script and config from source.
+
 ## Version 0.2.10
 
 Release date: 2021-03-05
