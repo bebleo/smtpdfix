@@ -73,5 +73,4 @@ def smtpd(tmp_path_factory):
         os.environ["SMTPD_SSL_CERTS_PATH"] = str(path.resolve())
 
     with SMTPDFix(config.SMTPD_HOST, config.SMTPD_PORT) as fixture:
-        log.debug(f"Port is an {type(fixture.port)}")
         yield fixture
