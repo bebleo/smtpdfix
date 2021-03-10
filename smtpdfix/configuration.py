@@ -39,7 +39,7 @@ class Config():
         return self._smtpd_host
 
     @SMTPD_HOST.setter
-    def set_SMTPD_HOST(self, value):
+    def SMTPD_HOST(self, value):
         self._smtpd_host = value
         self.OnChanged()
 
@@ -48,7 +48,7 @@ class Config():
         return self._smtpd_port
 
     @SMTPD_PORT.setter
-    def set_SMTPD_PORT(self, value):
+    def SMTPD_PORT(self, value):
         self._smtpd_port = value
         self.OnChanged()
 
@@ -57,7 +57,7 @@ class Config():
         return self._smtpd_login_name
 
     @SMTPD_LOGIN_NAME.setter
-    def set_SMTPD_LOGIN_NAME(self, value):
+    def SMTPD_LOGIN_NAME(self, value):
         self._smtpd_login_name = value
         self.OnChanged()
 
@@ -66,7 +66,7 @@ class Config():
         return self._smtpd_login_password
 
     @SMTPD_LOGIN_PASSWORD.setter
-    def set_SMTPD_LOGIN_PASSWORD(self, value):
+    def SMTPD_LOGIN_PASSWORD(self, value):
         self._smtpd_login_password = value
         self.OnChanged()()
 
@@ -75,7 +75,7 @@ class Config():
         return self._smtpd_enforce_auth
 
     @SMTPD_ENFORCE_AUTH.setter
-    def set_SMTPD_ENFORCE_AUTH(self, value):
+    def SMTPD_ENFORCE_AUTH(self, value):
         self._smtpd_enforce_auth = value
         self.OnChanged()()
 
@@ -84,7 +84,7 @@ class Config():
         return self._smtpd_auth_require_tls
 
     @SMTPD_AUTH_REQUIRE_TLS.setter
-    def set_SMTPD_AUTH_REQUIRE_TLS(self, value):
+    def SMTPD_AUTH_REQUIRE_TLS(self, value):
         self._smtpd_auth_require_tls = value
         self.OnChanged()
 
@@ -93,7 +93,7 @@ class Config():
         return self._smtpd_ssl_certs_path
 
     @SMTPD_SSL_CERTS_PATH.setter
-    def set_SMTPD_SSL_CERTS_PATH(self, value):
+    def SMTPD_SSL_CERTS_PATH(self, value):
         self._smtpd_ssl_certs_path = value
         self.OnChanged()
 
@@ -102,7 +102,7 @@ class Config():
         return self._smtpd_use_starttls
 
     @SMTPD_USE_STARTTLS.setter
-    def set_SMTPD_USE_STARTTLS(self, value):
+    def SMTPD_USE_STARTTLS(self, value):
         self._smtpd_use_starttls = value
         self.OnChanged()
 
@@ -111,7 +111,7 @@ class Config():
         return self._smtpd_use_tls
 
     @SMTPD_USE_TLS.setter
-    def set_SMTPD_USE_TLS(self, value):
+    def SMTPD_USE_TLS(self, value):
         self._smtpd_use_tls = value
         self.OnChanged()
 
@@ -120,6 +120,6 @@ class Config():
         return self._smtpd_use_ssl
 
     @SMTPD_USE_SSL.setter
-    def set_SMTPD_USE_SSL(self, value):
+    def SMTPD_USE_SSL(self, value):
         self._smtpd_use_ssl = value
         self.OnChanged()
