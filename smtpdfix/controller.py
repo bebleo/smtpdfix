@@ -8,7 +8,7 @@ from pathlib import Path
 from aiosmtpd.controller import Controller
 from aiosmtpd.smtp import SMTP
 
-from .config import Config
+from .configuration import Config
 from .handlers import AuthMessage
 
 log = logging.getLogger(__name__)

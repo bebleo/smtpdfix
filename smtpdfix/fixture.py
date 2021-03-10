@@ -5,7 +5,7 @@ import pytest
 
 from .authenticator import Authenticator
 from .certs import generate_certs
-from .config import Config
+from .configuration import Config
 from .controller import AuthController
 
 log = logging.getLogger(__name__)
