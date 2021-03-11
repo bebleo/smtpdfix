@@ -65,12 +65,12 @@ def smtpd(tmp_path_factory):
                 code, resp = client.noop()
                 assert code == 250
     """
-    config = Config()
-
     if os.getenv("SMTPD_SSL_CERTS_PATH") is None:
         path = tmp_path_factory.mktemp("certs")
         generate_certs(path)
         os.environ["SMTPD_SSL_CERTS_PATH"] = str(path.resolve())
 
-    with SMTPDFix(config.SMTPD_HOST, config.SMTPD_PORT) as fixture:
+    config = Config()
+
+    with SMTPDFix(config.SMTPD_HOST, config.SMTPD_PORT, config) as fixture:
         yield fixture

@@ -1,10 +1,11 @@
-import os
 from base64 import b64encode
 from smtplib import (SMTP, SMTP_SSL, SMTPAuthenticationError,
                      SMTPResponseException)
 from unittest import mock
 
 import pytest
+
+from smtpdfix import Config
 
 
 def encode(message):
@@ -19,15 +20,16 @@ def test_init(smtpd):
     assert len(smtpd.messages) == 0
 
 
-def test_init_ssl(mock_smtpd_use_ssl, smtpd, msg):
+def test_init_ssl(smtpd, msg):
+    smtpd.config.SMTPD_USE_SSL = True
     with SMTP_SSL(smtpd.hostname, smtpd.port) as client:
         client.send_message(msg)
 
     assert len(smtpd.messages) == 1
 
 
-def test_AUTH_unknown_mechanism(monkeypatch, smtpd):
-    monkeypatch.setenv("SMTPD_USE_STARTTLS", "True")
+def test_AUTH_unknown_mechanism(smtpd):
+    smtpd.config.SMTPD_USE_STARTTLS = True
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.starttls()
         client.ehlo()
@@ -35,8 +37,8 @@ def test_AUTH_unknown_mechanism(monkeypatch, smtpd):
         assert code == 504
 
 
-def test_AUTH_LOGIN_abort(monkeypatch, smtpd, user):
-    monkeypatch.setenv("SMTPD_USE_STARTTLS", "True")
+def test_AUTH_LOGIN_abort(smtpd, user):
+    smtpd.config.SMTPD_USE_STARTTLS = True
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.starttls()
         client.ehlo()
@@ -46,8 +48,8 @@ def test_AUTH_LOGIN_abort(monkeypatch, smtpd, user):
         assert code == 501
 
 
-def test_AUTH_LOGIN_success(monkeypatch, smtpd, user):
-    monkeypatch.setenv("SMTPD_USE_STARTTLS", "True")
+def test_AUTH_LOGIN_success(smtpd, user):
+    smtpd.config.SMTPD_USE_STARTTLS = True
     username = encode(user.username)
     password = encode(user.password)
     with SMTP(smtpd.hostname, smtpd.port) as client:
@@ -60,8 +62,8 @@ def test_AUTH_LOGIN_success(monkeypatch, smtpd, user):
         assert code == 235
 
 
-def test_AUTH_PLAIN(monkeypatch, smtpd, user):
-    monkeypatch.setenv("SMTPD_USE_STARTTLS", "True")
+def test_AUTH_PLAIN(smtpd, user):
+    smtpd.config.SMTPD_USE_STARTTLS = True
     enc = encode(f"{user.username} {user.password}")
     cmd_text = f"PLAIN {enc}"
     with SMTP(smtpd.hostname, smtpd.port) as client:
@@ -80,8 +82,8 @@ def test_AUTH_PLAIN_no_encryption(smtpd, user):
         assert code == 538
 
 
-def test_AUTH_PLAIN_two_parts(monkeypatch, smtpd, user):
-    monkeypatch.setenv("SMTPD_USE_STARTTLS", "True")
+def test_AUTH_PLAIN_two_parts(smtpd, user):
+    smtpd.config.SMTPD_USE_STARTTLS = True
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.starttls()
         client.ehlo()
@@ -92,8 +94,8 @@ def test_AUTH_PLAIN_two_parts(monkeypatch, smtpd, user):
         assert code == 235
 
 
-def test_AUTH_PLAIN_failure(monkeypatch, smtpd, user):
-    monkeypatch.setenv("SMTPD_USE_STARTTLS", "True")
+def test_AUTH_PLAIN_failure(smtpd, user):
+    smtpd.config.SMTPD_USE_STARTTLS = True
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.starttls()
         client.ehlo()
@@ -103,19 +105,20 @@ def test_AUTH_PLAIN_failure(monkeypatch, smtpd, user):
         assert resp == b"5.7.8 Authentication credentials invalid"
 
 
-def test_alt_port(mock_smtpd_port, smtpd):
+def test_alt_port(smtpd):
+    smtpd.config.SMTPD_PORT = 5025
     assert smtpd.port == 5025
 
 
-def test_login(monkeypatch, smtpd, user):
-    monkeypatch.setenv("SMTPD_USE_STARTTLS", "True")
+def test_login(smtpd, user):
+    smtpd.config.SMTPD_USE_STARTTLS = True
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.starttls()
         assert client.login(user.username, user.password)
 
 
-def test_login_fail(monkeypatch, smtpd, user):
-    monkeypatch.setenv("SMTPD_USE_STARTTLS", "True")
+def test_login_fail(smtpd, user):
+    smtpd.config.SMTPD_USE_STARTTLS = True
     with pytest.raises(SMTPAuthenticationError) as ex:
         with SMTP(smtpd.hostname, smtpd.port) as client:
             client.starttls()
@@ -124,15 +127,15 @@ def test_login_fail(monkeypatch, smtpd, user):
     assert ex.type is SMTPAuthenticationError
 
 
-def test_login_no_tls(monkeypatch, smtpd, user):
-    monkeypatch.setenv("SMTPD_AUTH_REQUIRE_TLS", "False")
+def test_login_no_tls(smtpd, user):
+    smtpd.config.SMTPD_AUTH_REQUIRE_TLS = False
     with SMTP(smtpd.hostname, smtpd.port) as client:
         assert client.login(user.username, user.password)
 
 
-def test_login_already_done(monkeypatch, smtpd, user):
-    monkeypatch.setenv("SMTPD_ENFORCE_AUTH", "True")
-    monkeypatch.setenv("SMTPD_USE_STARTTLS", "True")
+def test_login_already_done(smtpd, user):
+    smtpd.config.SMTPD_ENFORCE_AUTH = True
+    smtpd.config.SMTPD_USE_STARTTLS = True
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.starttls()
         client.login(user.username, user.password)
@@ -154,8 +157,8 @@ def test_send_message(smtpd, msg):
     assert len(smtpd.messages) == 1
 
 
-def test_send_message_logged_in(monkeypatch, smtpd, user, msg):
-    monkeypatch.setenv("SMTPD_USE_STARTTLS", "True")
+def test_send_message_logged_in(smtpd, user, msg):
+    smtpd.config.SMTPD_USE_STARTTLS = True
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.starttls()
         client.login(user.username, user.password)
@@ -164,8 +167,8 @@ def test_send_message_logged_in(monkeypatch, smtpd, user, msg):
     assert len(smtpd.messages) == 1
 
 
-def test_send_messaged_auth_not_complete(monkeypatch, smtpd, msg):
-    monkeypatch.setenv("SMTPD_ENFORCE_AUTH", "True")
+def test_send_message_auth_not_complete(smtpd, msg):
+    smtpd.config.SMTPD_ENFORCE_AUTH = True
     with pytest.raises(SMTPResponseException) as er:
         with SMTP(smtpd.hostname, smtpd.port) as client:
             client.send_message(msg)
@@ -186,7 +189,7 @@ def test_sendmail(smtpd):
     assert len(smtpd.messages) == 1
 
 
-@mock.patch.dict(os.environ, {"SMTPD_ENFORCE_AUTH": "True"})
+@mock.patch.object(Config, "SMTPD_ENFORCE_AUTH", True)
 def test_mock_patch(smtpd):
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.helo()
@@ -196,7 +199,7 @@ def test_mock_patch(smtpd):
 
 
 def test_monkeypatch(monkeypatch, smtpd):
-    monkeypatch.setenv("SMTPD_ENFORCE_AUTH", "True")
+    monkeypatch.setattr(smtpd.config, "SMTPD_ENFORCE_AUTH", True)
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.helo()
         code, repl = client.docmd("DATA", "")
