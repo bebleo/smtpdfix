@@ -53,18 +53,23 @@ class AuthController(Controller):
                          ssl_context=context_or_none(),
                          authenticator=self._authenticator)
 
+        # The event handler for changes to the config goes here to prevent it
+        # firing when the obkect is initialized.
+        if hostname is not None:
+            self.config.SMTPD_HOST = hostname
+        if port is not None:
+            self.config.SMTPD_PORT = port
+        self.config.OnChanged += self.reset
         log.info(f"SMTPDFix running on {self.hostname}:{self.port}")
 
     def factory(self):
-        auth_required = self.config.SMTPD_ENFORCE_AUTH
-        auth_require_tls = self.config.SMTPD_AUTH_REQUIRE_TLS
         use_starttls = self.config.SMTPD_USE_STARTTLS
         certs = self._get_ssl_context() if use_starttls else None
 
         return SMTP(handler=self.handler,
-                    require_starttls=use_starttls,
-                    auth_required=auth_required,
-                    auth_require_tls=auth_require_tls,
+                    require_starttls=self.config.SMTPD_USE_STARTTLS,
+                    auth_required=self.config.SMTPD_ENFORCE_AUTH,
+                    auth_require_tls=self.config.SMTPD_AUTH_REQUIRE_TLS,
                     tls_context=certs,
                     authenticator=self._authenticator)
 
@@ -99,6 +104,29 @@ class AuthController(Controller):
         asyncio.ensure_future(self.smtpd.push(status))
         self.smtpd.transport.close()
         self.server.close()
+
+    def reset(self):
+        _running = False
+        try:
+            self.stop()
+            _running = True
+        except AssertionError:
+            pass
+
+        # Remove the handler to avoid recursion
+        self.config.OnChanged -= self.reset
+
+        self.__init__(
+            loop=None if self.loop.is_closed() else self.loop,
+            hostname=self.config.SMTPD_HOST,
+            port=self.config.SMTPD_PORT,
+            ssl_context=self._ssl_context,
+            config=self.config,
+            authenticator=self._authenticator
+        )
+
+        if _running:
+            self.start()
 
     @property
     def messages(self):

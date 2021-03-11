@@ -4,8 +4,8 @@ import pytest
 
 
 @pytest.mark.parametrize("cmd", ["DATA", "MAIL", "RCPT"])
-def test_auth_first(cmd, monkeypatch, smtpd):
-    monkeypatch.setenv("SMTPD_ENFORCE_AUTH", "True")
+def test_auth_first(cmd, smtpd):
+    smtpd.config.SMTPD_ENFORCE_AUTH = True
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.ehlo()
         code, repl = client.docmd(cmd, "")
