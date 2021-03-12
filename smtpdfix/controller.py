@@ -22,9 +22,10 @@ class AuthController(Controller):
                  ready_timeout=1.0,
                  ssl_context=None,
                  config=None,
-                 authenticator=None):
+                 authenticator=None,
+                 **kwargs):
         self.config = config or Config()
-        self._messages = []
+        self._messages = kwargs.get("messages") or []
         self._ssl_context = ssl_context
         self._authenticator = authenticator
 
@@ -105,7 +106,7 @@ class AuthController(Controller):
         self.smtpd.transport.close()
         self.server.close()
 
-    def reset(self):
+    def reset(self, persist_messages=True):
         _running = False
         try:
             self.stop()
@@ -122,7 +123,8 @@ class AuthController(Controller):
             port=self.config.SMTPD_PORT,
             ssl_context=self._ssl_context,
             config=self.config,
-            authenticator=self._authenticator
+            authenticator=self._authenticator,
+            messages=self._messages if persist_messages else None
         )
 
         if _running:
