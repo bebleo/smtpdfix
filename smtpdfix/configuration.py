@@ -10,7 +10,7 @@ load_dotenv()
 
 
 class Config():
-    def __init__(self, filename=None, override=False, *args, **kwargs):
+    def __init__(self, filename=None, override=False):
         if filename:
             load_dotenv(filename, override=override)
 
@@ -29,7 +29,7 @@ class Config():
         self._use_starttls = strtobool(os.getenv("SMTPD_USE_STARTTLS",
                                                  "False"))
         self._use_tls = strtobool(os.getenv("SMTPD_USE_TLS", "False"))
-        self._use_ssl = strtobool(os.getenv("SMTPD_USE_SSL", "False"))
+        self.use_ssl = strtobool(os.getenv("SMTPD_USE_SSL", "False"))
 
     def convert_to_bool(self, value):
         """Consistently convert to bool."""
@@ -38,91 +38,91 @@ class Config():
         return bool(value)
 
     @property
-    def SMTPD_HOST(self):
+    def host(self):
         return self._host
 
-    @SMTPD_HOST.setter
-    def SMTPD_HOST(self, value):
+    @host.setter
+    def host(self, value):
         self._host = value
         self.OnChanged()
 
     @property
-    def SMTPD_PORT(self):
+    def port(self):
         return self._port
 
-    @SMTPD_PORT.setter
-    def SMTPD_PORT(self, value):
+    @port.setter
+    def port(self, value):
         self._port = int(value)
         self.OnChanged()
 
     @property
-    def SMTPD_LOGIN_NAME(self):
+    def login_name(self):
         return self._login_name
 
-    @SMTPD_LOGIN_NAME.setter
-    def SMTPD_LOGIN_NAME(self, value):
+    @login_name.setter
+    def login_name(self, value):
         self._login_name = value
         self.OnChanged()
 
     @property
-    def SMTPD_LOGIN_PASSWORD(self):
+    def login_password(self):
         return self._login_password
 
-    @SMTPD_LOGIN_PASSWORD.setter
-    def SMTPD_LOGIN_PASSWORD(self, value):
+    @login_password.setter
+    def login_password(self, value):
         self._login_password = value
         self.OnChanged()
 
     @property
-    def SMTPD_ENFORCE_AUTH(self):
+    def enforce_auth(self):
         return self._enforce_auth
 
-    @SMTPD_ENFORCE_AUTH.setter
-    def SMTPD_ENFORCE_AUTH(self, value):
+    @enforce_auth.setter
+    def enforce_auth(self, value):
         self._enforce_auth = self.convert_to_bool(value)
         self.OnChanged()
 
     @property
-    def SMTPD_AUTH_REQUIRE_TLS(self):
+    def auth_require_tls(self):
         return self._auth_require_tls
 
-    @SMTPD_AUTH_REQUIRE_TLS.setter
-    def SMTPD_AUTH_REQUIRE_TLS(self, value):
+    @auth_require_tls.setter
+    def auth_require_tls(self, value):
         self._auth_require_tls = self.convert_to_bool(value)
         self.OnChanged()
 
     @property
-    def SMTPD_SSL_CERTS_PATH(self):
+    def ssl_certs_path(self):
         return self._ssl_certs_path
 
-    @SMTPD_SSL_CERTS_PATH.setter
-    def SMTPD_SSL_CERTS_PATH(self, value):
+    @ssl_certs_path.setter
+    def ssl_certs_path(self, value):
         self._ssl_certs_path = value
         self.OnChanged()
 
     @property
-    def SMTPD_USE_STARTTLS(self):
+    def use_starttls(self):
         return self._use_starttls
 
-    @SMTPD_USE_STARTTLS.setter
-    def SMTPD_USE_STARTTLS(self, value):
+    @use_starttls.setter
+    def use_starttls(self, value):
         self._use_starttls = self.convert_to_bool(value)
         self.OnChanged()
 
     @property
-    def SMTPD_USE_TLS(self):
+    def use_tls(self):
         return self._use_tls
 
-    @SMTPD_USE_TLS.setter
-    def SMTPD_USE_TLS(self, value):
+    @use_tls.setter
+    def use_tls(self, value):
         self._use_tls = self.convert_to_bool(value)
         self.OnChanged()
 
     @property
-    def SMTPD_USE_SSL(self):
+    def use_ssl(self):
         return self._use_ssl
 
-    @SMTPD_USE_SSL.setter
-    def SMTPD_USE_SSL(self, value):
+    @use_ssl.setter
+    def use_ssl(self, value):
         self._use_ssl = self.convert_to_bool(value)
         self.OnChanged()

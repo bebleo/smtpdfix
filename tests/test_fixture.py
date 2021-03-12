@@ -21,7 +21,7 @@ def test_init(smtpd):
 
 
 def test_init_ssl(smtpd, msg):
-    smtpd.config.SMTPD_USE_SSL = True
+    smtpd.config.use_ssl = True
     with SMTP_SSL(smtpd.hostname, smtpd.port) as client:
         client.send_message(msg)
 
@@ -29,7 +29,7 @@ def test_init_ssl(smtpd, msg):
 
 
 def test_AUTH_unknown_mechanism(smtpd):
-    smtpd.config.SMTPD_USE_STARTTLS = True
+    smtpd.config.use_starttls = True
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.starttls()
         client.ehlo()
@@ -38,7 +38,7 @@ def test_AUTH_unknown_mechanism(smtpd):
 
 
 def test_AUTH_LOGIN_abort(smtpd, user):
-    smtpd.config.SMTPD_USE_STARTTLS = True
+    smtpd.config.use_starttls = True
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.starttls()
         client.ehlo()
@@ -49,7 +49,7 @@ def test_AUTH_LOGIN_abort(smtpd, user):
 
 
 def test_AUTH_LOGIN_success(smtpd, user):
-    smtpd.config.SMTPD_USE_STARTTLS = True
+    smtpd.config.use_starttls = True
     username = encode(user.username)
     password = encode(user.password)
     with SMTP(smtpd.hostname, smtpd.port) as client:
@@ -63,7 +63,7 @@ def test_AUTH_LOGIN_success(smtpd, user):
 
 
 def test_AUTH_PLAIN(smtpd, user):
-    smtpd.config.SMTPD_USE_STARTTLS = True
+    smtpd.config.use_starttls = True
     enc = encode(f"{user.username} {user.password}")
     cmd_text = f"PLAIN {enc}"
     with SMTP(smtpd.hostname, smtpd.port) as client:
@@ -83,7 +83,7 @@ def test_AUTH_PLAIN_no_encryption(smtpd, user):
 
 
 def test_AUTH_PLAIN_two_parts(smtpd, user):
-    smtpd.config.SMTPD_USE_STARTTLS = True
+    smtpd.config.use_starttls = True
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.starttls()
         client.ehlo()
@@ -95,7 +95,7 @@ def test_AUTH_PLAIN_two_parts(smtpd, user):
 
 
 def test_AUTH_PLAIN_failure(smtpd, user):
-    smtpd.config.SMTPD_USE_STARTTLS = True
+    smtpd.config.use_starttls = True
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.starttls()
         client.ehlo()
@@ -106,19 +106,19 @@ def test_AUTH_PLAIN_failure(smtpd, user):
 
 
 def test_alt_port(smtpd):
-    smtpd.config.SMTPD_PORT = 5025
+    smtpd.config.port = 5025
     assert smtpd.port == 5025
 
 
 def test_login(smtpd, user):
-    smtpd.config.SMTPD_USE_STARTTLS = True
+    smtpd.config.use_starttls = True
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.starttls()
         assert client.login(user.username, user.password)
 
 
 def test_login_fail(smtpd, user):
-    smtpd.config.SMTPD_USE_STARTTLS = True
+    smtpd.config.use_starttls = True
     with pytest.raises(SMTPAuthenticationError) as ex:
         with SMTP(smtpd.hostname, smtpd.port) as client:
             client.starttls()
@@ -128,14 +128,14 @@ def test_login_fail(smtpd, user):
 
 
 def test_login_no_tls(smtpd, user):
-    smtpd.config.SMTPD_AUTH_REQUIRE_TLS = False
+    smtpd.config.auth_require_tls = False
     with SMTP(smtpd.hostname, smtpd.port) as client:
         assert client.login(user.username, user.password)
 
 
 def test_login_already_done(smtpd, user):
-    smtpd.config.SMTPD_ENFORCE_AUTH = True
-    smtpd.config.SMTPD_USE_STARTTLS = True
+    smtpd.config.enforce_auth = True
+    smtpd.config.use_starttls = True
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.starttls()
         client.login(user.username, user.password)
@@ -158,7 +158,7 @@ def test_send_message(smtpd, msg):
 
 
 def test_send_message_logged_in(smtpd, user, msg):
-    smtpd.config.SMTPD_USE_STARTTLS = True
+    smtpd.config.use_starttls = True
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.starttls()
         client.login(user.username, user.password)
@@ -168,7 +168,7 @@ def test_send_message_logged_in(smtpd, user, msg):
 
 
 def test_send_message_auth_not_complete(smtpd, msg):
-    smtpd.config.SMTPD_ENFORCE_AUTH = True
+    smtpd.config.enforce_auth = True
     with pytest.raises(SMTPResponseException) as er:
         with SMTP(smtpd.hostname, smtpd.port) as client:
             client.send_message(msg)
@@ -189,7 +189,7 @@ def test_sendmail(smtpd):
     assert len(smtpd.messages) == 1
 
 
-@mock.patch.object(Config, "SMTPD_ENFORCE_AUTH", True)
+@mock.patch.object(Config, "enforce_auth", True)
 def test_mock_patch(smtpd):
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.helo()
@@ -199,7 +199,7 @@ def test_mock_patch(smtpd):
 
 
 def test_monkeypatch(monkeypatch, smtpd):
-    monkeypatch.setattr(smtpd.config, "SMTPD_ENFORCE_AUTH", True)
+    monkeypatch.setattr(smtpd.config, "enforce_auth", True)
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.helo()
         code, repl = client.docmd("DATA", "")
