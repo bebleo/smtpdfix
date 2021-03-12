@@ -5,6 +5,9 @@
 Release date: Unreleased
 
 - Removes redundant certificate generation script and config from source.
+- Environment variables are now read only when initializing the fixture subsequent changes make no difference.
+- Changing any attribute in `SMTPDFIX.config` causes the server to reset itself to the latest config.
+- Messages are persisted by default when calling `reset`
 
 ## Version 0.2.10
 
