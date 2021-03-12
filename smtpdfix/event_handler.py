@@ -12,15 +12,9 @@ class EventHandler():
         return self
 
     def __isub__(self, handler):
-        try:
-            self._handlers.remove(handler)
-        except KeyError:
-            log.debug(f"Handler {handler} not found")
+        self._handlers.remove(handler)
         return self
 
     def __call__(self, *args, **kwargs):
         for handler in self._handlers:
             handler(*args, **kwargs)
-
-    def __len__(self):
-        return len(self._handlers)
