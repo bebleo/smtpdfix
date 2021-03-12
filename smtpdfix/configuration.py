@@ -17,7 +17,7 @@ class Config():
         self.OnChanged = EventHandler()
 
         self._host = os.getenv("SMTPD_HOST")
-        self._port = os.getenv("SMTPD_PORT")
+        self._port = int(os.getenv("SMTPD_PORT", 8025))
         self._login_name = os.getenv("SMTPD_LOGIN_NAME", "user")
         self._login_password = os.getenv("SMTPD_LOGIN_PASSWORD", "password")
         self._enforce_auth = strtobool(os.getenv("SMTPD_ENFORCE_AUTH",
@@ -30,6 +30,12 @@ class Config():
                                                  "False"))
         self._use_tls = strtobool(os.getenv("SMTPD_USE_TLS", "False"))
         self._use_ssl = strtobool(os.getenv("SMTPD_USE_SSL", "False"))
+
+    def convert_to_bool(self, value):
+        """Consistently convert to bool."""
+        if isinstance(value, str):
+            return bool(strtobool(value))
+        return bool(value)
 
     @property
     def SMTPD_HOST(self):
@@ -46,7 +52,7 @@ class Config():
 
     @SMTPD_PORT.setter
     def SMTPD_PORT(self, value):
-        self._port = value
+        self._port = int(value)
         self.OnChanged()
 
     @property
@@ -73,7 +79,7 @@ class Config():
 
     @SMTPD_ENFORCE_AUTH.setter
     def SMTPD_ENFORCE_AUTH(self, value):
-        self._enforce_auth = value
+        self._enforce_auth = self.convert_to_bool(value)
         self.OnChanged()
 
     @property
@@ -82,7 +88,7 @@ class Config():
 
     @SMTPD_AUTH_REQUIRE_TLS.setter
     def SMTPD_AUTH_REQUIRE_TLS(self, value):
-        self._auth_require_tls = value
+        self._auth_require_tls = self.convert_to_bool(value)
         self.OnChanged()
 
     @property
@@ -100,7 +106,7 @@ class Config():
 
     @SMTPD_USE_STARTTLS.setter
     def SMTPD_USE_STARTTLS(self, value):
-        self._use_starttls = value
+        self._use_starttls = self.convert_to_bool(value)
         self.OnChanged()
 
     @property
@@ -109,7 +115,7 @@ class Config():
 
     @SMTPD_USE_TLS.setter
     def SMTPD_USE_TLS(self, value):
-        self._use_tls = value
+        self._use_tls = self.convert_to_bool(value)
         self.OnChanged()
 
     @property
@@ -118,5 +124,5 @@ class Config():
 
     @SMTPD_USE_SSL.setter
     def SMTPD_USE_SSL(self, value):
-        self._use_ssl = value
+        self._use_ssl = self.convert_to_bool(value)
         self.OnChanged()
