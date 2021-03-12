@@ -17,8 +17,8 @@ class _Authenticator(Authenticator):
 
     def validate(self, username, password):
         if (
-            username == self.config.SMTPD_LOGIN_NAME and
-            password == self.config.SMTPD_LOGIN_PASSWORD
+            username == self.config.login_name and
+            password == self.config.login_password
         ):
             log.debug((f"Validating username and password for {username} "
                        "succeeded"))
@@ -29,7 +29,7 @@ class _Authenticator(Authenticator):
 
     def get_password(self, username):
         log.debug(f"Password retrieved for {username}")
-        return self.config.SMTPD_LOGIN_PASSWORD
+        return self.config.login_password
 
 
 class SMTPDFix():
@@ -72,5 +72,5 @@ def smtpd(tmp_path_factory):
 
     config = Config()
 
-    with SMTPDFix(config.SMTPD_HOST, config.SMTPD_PORT, config) as fixture:
+    with SMTPDFix(config.host, config.port, config) as fixture:
         yield fixture
