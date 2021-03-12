@@ -16,7 +16,7 @@ pytestmark = pytest.mark.asyncio
 
 
 async def test_missing_auth_handler(smtpd):
-    smtpd.config.SMTPD_AUTH_REQUIRE_TLS = False
+    smtpd.config.auth_require_tls = False
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.helo()
         code, resp = client.docmd("AUTH", "PSEUDOMECH")
@@ -24,7 +24,7 @@ async def test_missing_auth_handler(smtpd):
 
 
 async def test_use_starttls(smtpd, msg):
-    smtpd.config.SMTPD_USE_STARTTLS = True
+    smtpd.config.use_starttls = True
     with SMTP(smtpd.hostname, smtpd.port) as client:
         with pytest.raises(SMTPSenderRefused) as error:
             code, resp = client.send_message(msg)
@@ -39,19 +39,19 @@ async def test_custom_ssl_context(request, tmp_path_factory, msg):
         os.environ["SMTPD_SSL_CERTS_PATH"] = str(path.resolve())
 
     _config = Config()
-    certs_path = Path(_config.SMTPD_SSL_CERTS_PATH).resolve()
+    certs_path = Path(_config.ssl_certs_path).resolve()
     cert_path = certs_path.joinpath("cert.pem").resolve()
     key_path = certs_path.joinpath("key.pem").resolve()
 
     _context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
     _context.load_cert_chain(str(cert_path), str(key_path))
 
-    server = AuthController(hostname=_config.SMTPD_HOST,
-                            port=_config.SMTPD_PORT,
+    server = AuthController(hostname=_config.host,
+                            port=_config.port,
                             config=_config,
                             ssl_context=_context)
     request.addfinalizer(server.stop)
-    server.config.SMTPD_USE_STARTTLS = True
+    server.config.use_starttls = True
     server.start()
 
     with SMTP(server.hostname, server.port) as client:
@@ -64,11 +64,11 @@ async def test_custom_ssl_context(request, tmp_path_factory, msg):
 async def test_missing_certs(request, msg):
     with pytest.raises(FileNotFoundError) as error:
         _config = Config()
-        _config.SMTPD_USE_STARTTLS = True
-        _config.SMTPD_SSL_CERTS_PATH = "."
+        _config.use_starttls = True
+        _config.ssl_certs_path = "."
         _authenticator = _Authenticator(config=_config)
-        server = AuthController(hostname=_config.SMTPD_HOST,
-                                port=_config.SMTPD_PORT,
+        server = AuthController(hostname=_config.host,
+                                port=_config.port,
                                 config=_config,
                                 authenticator=_authenticator)
         request.addfinalizer(server.stop)
@@ -84,8 +84,8 @@ async def test_config_file(request, msg):
     _original_env = os.environ.copy()
     config_file = Path(__file__).parent.joinpath("assets/.test.env")
     _config = Config(filename=config_file, override=True)
-    server = AuthController(hostname=_config.SMTPD_HOST,
-                            port=_config.SMTPD_PORT,
+    server = AuthController(hostname=_config.host,
+                            port=_config.port,
                             config=_config)
     request.addfinalizer(server.stop)
     server.start()

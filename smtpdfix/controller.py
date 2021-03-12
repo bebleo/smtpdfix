@@ -30,8 +30,8 @@ class AuthController(Controller):
         self._authenticator = authenticator
 
         _handler = AuthMessage(messages=self._messages)
-        _hostname = hostname or self.config.SMTPD_HOST
-        _port = int(port or self.config.SMTPD_PORT)
+        _hostname = hostname or self.config.host
+        _port = int(port or self.config.port)
         _loop = loop or asyncio.new_event_loop()
         _loop.set_exception_handler(self.handle_exception)
 
@@ -39,9 +39,9 @@ class AuthController(Controller):
             # Determines whether to return a sslContext or None to avoid a
             # situation where both could be used. Prefers STARTTLS to TLS.
             if (
-                (self.config.SMTPD_USE_TLS or
-                 self.config.SMTPD_USE_SSL) and
-                not self.config.SMTPD_USE_STARTTLS
+                (self.config.use_tls or
+                 self.config.use_ssl) and
+                not self.config.use_starttls
             ):
                 return ssl_context or self._get_ssl_context()
             return None
@@ -57,20 +57,20 @@ class AuthController(Controller):
         # The event handler for changes to the config goes here to prevent it
         # firing when the obkect is initialized.
         if hostname is not None:
-            self.config.SMTPD_HOST = hostname
+            self.config.host = hostname
         if port is not None:
-            self.config.SMTPD_PORT = port
+            self.config.port = port
         self.config.OnChanged += self.reset
         log.info(f"SMTPDFix running on {self.hostname}:{self.port}")
 
     def factory(self):
-        use_starttls = self.config.SMTPD_USE_STARTTLS
+        use_starttls = self.config.use_starttls
         certs = self._get_ssl_context() if use_starttls else None
 
         return SMTP(handler=self.handler,
-                    require_starttls=self.config.SMTPD_USE_STARTTLS,
-                    auth_required=self.config.SMTPD_ENFORCE_AUTH,
-                    auth_require_tls=self.config.SMTPD_AUTH_REQUIRE_TLS,
+                    require_starttls=self.config.use_starttls,
+                    auth_required=self.config.enforce_auth,
+                    auth_require_tls=self.config.auth_require_tls,
                     tls_context=certs,
                     authenticator=self._authenticator)
 
@@ -78,7 +78,7 @@ class AuthController(Controller):
         if self._ssl_context is not None:
             return self._ssl_context
 
-        certs_path = Path(self.config.SMTPD_SSL_CERTS_PATH).resolve()
+        certs_path = Path(self.config.ssl_certs_path).resolve()
         cert_path = certs_path.joinpath("cert.pem").resolve()
         key_path = certs_path.joinpath("key.pem").resolve()
 
@@ -119,8 +119,8 @@ class AuthController(Controller):
 
         self.__init__(
             loop=None if self.loop.is_closed() else self.loop,
-            hostname=self.config.SMTPD_HOST,
-            port=self.config.SMTPD_PORT,
+            hostname=self.config.host,
+            port=self.config.port,
             ssl_context=self._ssl_context,
             config=self.config,
             authenticator=self._authenticator,

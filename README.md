@@ -64,8 +64,8 @@ To use STARTTLS:
 from smtplib import SMTP
 
 
-def test_sendmail(monkeypatch, smtpd):
-    monkeypatch.setenv('SMTPD_USE_STARTTLS', 'True')
+def test_sendmail(smtpd):
+    smptd.config.use_StartTLS
     from_ = "from.addr@example.org"
     to_ = "to.addr@example.org"
     msg = (f"From: {from_}\r\n"
@@ -113,18 +113,18 @@ def test_smtpdfix(msg):
 
 ### Configuration
 
-Configuration can be handled through environment variables:
+Configuration can be handled through the config attached to the fixture:
 
-Variable | Default | Description
----------|---------|------------
-`SMTPD_HOST` | `127.0.0.1` or `::1` | The hostname that the fixture will listen on.
-`SMTPD_PORT` | `8025` | The port that the fixture will listen on.
-`SMTPD_LOGIN_NAME` | `user` |  
-`SMTPD_LOGIN_PASSWORD` | `password` |  
-`SMTPD_USE_SSL` | `False` | Whether the fixture should use fixed TLS/SSL for transactions. If using smtplib requires that `SMTP_SSL` be used instead of `SMTP`.
-`SMTPD_USE_STARTTLS` | `False` | Whether the fixture should use StartTLS to encrypt the connections. If using `smtplib` requires that `SMTP.starttls()` is called before other commands are issued. Overrides `SMTPD_USE_SSL` as the preferred method for securing communications with the client.
-`SMTPD_ENFORCE_AUTH` | `False` | If set to true then the fixture refuses MAIL, RCPT, DATA commands until authentication is completed.
-`SMTPD_SSL_CERTS_PATH` | `\certs\` | The path to the key and certificate for encrypted communication.
+Property         | Variable               | Default              | Description
+-----------------|------------------------|----------------------|------------
+`host`           | `SMTPD_HOST`           | `127.0.0.1` or `::1` | The hostname that the fixture will listen on.
+`port`           | `SMTPD_PORT`           | `8025`               | The port that the fixture will listen on.
+`login_name`     | `SMTPD_LOGIN_NAME`     | `user`               |  
+`login_password` | `SMTPD_LOGIN_PASSWORD` | `password`           |  
+`use_tls`        | `SMTPD_USE_TLS`        | `False`              | Whether the fixture should use fixed TLS/SSL for transactions. If using smtplib requires that `SMTP_SSL` be used instead of `SMTP`.
+`use_starttls`   | `SMTPD_USE_STARTTLS`   | `False`              | Whether the fixture should use StartTLS to encrypt the connections. If using `smtplib` requires that `SMTP.starttls()` is called before other commands are issued. Overrides `use_tls` as the preferred method for securing communications with the client.
+`enforce_auth`   | `SMTPD_ENFORCE_AUTH`   | `False`              | If set to true then the fixture refuses MAIL, RCPT, DATA commands until authentication is completed.
+`ssl_certs_path` | `SMTPD_SSL_CERTS_PATH` | `.\certs\`           | The path to the key and certificate for encryption with SSL/TLS or StartTLS.
 
 > If these variables are included in a `.env` file they'll be loaded automatically.
 
@@ -133,7 +133,7 @@ Variable | Default | Description
 Many libraries for send email have built-in means to test the mail and these are generally preferable to using this application. Some known solutions:
 
 + **fastapi-mail**: has a `record_messsages()` method to intercept the mail. Instructions on how to suppress the sending of mail and implement it can be seen at [https://sabuhish.github.io/fastapi-mail/example/#unittests-using-fastapimail](https://sabuhish.github.io/fastapi-mail/example/#unittests-using-fastapimail)
-+ **flask=mail**: has a method to intercept the email for testing purposes. [Instructions](https://pythonhosted.org/Flask-Mail/#unit-tests-and-suppressing-emails)
++ **flask-mail**: has a to supporess sending the email for testing purposes. [Instructions](https://pythonhosted.org/Flask-Mail/#unit-tests-and-suppressing-emails)
 
 ## Developing
 
@@ -176,6 +176,5 @@ $ bash ./utils/fix-requirements.sh .
 + Authenticating with LOGIN and PLAIN mechanisms fails over TLS/SSL, but works with STARTTLS. [Issue #10](https://github.com/bebleo/smtpdfix/issues/10)
 + Currently no support for termination through signals. [Issue #4](https://github.com/bebleo/smtpdfix/issues/4)
 + Key and certificate for encrypted communications must be called key.pem and cert.pem respectively. [Issue #15](https://github.com/bebleo/smtpdfix/issues/15)
-+ Setting the environment variable for SMTPD_USE_TLS or SMTPD_USE_SSL after the fixture is initialized does not change the behaviour. [Issue #50](https://github.com/bebleo/smtpdfix/issues/50)
 
 ©2020-2021, Written with ☕ and ❤ in Montreal, QC
