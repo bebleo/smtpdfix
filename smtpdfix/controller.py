@@ -18,7 +18,7 @@ class AuthController(Controller):
     def __init__(self,
                  loop=None,
                  hostname=None,
-                 port=8025,
+                 port=None,
                  ready_timeout=1.0,
                  ssl_context=None,
                  config=None,
@@ -30,7 +30,7 @@ class AuthController(Controller):
 
         _handler = AuthMessage(messages=self._messages)
         _hostname = hostname or self.config.SMTPD_HOST
-        _port = int(port or self.config.SMTPD_PORT or 8025)
+        _port = int(port or self.config.SMTPD_PORT)
         _loop = loop or asyncio.new_event_loop()
         _loop.set_exception_handler(self.handle_exception)
 
