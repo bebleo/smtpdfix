@@ -27,6 +27,9 @@ class Config():
                                                      "True"))
         self._ssl_certs_path = os.getenv("SMTPD_SSL_CERTS_PATH",
                                          _current_dir.joinpath("certs"))
+        self._ssl_certificate_file = os.getenv("SMTPD_SSL_CERTIFICATE_FILE",
+                                               "./cert.pem")
+        self._ssl_key_file = os.getenv("SMTPD_SSL_KEY_FILE")
         self._use_starttls = strtobool(os.getenv("SMTPD_USE_STARTTLS",
                                                  "False"))
         self._use_ssl = (strtobool(os.getenv("SMTPD_USE_SSL", "False")) or
@@ -99,6 +102,24 @@ class Config():
     @ssl_certs_path.setter
     def ssl_certs_path(self, value):
         self._ssl_certs_path = value
+        self.OnChanged()
+
+    @property
+    def ssl_certificate_file(self):
+        return self._ssl_certificate_file
+
+    @ssl_certificate_file.setter
+    def ssl_certificate_file(self, value):
+        self._ssl_certificate_file = value
+        self.OnChanged()
+
+    @property
+    def ssl_key_file(self):
+        return self._ssl_key_file
+
+    @ssl_key_file.setter
+    def ssl_key_file(self, value):
+        self._ssl_key_file = value
         self.OnChanged()
 
     @property
