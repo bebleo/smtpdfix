@@ -121,7 +121,7 @@ Property         | Variable               | Default              | Description
 -----------------|------------------------|----------------------|------------
 `host`           | `SMTPD_HOST`           | `127.0.0.1` or `::1` | The hostname that the fixture will listen on.
 `port`           | `SMTPD_PORT`           | `8025`               | The port that the fixture will listen on.
-`login_name`     | `SMTPD_LOGIN_NAME`     | `user`               |  
+`login_username` | `SMTPD_LOGIN_NAME`     | `user`               |  
 `login_password` | `SMTPD_LOGIN_PASSWORD` | `password`           |  
 `use_tls`        | `SMTPD_USE_TLS`        | `False`              | Whether the fixture should use fixed TLS/SSL for transactions. If using smtplib requires that `SMTP_SSL` be used instead of `SMTP`.
 `use_starttls`   | `SMTPD_USE_STARTTLS`   | `False`              | Whether the fixture should use StartTLS to encrypt the connections. If using `smtplib` requires that `SMTP.starttls()` is called before other commands are issued. Overrides `use_tls` as the preferred method for securing communications with the client.

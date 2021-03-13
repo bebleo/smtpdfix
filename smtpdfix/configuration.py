@@ -19,7 +19,7 @@ class Config():
 
         self._host = os.getenv("SMTPD_HOST")
         self._port = int(os.getenv("SMTPD_PORT", 8025))
-        self._login_name = os.getenv("SMTPD_LOGIN_NAME", "user")
+        self._login_username = os.getenv("SMTPD_LOGIN_NAME", "user")
         self._login_password = os.getenv("SMTPD_LOGIN_PASSWORD", "password")
         self._enforce_auth = strtobool(os.getenv("SMTPD_ENFORCE_AUTH",
                                                  "False"))
@@ -57,12 +57,12 @@ class Config():
         self.OnChanged()
 
     @property
-    def login_name(self):
-        return self._login_name
+    def login_username(self):
+        return self._login_username
 
-    @login_name.setter
-    def login_name(self, value):
-        self._login_name = value
+    @login_username.setter
+    def login_username(self, value):
+        self._login_username = value
         self.OnChanged()
 
     @property
