@@ -29,7 +29,7 @@ class Config():
         self._use_starttls = strtobool(os.getenv("SMTPD_USE_STARTTLS",
                                                  "False"))
         self._use_tls = strtobool(os.getenv("SMTPD_USE_TLS", "False"))
-        self.use_ssl = strtobool(os.getenv("SMTPD_USE_SSL", "False"))
+        self._use_ssl = strtobool(os.getenv("SMTPD_USE_SSL", "False"))
 
     def convert_to_bool(self, value):
         """Consistently convert to bool."""
