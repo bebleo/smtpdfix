@@ -15,13 +15,14 @@ from cryptography.x509.oid import NameOID
 log = logging.getLogger(__name__)
 
 
-def generate_certs(path, days=3652, key_size=2048):
+def generate_certs(path, days=3652, key_size=2048, separate_key=False):
     # DO NOT USE THIS FOR ANYTHING PRODUCTION RELATED, EVER!
     # Generate private key
     # 2048 is the minimum that works as of 3.9
     key = rsa.generate_private_key(public_exponent=65537, key_size=key_size)
-    key_path = Path(path).joinpath("key.pem")
-    with open(key_path, "wb") as f:
+    key_file = "key.pem" if separate_key else "cert.pem"
+    key_path = Path(path).joinpath(key_file)
+    with open(key_path, "ab") as f:
         f.write(key.private_bytes(
             encoding=serialization.Encoding.PEM,
             encryption_algorithm=serialization.NoEncryption(),
@@ -58,6 +59,6 @@ def generate_certs(path, days=3652, key_size=2048):
             .sign(private_key=key, algorithm=hashes.SHA256()))
 
     cert_path = Path(path).joinpath("cert.pem")
-    with open(cert_path, "wb") as f:
+    with open(cert_path, "ab") as f:
         f.write(cert.public_bytes(serialization.Encoding.PEM))
     log.debug(f"Certificate written to {cert_path}")
