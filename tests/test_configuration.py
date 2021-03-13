@@ -20,6 +20,8 @@ values = [
     ("auth_require_tls", False, False, bool),
     ("auth_require_tls", "False", False, bool),
     ("ssl_certs_path", "./certs", "./certs", str),
+    ("ssl_certificate_file", "./certs/cert.pem", "./certs/cert.pem", str),
+    ("ssl_key_file", "./certs/key.pem", "./certs/key.pem", str),
     ("use_starttls", False, False, bool),
     ("use_tls", True, True, bool),
     ("use_ssl", True, True, bool),

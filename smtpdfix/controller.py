@@ -76,23 +76,33 @@ class AuthController(Controller):
             return self._ssl_context
 
         certs_path = Path(self.config.ssl_certs_path).resolve()
-        cert_path = certs_path.joinpath("cert.pem").resolve()
-        key_path = certs_path.joinpath("key.pem").resolve()
+        cert_file = Path(self.config.ssl_certificate_file)
+        key_file = self.config.ssl_key_file
 
-        for file_ in [cert_path, key_path]:
-            if file_.is_file():
-                continue
-            log.debug(f"File {str(file_)} not found")
+        def resolve_file(basepath, file_):
+            # Resolve the file paths in order:
+            #   1. return None if None
+            #   2. if the file exists return the path as string
+            #   3. try to combine basepath and the filename and if that exists
+            #      return as a string.
+            # NB: the paths are returned as strings becuase PYPY3 doesn't
+            # support paths in sslcontext.load_cert_chain()
+            if file_ is None:
+                return
+            elif Path(file_).is_file():
+                return str(Path(file_))
+            elif basepath.joinpath(file_).resolve().is_file():
+                return str(basepath.joinpath(file_).resolve())
+
             raise FileNotFoundError(errno.ENOENT,
                                     strerror(errno.ENOENT),
                                     file_)
 
+        cert_path = resolve_file(certs_path, cert_file)
+        key_path = resolve_file(certs_path, key_file)
+
         context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-
-        # Becuase PYPY3 doesn't support Path objects when loading the
-        # certificate and keys we cast them to a string.
-        context.load_cert_chain(str(cert_path), keyfile=str(key_path))
-
+        context.load_cert_chain(cert_path, keyfile=key_path)
         return context
 
     def handle_exception(self, loop, context):

@@ -2,7 +2,7 @@ import logging
 import os
 import ssl
 from pathlib import Path
-from smtplib import SMTP, SMTPSenderRefused
+from smtplib import SMTP, SMTP_SSL, SMTPSenderRefused
 
 import pytest
 
@@ -33,23 +33,16 @@ async def test_use_starttls(smtpd, msg):
 
 
 async def test_custom_ssl_context(request, tmp_path_factory, msg):
-    if os.getenv("SMTPD_SSL_CERTS_PATH") is None:
-        path = tmp_path_factory.mktemp("certs")
-        generate_certs(path)
-        os.environ["SMTPD_SSL_CERTS_PATH"] = str(path.resolve())
+    path = tmp_path_factory.mktemp("certs")
+    generate_certs(path, separate_key=True)
 
-    _config = Config()
-    certs_path = Path(_config.ssl_certs_path).resolve()
-    cert_path = certs_path.joinpath("cert.pem").resolve()
-    key_path = certs_path.joinpath("key.pem").resolve()
+    cert_path = path.joinpath("cert.pem").resolve()
+    key_path = path.joinpath("key.pem").resolve()
 
     _context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
     _context.load_cert_chain(str(cert_path), str(key_path))
 
-    server = AuthController(hostname=_config.host,
-                            port=_config.port,
-                            config=_config,
-                            ssl_context=_context)
+    server = AuthController(ssl_context=_context)
     request.addfinalizer(server.stop)
     server.config.use_starttls = True
     server.start()
@@ -78,6 +71,24 @@ async def test_missing_certs(request, msg):
             client.send_message(msg)
 
     assert error.type == FileNotFoundError
+
+
+async def test_custom_cert_and_key(request, tmp_path_factory, msg):
+    path = tmp_path_factory.mktemp("certs")
+    generate_certs(path, separate_key=True)
+    _config = Config()
+    _config.use_ssl = True
+    _config.ssl_certificate_file = path.joinpath("cert.pem")
+    _config.ssl_key_file = path.joinpath("key.pem")
+
+    server = AuthController(config=_config)
+    request.addfinalizer(server.stop)
+    server.start()
+
+    with SMTP_SSL(server.hostname, server.port) as client:
+        client.send_message(msg)
+
+    assert len(server.messages) == 1
 
 
 async def test_config_file(request, msg):
