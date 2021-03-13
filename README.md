@@ -4,7 +4,9 @@
 
 A simple SMTP server based on `aiosmtpd` for use as a fixture with pytest that supports encryption and authentication. All this does is receives messages and appends them to a list as an `email.Message`.
 
-This fixture is intended to address use-cases where to test an application that sends an email it needs to be intercepted for subsequent processing. For example, sending an email with a code for password reset or two-factor authentication. This fixture allows a test to trigger the email being sent, ensure that it's sent, and read the email.
+⚠ **Not intended for use with production systems.** ⚠
+
+This fixture is intended to address cases where to test an application that sends an email, it needs to be intercepted for subsequent processing. For example, sending an email with a code for password reset or two-factor authentication. This fixture allows a test to trigger the email being sent, ensure that it's sent, and read the email.
 
 ## Installing
 
@@ -65,7 +67,7 @@ from smtplib import SMTP
 
 
 def test_sendmail(smtpd):
-    smptd.config.use_StartTLS
+    smptd.config.use_starttls = True
     from_ = "from.addr@example.org"
     to_ = "to.addr@example.org"
     msg = (f"From: {from_}\r\n"
@@ -126,14 +128,14 @@ Property         | Variable               | Default              | Description
 `enforce_auth`   | `SMTPD_ENFORCE_AUTH`   | `False`              | If set to true then the fixture refuses MAIL, RCPT, DATA commands until authentication is completed.
 `ssl_certs_path` | `SMTPD_SSL_CERTS_PATH` | `.\certs\`           | The path to the key and certificate for encryption with SSL/TLS or StartTLS.
 
-> If these variables are included in a `.env` file they'll be loaded automatically.
+> If environment variables are included in a `.env` file they'll be loaded automatically.
 
 ## Alternatives
 
-Many libraries for send email have built-in means to test the mail and these are generally preferable to using this application. Some known solutions:
+Many libraries for sending email have built-in methods for testing and using these methods should generally be prefered over SMTPDFix. Some known solutions:
 
 + **fastapi-mail**: has a `record_messsages()` method to intercept the mail. Instructions on how to suppress the sending of mail and implement it can be seen at [https://sabuhish.github.io/fastapi-mail/example/#unittests-using-fastapimail](https://sabuhish.github.io/fastapi-mail/example/#unittests-using-fastapimail)
-+ **flask-mail**: has a to supporess sending the email for testing purposes. [Instructions](https://pythonhosted.org/Flask-Mail/#unit-tests-and-suppressing-emails)
++ **flask-mail**: has a method to suppress sending and capture the email for testing purposes. [Instructions](https://pythonhosted.org/Flask-Mail/#unit-tests-and-suppressing-emails)
 
 ## Developing
 
