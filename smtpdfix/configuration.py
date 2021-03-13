@@ -29,8 +29,8 @@ class Config():
                                          _current_dir.joinpath("certs"))
         self._use_starttls = strtobool(os.getenv("SMTPD_USE_STARTTLS",
                                                  "False"))
-        self._use_tls = strtobool(os.getenv("SMTPD_USE_TLS", "False"))
-        self._use_ssl = strtobool(os.getenv("SMTPD_USE_SSL", "False"))
+        self._use_ssl = (strtobool(os.getenv("SMTPD_USE_SSL", "False")) or
+                         strtobool(os.getenv("SMTPD_USE_TLS", "False")))
 
     def convert_to_bool(self, value):
         """Consistently convert to bool."""
@@ -108,15 +108,6 @@ class Config():
     @use_starttls.setter
     def use_starttls(self, value):
         self._use_starttls = self.convert_to_bool(value)
-        self.OnChanged()
-
-    @property
-    def use_tls(self):
-        return self._use_tls
-
-    @use_tls.setter
-    def use_tls(self, value):
-        self._use_tls = self.convert_to_bool(value)
         self.OnChanged()
 
     @property
