@@ -12,7 +12,7 @@ log = logging.getLogger(__name__)
 
 
 class _Authenticator(Authenticator):
-    def __init__(self, config=Config()):
+    def __init__(self, config):
         self.config = config
 
     def validate(self, username, password):
