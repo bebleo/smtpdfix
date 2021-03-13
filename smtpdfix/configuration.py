@@ -1,11 +1,12 @@
 import os
 from distutils.util import strtobool
+from pathlib import PurePath
 
 from dotenv import load_dotenv
 
 from smtpdfix.event_handler import EventHandler
 
-_current_dir = os.path.dirname(__file__)
+_current_dir = PurePath(__file__).parent
 load_dotenv()
 
 
@@ -25,7 +26,7 @@ class Config():
         self._auth_require_tls = strtobool(os.getenv("SMTPD_AUTH_REQUIRE_TLS",
                                                      "True"))
         self._ssl_certs_path = os.getenv("SMTPD_SSL_CERTS_PATH",
-                                         os.path.join(_current_dir, "certs"))
+                                         _current_dir.joinpath("certs"))
         self._use_starttls = strtobool(os.getenv("SMTPD_USE_STARTTLS",
                                                  "False"))
         self._use_tls = strtobool(os.getenv("SMTPD_USE_TLS", "False"))
