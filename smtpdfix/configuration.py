@@ -1,12 +1,12 @@
 import os
 from distutils.util import strtobool
-from pathlib import PurePath
+from pathlib import Path
 
 from dotenv import load_dotenv
 
 from smtpdfix.event_handler import EventHandler
 
-_current_dir = PurePath(__file__).parent
+_current_dir = Path(__file__).parent
 load_dotenv()
 
 
