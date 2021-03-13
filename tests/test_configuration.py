@@ -1,3 +1,4 @@
+import functools
 import os
 from pathlib import Path
 
@@ -23,6 +24,15 @@ values = [
     ("use_tls", True, True, bool),
     ("use_ssl", True, True, bool),
 ]
+props = [p for p in dir(Config) if isinstance(getattr(Config, p), property)]
+
+
+@pytest.fixture
+def handler():
+    class Handler():
+        def handle(self, result):
+            result.append(True)
+    yield Handler()
 
 
 def test_init():
@@ -41,9 +51,33 @@ def test_init_envfile():
     os.environ.update(original_env)
 
 
-@pytest.mark.parametrize("attr,value,expected,type", values)
+@pytest.mark.parametrize("attr, value, expected, type", values)
 def test_set_values(attr, value, expected, type):
     config = Config()
     setattr(config, attr, value)
     assert isinstance(getattr(config, attr), type)
     assert getattr(config, attr) == expected
+
+
+@pytest.mark.parametrize("prop", props)
+def test_event_handler_fires(prop, handler):
+    config = Config()
+    result = []
+    config.OnChanged += functools.partial(handler.handle, result)
+    setattr(config, prop, 1)
+    assert result.pop() is True
+
+
+def test_unset_event_handler(handler):
+    config = Config()
+    result = []
+    prop = "auth_require_tls"  # chosen because it is alphabetically mo. 1
+    func = functools.partial(handler.handle, result)
+
+    config.OnChanged += func
+    setattr(config, prop, 1)
+    assert result.pop() is True
+
+    config.OnChanged -= func
+    setattr(config, prop, 0)
+    assert not result
