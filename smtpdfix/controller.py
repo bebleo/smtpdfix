@@ -38,12 +38,9 @@ class AuthController(Controller):
         def context_or_none():
             # Determines whether to return a sslContext or None to avoid a
             # situation where both could be used. Prefers STARTTLS to TLS.
-            if (
-                (self.config.use_tls or
-                 self.config.use_ssl) and
-                not self.config.use_starttls
-            ):
+            if (self.config.use_ssl and not self.config.use_starttls):
                 return ssl_context or self._get_ssl_context()
+
             return None
 
         super().__init__(handler=_handler,

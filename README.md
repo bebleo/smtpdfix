@@ -123,7 +123,7 @@ Property         | Variable               | Default              | Description
 `port`           | `SMTPD_PORT`           | `8025`               | The port that the fixture will listen on.
 `login_username` | `SMTPD_LOGIN_NAME`     | `user`               |  
 `login_password` | `SMTPD_LOGIN_PASSWORD` | `password`           |  
-`use_tls`        | `SMTPD_USE_TLS`        | `False`              | Whether the fixture should use fixed TLS/SSL for transactions. If using smtplib requires that `SMTP_SSL` be used instead of `SMTP`.
+`use_ssl`        | `SMTPD_USE_SSL`        | `False`              | Whether the fixture should use fixed TLS/SSL for transactions. If using smtplib requires that `SMTP_SSL` be used instead of `SMTP`.
 `use_starttls`   | `SMTPD_USE_STARTTLS`   | `False`              | Whether the fixture should use StartTLS to encrypt the connections. If using `smtplib` requires that `SMTP.starttls()` is called before other commands are issued. Overrides `use_tls` as the preferred method for securing communications with the client.
 `enforce_auth`   | `SMTPD_ENFORCE_AUTH`   | `False`              | If set to true then the fixture refuses MAIL, RCPT, DATA commands until authentication is completed.
 `ssl_certs_path` | `SMTPD_SSL_CERTS_PATH` | `.\certs\`           | The path to the key and certificate for encryption with SSL/TLS or StartTLS.
