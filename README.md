@@ -115,7 +115,7 @@ def test_smtpdfix(msg):
 
 ### Configuration
 
-Configuration can be handled through the config attached to the fixture:
+Configuration is handled through properties in the `config` of the fixture and are initially set from environment variables:
 
 Property         | Variable               | Default              | Description
 -----------------|------------------------|----------------------|------------

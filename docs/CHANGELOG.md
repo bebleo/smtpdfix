@@ -1,8 +1,8 @@
 # Change Log
 
-## Unreleased Changes
+## Version 0.3.0
 
-Release date: TBD
+Release date: 2021-03-14
 
 - Removes redundant certificate generation script and config from source.
 - Environment variables are now read only when initializing the fixture subsequent changes make no difference.
