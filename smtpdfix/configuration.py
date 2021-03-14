@@ -4,7 +4,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-from smtpdfix.event_handler import EventHandler
+from .event_handler import EventHandler
 
 _current_dir = Path(__file__).parent
 load_dotenv()
