@@ -76,8 +76,7 @@ class AuthController(Controller):
             return self._ssl_context
 
         certs_path = Path(self.config.ssl_certs_path).resolve()
-        cert_file = Path(self.config.ssl_certificate_file)
-        key_file = self.config.ssl_key_file
+        cert_file, key_file = self.config.ssl_cert_files
 
         def resolve_file(basepath, file_):
             # Resolve the file paths in order:

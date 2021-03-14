@@ -126,9 +126,44 @@ Property         | Variable               | Default              | Description
 `use_ssl`        | `SMTPD_USE_SSL`        | `False`              | Whether the fixture should use fixed TLS/SSL for transactions. If using smtplib requires that `SMTP_SSL` be used instead of `SMTP`.
 `use_starttls`   | `SMTPD_USE_STARTTLS`   | `False`              | Whether the fixture should use StartTLS to encrypt the connections. If using `smtplib` requires that `SMTP.starttls()` is called before other commands are issued. Overrides `use_tls` as the preferred method for securing communications with the client.
 `enforce_auth`   | `SMTPD_ENFORCE_AUTH`   | `False`              | If set to true then the fixture refuses MAIL, RCPT, DATA commands until authentication is completed.
-`ssl_certs_path` | `SMTPD_SSL_CERTS_PATH` | `.\certs\`           | The path to the key and certificate for encryption with SSL/TLS or StartTLS.
+`ssl_cert_path`  | `SMTPD_SSL_CERTS_PATH` | `./certs/`           | The path to the key and certificate in PEM format for encryption with SSL/TLS or StartTLS.
+`ssl_cert_files` | `SMTPD_SSL_CERT_FILE` and `SMTPD_SSL_KEY_FILE` | `("cert.pem", None)` | A tuple of the path for the certificate file and key file in PEM format. See [Resolving certificate and key paths](#resolving-certificate-and-key-paths) for more details.
 
 > If environment variables are included in a `.env` file they'll be loaded automatically.
+
+### Resolving certificate and key paths
+
+In order to resolve the certificate and key paths for the SSL/TLS context SMTPDFix does the following:
+
+1. On initialization of a `smtpdfix.Config` the `ssl_cert_path` is set by the `SMTPD_SSL_CERTS_PATH` environment variable and the `ssl_cert_files` is set to a tuple of `(SMTPD_SSL_CERT_FILE and SMTPD_SSL_KEY_FILE)`. If the environment variables are not set the deafults are used.
+2. If an SSL Context is needed, when the `smptdfix.AuthController` is initialized it will attempt to find the files in the following sequence for both the certificate file and the key file:
+   1. If the value in `ssl_cert_files` is `None` then `None` is returned. Setting the key file to be none assumes that it has been included in the certificate file.
+   2. If the value in `ssl_cert_files` is a valid path to a file then this is returned.
+   3. `ssl_cert_path` and the value from `ssl_cert_files` are joined and returned if it a valid path to a file.
+   4. A `FileNotFoundError` is raised.
+
+An example, assuming that the certificate and key are written in a single PEM file located at `./certificates/localhost.cert.pem` would be:
+
+```python
+from smtplib import STMP_SSL
+
+
+def test_custom_certificate(smptd):
+    smtpd.config.ssl_cert_files = "./certificates/localhost.cert.pem"
+    smtpd.config.use_ssl = True
+
+    from_ = "from.addr@example.org"
+    to_ = "to.addr@example.org"
+    msg = (f"From: {from_}\r\n"
+           f"To: {to_}\r\n"
+           f"Subject: Foo\r\n\r\n"
+           f"Foo bar")
+
+    with SMTP_SSL(smtpd.hostname, smtpd.port) as client:
+        client.sendmail(from_addr, to_addrs, msg)
+
+    assert len(smtpd.messages) == 1
+```
 
 ## Alternatives
 
@@ -177,6 +212,5 @@ $ bash ./utils/fix-requirements.sh .
 + Firewalls may interfere with the operation of the smtp server.
 + Authenticating with LOGIN and PLAIN mechanisms fails over TLS/SSL, but works with STARTTLS. [Issue #10](https://github.com/bebleo/smtpdfix/issues/10)
 + Currently no support for termination through signals. [Issue #4](https://github.com/bebleo/smtpdfix/issues/4)
-+ Key and certificate for encrypted communications must be called key.pem and cert.pem respectively. [Issue #15](https://github.com/bebleo/smtpdfix/issues/15)
 
 ©2020-2021, Written with ☕ and ❤ in Montreal, QC
