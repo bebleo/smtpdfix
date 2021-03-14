@@ -33,7 +33,7 @@ class AuthController(Controller):
         _hostname = hostname or self.config.host
         _port = int(port or self.config.port)
         _loop = loop or asyncio.new_event_loop()
-        _loop.set_exception_handler(self.handle_exception)
+        _loop.set_exception_handler(self._handle_exception)
 
         def context_or_none():
             # Determines whether to return a sslContext or None to avoid a
@@ -104,7 +104,7 @@ class AuthController(Controller):
         context.load_cert_chain(cert_path, keyfile=key_path)
         return context
 
-    def handle_exception(self, loop, context):
+    def _handle_exception(self, loop, context):
         loop.default_exception_handler(context)
 
         status = "421 Service not available. Closing connection."
