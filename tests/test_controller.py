@@ -78,8 +78,8 @@ async def test_custom_cert_and_key(request, tmp_path_factory, msg):
     generate_certs(path, separate_key=True)
     _config = Config()
     _config.use_ssl = True
-    _config.ssl_certificate_file = path.joinpath("cert.pem")
-    _config.ssl_key_file = path.joinpath("key.pem")
+    _config.ssl_cert_files = (path.joinpath("cert.pem"),
+                              path.joinpath("key.pem"))
 
     server = AuthController(config=_config)
     request.addfinalizer(server.stop)

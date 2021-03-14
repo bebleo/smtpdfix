@@ -9,7 +9,7 @@ Release date: TBD
 - Changing any attribute in `SMTPDFIX.config` causes the server to reset itself to the latest config.
 - Messages are persisted by default when calling `reset`
 - By default SSL certificates and keys are now loaded by default from a single cert.pem file.
-- SSL Certificate and Key can be set separately to any filename by setting the environment variables `SMTPD_SSL_CERTIFICATE_FILE` and `SMTPD_SSL_KEY_FILE` or the `ssl_certificate_file` and `ssl_key_file` properties in the config. Fixes [Issue #15](https://github.com/bebleo/smtpdfix/issues/15)
+- SSL Certificate and Key can be set separately to any filename by setting the environment variables `SMTPD_SSL_CERTIFICATE_FILE` and `SMTPD_SSL_KEY_FILE` or the `ssl_cert_files` to a tuple of `(certfile, keyfile)` in the config. Fixes [Issue #15](https://github.com/bebleo/smtpdfix/issues/15)
 
 ## Version 0.2.10
 
