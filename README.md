@@ -148,7 +148,7 @@ An example, assuming that the certificate and key are written in a single PEM fi
 from smtplib import STMP_SSL
 
 
-def test_custom_certificate(smptd):
+def test_custom_certificate(smtpd):
     smtpd.config.ssl_cert_files = "./certificates/localhost.cert.pem"
     smtpd.config.use_ssl = True
 
