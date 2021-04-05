@@ -9,6 +9,6 @@ pluggy==0.13.1
 py==1.10.0
 pycparser==2.20
 pyparsing==2.4.7
-pytest==6.2.2
+pytest==6.2.3
 python-dotenv==0.16.0
 toml==0.10.2
