@@ -1,8 +1,9 @@
 import logging
 import os
 import ssl
+import sys
 from pathlib import Path
-from smtplib import SMTP, SMTP_SSL, SMTPSenderRefused
+from smtplib import SMTP, SMTP_SSL, SMTPSenderRefused, SMTPServerDisconnected
 
 import pytest
 
@@ -89,6 +90,34 @@ async def test_custom_cert_and_key(request, tmp_path_factory, msg):
         client.send_message(msg)
 
     assert len(server.messages) == 1
+
+
+@pytest.mark.skipif(sys.version_info < (3, 7),
+                    reason="Known issue with timeout of SSL handshake")
+async def test_TLS_not_supported(request, tmp_path_factory, msg, user):
+    path = tmp_path_factory.mktemp("certs")
+    generate_certs(path)
+    ssl_cert_files = str(path.joinpath("cert.pem"))
+    context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+    context.load_cert_chain(ssl_cert_files)
+
+    config = Config()
+    config.enforce_auth = True
+    config.use_ssl = True
+    server = AuthController(config=config,
+                            authenticator=_Authenticator(config),
+                            ssl_context=context)
+    request.addfinalizer(server.stop)
+    server.start()
+
+    with pytest.raises(SMTPServerDisconnected):
+        with SMTP(server.hostname, server.port) as client:
+            # this should return a 523 Encryption required error
+            # but instead it just hangs.
+            # client.login(user.username, user.password)
+            client.send_message(msg)
+            # client.close()
+            assert len(server.messages) == 1
 
 
 async def test_config_file(request, msg):
