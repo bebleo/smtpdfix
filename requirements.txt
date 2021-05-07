@@ -1,6 +1,6 @@
 aiosmtpd==1.4.2
 atpublic==2.3
-attrs==20.3.0
+attrs==21.2.0
 cffi==1.14.5
 cryptography==3.4.7
 iniconfig==1.1.1
@@ -9,6 +9,6 @@ pluggy==0.13.1
 py==1.10.0
 pycparser==2.20
 pyparsing==2.4.7
-pytest==6.2.3
-python-dotenv==0.17.0
+pytest==6.2.4
+python-dotenv==0.17.1
 toml==0.10.2
