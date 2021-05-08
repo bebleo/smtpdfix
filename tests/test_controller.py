@@ -93,7 +93,7 @@ async def test_custom_cert_and_key(request, tmp_path_factory, msg):
 
 
 @pytest.mark.skipif(sys.version_info < (3, 7),
-                    reason="Known issue with timeout of SSL handshake")
+                    reason="No timeout of SSL handshake possible")
 async def test_TLS_not_supported(request, tmp_path_factory, msg, user):
     path = tmp_path_factory.mktemp("certs")
     generate_certs(path)
@@ -113,10 +113,10 @@ async def test_TLS_not_supported(request, tmp_path_factory, msg, user):
     with pytest.raises(SMTPServerDisconnected):
         with SMTP(server.hostname, server.port) as client:
             # this should return a 523 Encryption required error
-            # but instead it just hangs.
-            # client.login(user.username, user.password)
+            # but instead returns an SMTPServerDisconnected Error on
+            # Python 3.7 or later.
+            # Python 3.6 just hangs without timing out.
             client.send_message(msg)
-            # client.close()
             assert len(server.messages) == 1
 
 
