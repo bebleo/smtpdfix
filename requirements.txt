@@ -10,5 +10,5 @@ py==1.10.0
 pycparser==2.20
 pyparsing==2.4.7
 pytest==6.2.4
-python-dotenv==0.17.1
+python-dotenv==0.18.0
 toml==0.10.2
