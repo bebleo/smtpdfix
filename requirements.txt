@@ -4,7 +4,7 @@ attrs==21.2.0
 cffi==1.14.5
 cryptography==3.4.7
 iniconfig==1.1.1
-packaging==20.9
+packaging==21.0
 pluggy==0.13.1
 py==1.10.0
 pycparser==2.20
