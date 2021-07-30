@@ -24,7 +24,7 @@ class AuthController(Controller):
                  loop=None,
                  hostname=None,
                  port=None,
-                 ready_timeout=1.0,
+                 ready_timeout=None,
                  ssl_context=None,
                  config=None,
                  authenticator=None,
@@ -37,6 +37,7 @@ class AuthController(Controller):
         _handler = AuthMessage(messages=self._messages)
         _hostname = hostname or self.config.host
         _port = int(port or self.config.port)
+        _ready_timeout = float(ready_timeout or self.config.ready_timeout)
         _loop = loop or asyncio.new_event_loop()
         _loop.set_exception_handler(self._handle_exception)
 
@@ -52,7 +53,7 @@ class AuthController(Controller):
                          hostname=_hostname,
                          port=_port,
                          loop=_loop,
-                         ready_timeout=ready_timeout,
+                         ready_timeout=_ready_timeout,
                          ssl_context=context_or_none(),
                          authenticator=self._authenticator,
                          **kwargs)

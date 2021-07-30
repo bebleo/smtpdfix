@@ -19,6 +19,7 @@ class Config():
 
         self._host = os.getenv("SMTPD_HOST")
         self._port = int(os.getenv("SMTPD_PORT", 8025))
+        self._ready_timeout = float(os.getenv("SMTPD_READY_TIMEOUT", 1.0))
         self._login_username = os.getenv("SMTPD_LOGIN_NAME", "user")
         self._login_password = os.getenv("SMTPD_LOGIN_PASSWORD", "password")
         self._enforce_auth = strtobool(os.getenv("SMTPD_ENFORCE_AUTH",
@@ -57,6 +58,15 @@ class Config():
     @port.setter
     def port(self, value):
         self._port = int(value)
+        self.OnChanged()
+
+    @property
+    def ready_timeout(self):
+        return self._ready_timeout
+
+    @ready_timeout.setter
+    def ready_timeout(self, value):
+        self._ready_timeout = float(value)
         self.OnChanged()
 
     @property

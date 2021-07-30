@@ -10,6 +10,8 @@ values = [
     ("host", "mail.localhost", "mail.localhost", str),
     ("port", 5025, 5025, int),
     ("port", "5025", 5025, int),
+    ("ready_timeout", 2.5, 2.5, float),
+    ("ready_timeout", "2.5", 2.5, float),
     ("login_name", "name", "name", str),
     ("login_password", "word", "word", str),
     ("enforce_auth", "True", True, bool),
