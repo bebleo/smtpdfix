@@ -121,6 +121,7 @@ Property         | Variable               | Default              | Description
 -----------------|------------------------|----------------------|------------
 `host`           | `SMTPD_HOST`           | `127.0.0.1` or `::1` | The hostname that the fixture will listen on.
 `port`           | `SMTPD_PORT`           | `8025`               | The port that the fixture will listen on.
+`ready_timeout`  | `SMTPD_READY_TIMEOUT`  | `5.0`                | The seconds the server will wait to start before raising a `TimeoutError`.
 `login_username` | `SMTPD_LOGIN_NAME`     | `user`               |  
 `login_password` | `SMTPD_LOGIN_PASSWORD` | `password`           |  
 `use_ssl`        | `SMTPD_USE_SSL`        | `False`              | Whether the fixture should use fixed TLS/SSL for transactions. If using smtplib requires that `SMTP_SSL` be used instead of `SMTP`.
