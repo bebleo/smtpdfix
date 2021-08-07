@@ -28,7 +28,7 @@ def generate_certs(path, days=3652, key_size=2048, separate_key=False):
             encryption_algorithm=serialization.NoEncryption(),
             format=serialization.PrivateFormat.TraditionalOpenSSL
         ))
-    log.debug(f"Private key written to {key_path}")
+    log.debug("Private key generated")
 
     # Generate public certificate
     hostname = socket.gethostname()
@@ -61,4 +61,4 @@ def generate_certs(path, days=3652, key_size=2048, separate_key=False):
     cert_path = Path(path).joinpath("cert.pem")
     with open(cert_path, "ab") as f:
         f.write(cert.public_bytes(serialization.Encoding.PEM))
-    log.debug(f"Certificate written to {cert_path}")
+    log.debug("Certificate generated")

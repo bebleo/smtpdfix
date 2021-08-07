@@ -34,9 +34,9 @@ class AuthMessage(Message):
                         "md5")
         expected = mac.hexdigest().encode()
         if hmac.compare_digest(expected, received):
-            log.debug("CRAM MD5 successful")
+            log.debug("AUTH CARM-MD5 succeeded")
             return AuthResult(success=True, handled=True, auth_data=user)
-        log.debug("CRAM MD5 unsuccessful, returning false")
+        log.debug("AUTH CRAM-MD5 failed")
         return AuthResult(success=False, handled=False)
 
     async def auth_LOGIN(self, server, args):
@@ -59,9 +59,9 @@ class AuthMessage(Message):
         password = login[1]
 
         if server._authenticator.validate(username, password):
-            log.info(f"AUTH LOGIN for {username} succeeded.")
+            log.info("AUTH LOGIN succeeded.")
             return AuthResult(success=True, handled=True, auth_data=username)
-        log.info(f"AUTH LOGIN for {username} failed.")
+        log.info("AUTH LOGIN failed.")
         return AuthResult(success=False, handled=False)
 
     async def auth_PLAIN(self, server, args):
@@ -80,7 +80,10 @@ class AuthMessage(Message):
             len(response) >= 2 and
             server._authenticator.validate(response[0], response[-1])
         ):
+            log.debug("AUTH PLAIN succeeded")
             return AuthResult(success=True, handled=True)
+
+        log.debug("AUTH PLAIN failed")
         return AuthResult(success=False, handled=False)
 
     def handle_message(self, message):
