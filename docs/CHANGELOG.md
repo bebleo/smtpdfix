@@ -1,10 +1,10 @@
 # Change Log
 
-## Unreleased Changes
+## Version 0.3.1
 
-Release date: TBD
+Release date: 2021-08-07
 
-- Adds SSL handshake timeout with a default value of 5 seconds to prevent cases where clients don't support opportunistic encryption, but the server is configured to require it. **This works only with Python 3.7 and later.**
+- Adds SSL handshake timeout with a default value of 5 seconds to shorten the timeout in cases where clients don't support opportunistic encryption, but the server is configured to require it. **This works only with Python 3.7 and later.**
 - Modifies required version of smtpdfix to be between 1.3.1 and 1.4.2 to prevent breaking changes with ssl_handshake_timeout.
 - Moves metadata from `setup()` in setup.py to setup.cfg.
 - Adds `ready_timeout` to the configutration and and environment variable `SMTPD_READY_TIMEOUT` to allow for the timeout to be customized.
