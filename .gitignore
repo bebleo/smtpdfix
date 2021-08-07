@@ -11,3 +11,4 @@ build/
 dist/
 .tox/
 .python-version
+.pypirc
