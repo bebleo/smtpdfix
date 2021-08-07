@@ -20,15 +20,13 @@ class _Authenticator(Authenticator):
             username == self.config.login_username and
             password == self.config.login_password
         ):
-            log.debug((f"Validating username and password for {username} "
-                       "succeeded"))
+            log.debug(("Validating username and password for succeeded"))
             return True
 
-        log.debug(f"Validating username and password for {username} failed")
+        log.debug("Validating username and password failed")
         return False
 
     def get_password(self, username):
-        log.debug(f"Password retrieved for {username}")
         return self.config.login_password
 
 
