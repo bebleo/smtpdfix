@@ -70,7 +70,5 @@ def smtpd(tmp_path_factory):
         generate_certs(path)
         os.environ["SMTPD_SSL_CERTS_PATH"] = str(path.resolve())
 
-    config = Config()
-
-    with SMTPDFix(config.host, config.port, config) as fixture:
+    with SMTPDFix() as fixture:
         yield fixture
