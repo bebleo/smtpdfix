@@ -2,7 +2,7 @@ aiosmtpd==1.4.2
 atpublic==2.3
 attrs==21.2.0
 cffi==1.14.6
-cryptography==3.4.7
+cryptography==3.4.8
 iniconfig==1.1.1
 packaging==21.0
 pluggy==0.13.1
