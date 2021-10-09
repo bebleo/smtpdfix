@@ -202,10 +202,10 @@ $ isort .
 $ flake8 .
 ```
 
-If you have upgraded or added any requirements you should add them manually along with the minimal constraints needed for the functionality. The requirements.txt file can then be updated by running:
+If you have upgraded or added any requirements you should add them to `setup.py` along with the minimal constraints needed for the functionality. The `requirements.txt` file can then be updated by running:
 
 ```bash
-$ bash ./utils/fix-requirements.sh .
+$ bash ./scripts/fix-requirements.sh .
 ```
 
 ## Known Issues
