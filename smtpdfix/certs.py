@@ -7,7 +7,6 @@ from pathlib import Path
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.x509 import (BasicConstraints, CertificateBuilder, DNSName,
-                               ExtendedKeyUsage, ExtendedKeyUsageOID,
                                IPAddress, Name, NameAttribute,
                                SubjectAlternativeName, random_serial_number)
 from cryptography.x509.oid import NameOID
@@ -43,6 +42,9 @@ def generate_certs(path, days=3652, key_size=2048, separate_key=False):
         IPAddress(ip_address("::1")),
         IPAddress(ip_address(ip)),
     ]
+    # Set it so the certificate can be a root certificate with
+    # ca=true, path_length=0 means it can only sign itself.
+    constraints = BasicConstraints(ca=True, path_length=0)
 
     cert = (CertificateBuilder()
             .issuer_name(subject)
@@ -52,10 +54,7 @@ def generate_certs(path, days=3652, key_size=2048, separate_key=False):
             .not_valid_after(datetime.utcnow() + timedelta(days=days))
             .add_extension(SubjectAlternativeName(alt_names), critical=False)
             .public_key(key.public_key())
-            .add_extension(BasicConstraints(ca=False, path_length=None),
-                           critical=True)
-            .add_extension(ExtendedKeyUsage([ExtendedKeyUsageOID.CLIENT_AUTH]),
-                           critical=True)
+            .add_extension(constraints, critical=False)
             .sign(private_key=key, algorithm=hashes.SHA256()))
 
     cert_path = Path(path).joinpath("cert.pem")
