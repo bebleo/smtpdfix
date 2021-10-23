@@ -4,9 +4,9 @@ setup(
     name="smtpdfix",
     install_requires=[
         "aiosmtpd >= 1.3.1, <= 1.4.2",
-        "cryptography >= 3.4.4",
         "pytest",
         "python-dotenv",
+        "trustme",
     ],
     extras_require={
         "dev": [
