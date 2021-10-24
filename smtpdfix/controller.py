@@ -2,12 +2,12 @@ import asyncio
 import errno
 import logging
 import ssl
+from contextlib import ExitStack
 from os import strerror
 from pathlib import Path
+from socket import create_connection
 from sys import version_info
 from typing import Coroutine
-from contextlib import ExitStack
-from socket import create_connection
 
 from aiosmtpd.controller import Controller, get_localhost
 from aiosmtpd.smtp import SMTP
@@ -48,7 +48,6 @@ class AuthController(Controller):
             # situation where both could be used. Prefers STARTTLS to TLS.
             if (self.config.use_ssl and not self.config.use_starttls):
                 context = ssl_context or self._get_ssl_context()
-                context.check_hostname = False
                 context.verify_mode = ssl.CERT_OPTIONAL
                 return context
 
@@ -113,6 +112,7 @@ class AuthController(Controller):
         key_path = resolve_file(certs_path, key_file)
 
         context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+        context.check_hostname = False
         context.load_cert_chain(cert_path, keyfile=key_path)
         return context
 

@@ -1,5 +1,10 @@
 # Change Log
 
+## Unreleased Changes
+
+- Compatible with python 3.10.
+- Overwrites `Controller._trigger_server` in `AuthController` to remove the call to wrap_socket in the case that there is a SSL context because contexts in 3.10.0 need to be explicitly for servers if using opportunistic SSL. Fixes [Issue #90](https://github.com/bebleo/smtpdfix/issues/90)
+
 ## Version 0.3.1
 
 Release date: 2021-08-07
