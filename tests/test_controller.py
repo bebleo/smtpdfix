@@ -7,7 +7,7 @@ from smtplib import SMTP, SMTP_SSL, SMTPSenderRefused, SMTPServerDisconnected
 
 import pytest
 
-from smtpdfix.certs import generate_certs
+from smtpdfix.certs import _generate_certs
 from smtpdfix.configuration import Config
 from smtpdfix.controller import AuthController
 from smtpdfix.fixture import _Authenticator
@@ -35,7 +35,7 @@ async def test_use_starttls(smtpd, msg):
 
 async def test_custom_ssl_context(request, tmp_path_factory, msg):
     path = tmp_path_factory.mktemp("certs")
-    generate_certs(path, separate_key=True)
+    _generate_certs(path, separate_key=True)
 
     cert_path = path.joinpath("cert.pem").resolve()
     key_path = path.joinpath("key.pem").resolve()
@@ -76,7 +76,7 @@ async def test_missing_certs(request, msg):
 
 async def test_custom_cert_and_key(request, tmp_path_factory, msg):
     path = tmp_path_factory.mktemp("certs")
-    generate_certs(path, separate_key=True)
+    _generate_certs(path, separate_key=True)
     _config = Config()
     _config.use_ssl = True
     _config.ssl_cert_files = (path.joinpath("cert.pem"),
@@ -96,7 +96,7 @@ async def test_custom_cert_and_key(request, tmp_path_factory, msg):
                     reason="No timeout of SSL handshake possible")
 async def test_TLS_not_supported(request, tmp_path_factory, msg, user):
     path = tmp_path_factory.mktemp("certs")
-    generate_certs(path)
+    _generate_certs(path)
     ssl_cert_files = str(path.joinpath("cert.pem"))
     context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
     context.load_cert_chain(ssl_cert_files)
