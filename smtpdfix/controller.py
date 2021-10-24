@@ -2,12 +2,14 @@ import asyncio
 import errno
 import logging
 import ssl
+from contextlib import ExitStack
 from os import strerror
 from pathlib import Path
+from socket import create_connection
 from sys import version_info
 from typing import Coroutine
 
-from aiosmtpd.controller import Controller
+from aiosmtpd.controller import Controller, get_localhost
 from aiosmtpd.smtp import SMTP
 
 from .configuration import Config
@@ -45,7 +47,9 @@ class AuthController(Controller):
             # Determines whether to return a sslContext or None to avoid a
             # situation where both could be used. Prefers STARTTLS to TLS.
             if (self.config.use_ssl and not self.config.use_starttls):
-                return ssl_context or self._get_ssl_context()
+                context = ssl_context or self._get_ssl_context()
+                context.verify_mode = ssl.CERT_OPTIONAL
+                return context
 
             return None
 
@@ -69,13 +73,13 @@ class AuthController(Controller):
 
     def factory(self):
         use_starttls = self.config.use_starttls
-        certs = self._get_ssl_context() if use_starttls else None
+        context = self._get_ssl_context() if use_starttls else None
 
         return SMTP(handler=self.handler,
                     require_starttls=self.config.use_starttls,
                     auth_required=self.config.enforce_auth,
                     auth_require_tls=self.config.auth_require_tls,
-                    tls_context=certs,
+                    tls_context=context,
                     authenticator=self._authenticator)
 
     def _get_ssl_context(self):
@@ -108,6 +112,7 @@ class AuthController(Controller):
         key_path = resolve_file(certs_path, key_file)
 
         context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+        context.check_hostname = False
         context.load_cert_chain(cert_path, keyfile=key_path)
         return context
 
@@ -180,6 +185,15 @@ class AuthController(Controller):
 
         if _running:
             self.start()
+
+    def _trigger_server(self):
+        hostname = self.hostname or get_localhost()
+        with ExitStack() as stk:
+            s = stk.enter_context(
+                    create_connection((hostname, self.port), 1.0))
+            # connecting using the ssl_context removed as this fails under
+            # python 3.10 when using opportunistic SSL
+            _ = s.recv(1024)
 
     @property
     def messages(self):

@@ -4,7 +4,7 @@ import os
 import pytest
 
 from .authenticator import Authenticator
-from .certs import generate_certs
+from .certs import _generate_certs
 from .configuration import Config
 from .controller import AuthController
 
@@ -65,7 +65,7 @@ def smtpd(tmp_path_factory):
     """
     if os.getenv("SMTPD_SSL_CERTS_PATH") is None:
         path = tmp_path_factory.mktemp("certs")
-        generate_certs(path)
+        _generate_certs(path)
         os.environ["SMTPD_SSL_CERTS_PATH"] = str(path.resolve())
 
     with SMTPDFix() as fixture:
