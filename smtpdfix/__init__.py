@@ -7,7 +7,7 @@ __all__ = (
     "smtpd",
     "SMTPDFix",
 )
-__version__ = "0.3.2"
+__version__ = "0.3.3"
 
 from .authenticator import Authenticator
 from .certs import generate_certs
