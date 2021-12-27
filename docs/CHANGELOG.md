@@ -1,8 +1,12 @@
 # Change Log
 
+## Unreleased Changes
+
+Release date: TBD
+
 ## Version 0.3.3
 
-Release data 2021-11-18
+Release date: 2021-11-18
 
 - Removes newline in description that causes errors when installing.
 - Updates the setup architecture to be inline with more recent reccomendations to use `setup.cfg` over `setup.py`/
