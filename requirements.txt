@@ -1,6 +1,6 @@
 aiosmtpd==1.4.2
 atpublic==2.3
-attrs==21.2.0
+attrs==21.3.0
 cffi==1.15.0
 cryptography==36.0.1
 iniconfig==1.1.1
