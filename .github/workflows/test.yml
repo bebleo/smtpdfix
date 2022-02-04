@@ -12,6 +12,7 @@ on:
 jobs:
   build:
 
+    name: Build, Test, and Lint
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
