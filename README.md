@@ -122,8 +122,8 @@ Property         | Variable               | Default              | Description
 `host`           | `SMTPD_HOST`           | `127.0.0.1` or `::1` | The hostname that the fixture will listen on.
 `port`           | `SMTPD_PORT`           | `8025`               | The port that the fixture will listen on.
 `ready_timeout`  | `SMTPD_READY_TIMEOUT`  | `5.0`                | The seconds the server will wait to start before raising a `TimeoutError`.
-`login_username` | `SMTPD_LOGIN_NAME`     | `user`               |  
-`login_password` | `SMTPD_LOGIN_PASSWORD` | `password`           |  
+`login_username` | `SMTPD_LOGIN_NAME`     | `user`               | Username for default authentication.
+`login_password` | `SMTPD_LOGIN_PASSWORD` | `password`           | Password for default authentication.
 `use_ssl`        | `SMTPD_USE_SSL`        | `False`              | Whether the fixture should use fixed TLS/SSL for transactions. If using smtplib requires that `SMTP_SSL` be used instead of `SMTP`.
 `use_starttls`   | `SMTPD_USE_STARTTLS`   | `False`              | Whether the fixture should use StartTLS to encrypt the connections. If using `smtplib` requires that `SMTP.starttls()` is called before other commands are issued. Overrides `use_tls` as the preferred method for securing communications with the client.
 `enforce_auth`   | `SMTPD_ENFORCE_AUTH`   | `False`              | If set to true then the fixture refuses MAIL, RCPT, DATA commands until authentication is completed.
@@ -200,6 +200,13 @@ Before submitting a pull request with your changes you should ensure that all im
 ```bash
 $ isort .
 $ flake8 .
+```
+
+We include a [pre-commit](https://pre-commit.com/) configuration file to automate checks and clean up imports before pushing code. In order to install pre-commit git hooks:
+
+```bash
+$ pip install pre-commit
+$ pre-commit install
 ```
 
 If you have upgraded or added any requirements you should add them to `setup.py` along with the minimal constraints needed for the functionality. The `requirements.txt` file can then be updated by running:
