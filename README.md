@@ -215,4 +215,4 @@ $ bash ./scripts/fix-requirements.sh .
 + Currently no support for termination through signals. [Issue #4](https://github.com/bebleo/smtpdfix/issues/4)
 + If the fixture start exceeds the `ready_timeout` and aborts the host and port are not consistently released and subsequent uses may result in an error. [Issue #80](https://github.com/bebleo/smtpdfix/issues/80)
 
-©2020-2021, Written with ☕ and ❤ in Montreal, QC
+Written with ☕ and ❤ in Montreal, QC
