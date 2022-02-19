@@ -66,7 +66,7 @@ Release date: 2021-02-11
 - Now requires cryptography version 3.4.4 in response to security reports
 - Upgrades Aiosmtpd to version 1.3.0 or greater to take advantages of updated `AUTH` handling. Versions of aiosmtpd below 1.3.0 are no longer comaptible
 
-## Version 0.2.8
+## Version 0.2.8 [YANKED]
 
 Release date: 2021-02-07
 
@@ -78,7 +78,7 @@ Release date: 2021-02-07
 - Minor performance enhancements from removing the lazy object proxy and setting key size to 2048 bits instead of 4096.
 - Allows for late changes to StartTLS environment variables.
 
-## Version 0.2.7
+## Version 0.2.7 [YANKED]
 
 Release date: 2021-01-29
 
@@ -87,7 +87,7 @@ This release has been motivated by recent breaking changes to aiosmtpd.
 - Certificates are now dynamically generated per session rather than stored in the package.
 - Fixes aiosmtpd to version 1.2.2 or below.
 
-## Version 0.2.6
+## Version 0.2.6 [YANKED]
 
 Release date: 2021-01-17
 
@@ -98,7 +98,7 @@ Release date: 2021-01-17
 
 - [Jeremy Richards (@jeremysprofile)](https://github.com/jeremysprofile) Make getenv default values strings [PR #25](https://github.com/bebleo/smtpdfix/pull/25)
 
-## Version 0.2.5
+## Version 0.2.5 [YANKED]
 
 Release date: 2020-12-28
 
@@ -110,7 +110,7 @@ Release date: 2020-12-28
 - Adds coverage support using pytest-cov
 - Allows .env files to override environment variables
 
-## Version 0.2.4
+## Version 0.2.4 [YANKED]
 
 Release date: 2020-08-02
 
