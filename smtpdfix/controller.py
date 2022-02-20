@@ -6,7 +6,6 @@ from contextlib import ExitStack
 from os import strerror
 from pathlib import Path
 from socket import create_connection
-from sys import version_info
 from typing import Coroutine
 
 from aiosmtpd.controller import Controller, get_localhost
@@ -132,7 +131,7 @@ class AuthController(Controller):
             # because Python 3.6 in asyncio debug mode has a bug wherein
             # CoroWrapper is not an instance of Coroutine
             coro_kwargs = {}
-            if self.ssl_context and version_info >= (3, 7):
+            if self.ssl_context:
                 coro_kwargs["ssl_handshake_timeout"] = 5.0
 
             srv_coro: Coroutine = self.loop.create_server(
