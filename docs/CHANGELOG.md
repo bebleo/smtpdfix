@@ -4,6 +4,8 @@
 
 Release date: TBD
 
+- Support for python 3.6 has been dropped and python 3.7 or later is required.
+
 ## Version 0.3.3
 
 Release date: 2021-11-18
