@@ -4,7 +4,8 @@
 
 Release date: TBD
 
-- Support for python 3.6 has been dropped and python 3.7 or later is required.
+- Support for python 3.6 has been dropped and python 3.7 or later is required. [Issue #113](https://github.com/bebleo/smtpdfix/issues/113)
+- Corrects minor error in READMIE.md [Issue #140](https://github.com/bebleo/smtpdfix/issues/1400)
 
 ## Version 0.3.3
 
