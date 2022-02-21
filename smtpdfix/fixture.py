@@ -17,8 +17,8 @@ class _Authenticator(Authenticator):
 
     def validate(self, username, password):
         if (
-            username == self.config.login_username and
-            password == self.config.login_password
+            username == self.config.login_username
+            and password == self.config.login_password
         ):
             log.debug(("Validating username and password for succeeded"))
             return True

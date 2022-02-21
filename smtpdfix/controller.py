@@ -188,8 +188,8 @@ class AuthController(Controller):
     def _trigger_server(self):
         hostname = self.hostname or get_localhost()
         with ExitStack() as stk:
-            s = stk.enter_context(
-                    create_connection((hostname, self.port), 1.0))
+            conn = create_connection((hostname, self.port), 1.0)
+            s = stk.enter_context(conn)
             # connecting using the ssl_context removed as this fails under
             # python 3.10 when using opportunistic SSL
             _ = s.recv(1024)
