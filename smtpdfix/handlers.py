@@ -77,8 +77,8 @@ class AuthMessage(Message):
         if len(response) < 2:
             return AuthResult(success=False, handled=False)
         if (
-            len(response) >= 2 and
-            server._authenticator.validate(response[0], response[-1])
+            len(response) >= 2
+            and server._authenticator.validate(response[0], response[-1])
         ):
             log.debug("AUTH PLAIN succeeded")
             return AuthResult(success=True, handled=True)
