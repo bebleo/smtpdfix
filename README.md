@@ -96,7 +96,7 @@ from smtplib import SMTP
 from smtpdfix import SMTPDFix
 
 
-def test_smtpdfix(msg):
+def test_smtpdfix():
     hostname, port = "127.0.0.1", 8025
 
     with SMTPDFix(hostname, port) as smtpd:
