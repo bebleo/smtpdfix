@@ -1,6 +1,5 @@
 import logging
 import socket
-import warnings
 from datetime import datetime, timedelta
 from ipaddress import ip_address
 from pathlib import Path
@@ -62,11 +61,3 @@ def _generate_certs(path, days=3652, key_size=2048, separate_key=False):
     with open(cert_path, "ab") as f:
         f.write(cert.public_bytes(serialization.Encoding.PEM))
     log.debug("Certificate generated")
-
-
-def generate_certs(path, days=3652, key_size=2048, separate_key=False):
-    _message = ("_generate_certs will be removed from the public API as of ",
-                "version 0.4.")
-    warnings.warn(_message, PendingDeprecationWarning)
-
-    return _generate_certs(path, days, key_size, separate_key)
