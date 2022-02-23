@@ -5,14 +5,15 @@
 Release date: TBD
 
 - Support for python 3.6 has been dropped and python 3.7 or later is required. [Issue #113](https://github.com/bebleo/smtpdfix/issues/113)
-- Corrects minor error in READMIE.md [Issue #140](https://github.com/bebleo/smtpdfix/issues/1400)
+- `generate_certs` has been removed from the public API. [Issue #95](https://github.com/bebleo/smtpdfix/issues/95)
+- Corrects minor error in READMIE.md [Issue #140](https://github.com/bebleo/smtpdfix/issues/140)
 
 ## Version 0.3.3
 
 Release date: 2021-11-18
 
 - Removes newline in description that causes errors when installing.
-- Updates the setup architecture to be inline with more recent reccomendations to use `setup.cfg` over `setup.py`/
+- Updates the setup architecture to be inline with more recent reccomendations to use `setup.cfg` over `setup.py`.
 
 ## Version 0.3.2
 
