@@ -96,6 +96,7 @@ async def test_TLS_not_supported(request, tmp_path_factory, msg, user):
     _generate_certs(path)
     ssl_cert_files = str(path.joinpath("cert.pem"))
     context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+    context.load_verify_locations(ssl_cert_files)
     context.load_cert_chain(ssl_cert_files)
 
     config = Config()

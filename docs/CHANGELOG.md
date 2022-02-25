@@ -7,6 +7,7 @@ Release date: TBD
 - Support for python 3.6 has been dropped and python 3.7 or later is required. [Issue #113](https://github.com/bebleo/smtpdfix/issues/113)
 - `generate_certs` has been removed from the public API. [Issue #95](https://github.com/bebleo/smtpdfix/issues/95)
 - Corrects minor error in READMIE.md [Issue #140](https://github.com/bebleo/smtpdfix/issues/140)
+- Fixes a previously unreported bug where self-signed certificates would be rejected if no CA was generated and trusted. Now any certificate file, including the one generated internally, will be trusted.
 
 ## Version 0.3.3
 

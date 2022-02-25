@@ -112,6 +112,7 @@ class AuthController(Controller):
 
         context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
         context.check_hostname = False
+        context.load_verify_locations(cert_path)
         context.load_cert_chain(cert_path, keyfile=key_path)
         return context
 
