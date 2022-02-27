@@ -209,12 +209,6 @@ $ pip install pre-commit
 $ pre-commit install
 ```
 
-If you have upgraded or added any requirements you should add them to `setup.py` along with the minimal constraints needed for the functionality. The `requirements.txt` file can then be updated by running:
-
-```bash
-$ bash ./scripts/fix-requirements.sh .
-```
-
 ## Known Issues
 
 + Firewalls may interfere with the operation of the smtp server.
