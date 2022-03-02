@@ -9,6 +9,7 @@ Release date: TBD
 - Corrects minor error in READMIE.md [Issue #140](https://github.com/bebleo/smtpdfix/issues/140)
 - Fixes a previously unreported bug where self-signed certificates would be rejected if no CA was generated and trusted. Now any certificate file, including the one generated internally, will be trusted.
 - Drops the dependecy on the `distutils` package in preparation for its removal with python 3.12. [Issue #114](https://github.com/bebleo/smtpdfix/issues/114)
+- Updates the `ready_timeout` from five seconds to ten seconds to mitigate issues where the fixture fails to start in time. See [Issue #80](https://github.com/bebleo/smtpdfix/issues/80)
 
 ## Version 0.3.3
 
