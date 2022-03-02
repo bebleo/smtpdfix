@@ -1,5 +1,4 @@
 import os
-from distutils.util import strtobool
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -8,6 +7,24 @@ from .event_handler import EventHandler
 
 _current_dir = Path(__file__).parent
 load_dotenv()
+
+
+def _strtobool(val: str) -> bool:
+    """Convert a string representation of truth to true (1) or false (0).
+
+    True values are "y", "yes", "t", "true", "on", and "1"; false values are
+    "n", "no", "f", "false", "off", and "0".  Raises ValueError if "val" is
+    anything else.
+    """
+    # Copied and updated from distutils.util in response to distutils removal
+    # as of python 3.12
+    val = val.lower()
+    if val in ("y", "yes", "t", "true", "on", "1"):
+        return True
+    elif val in ("n", "no", "f", "false", "off", "0"):
+        return False
+    else:
+        raise ValueError(f"invalid truth value {val}")
 
 
 class Config():
@@ -22,24 +39,24 @@ class Config():
         self._ready_timeout = float(os.getenv("SMTPD_READY_TIMEOUT", 5.0))
         self._login_username = os.getenv("SMTPD_LOGIN_NAME", "user")
         self._login_password = os.getenv("SMTPD_LOGIN_PASSWORD", "password")
-        self._enforce_auth = strtobool(os.getenv("SMTPD_ENFORCE_AUTH",
-                                                 "False"))
-        self._auth_require_tls = strtobool(os.getenv("SMTPD_AUTH_REQUIRE_TLS",
-                                                     "True"))
+        self._enforce_auth = _strtobool(os.getenv("SMTPD_ENFORCE_AUTH",
+                                                  "False"))
+        self._auth_require_tls = _strtobool(os.getenv("SMTPD_AUTH_REQUIRE_TLS",
+                                                      "True"))
         self._ssl_cert_path = os.getenv("SMTPD_SSL_CERTS_PATH",
                                         _current_dir.joinpath("certs"))
         self._ssl_cert_files = (
             os.getenv("SMTPD_SSL_CERTIFICATE_FILE", "./cert.pem"),
             os.getenv("SMTPD_SSL_KEY_FILE"))
-        self._use_starttls = strtobool(os.getenv("SMTPD_USE_STARTTLS",
-                                                 "False"))
-        self._use_ssl = (strtobool(os.getenv("SMTPD_USE_SSL", "False"))
-                         or strtobool(os.getenv("SMTPD_USE_TLS", "False")))
+        self._use_starttls = _strtobool(os.getenv("SMTPD_USE_STARTTLS",
+                                                  "False"))
+        self._use_ssl = (_strtobool(os.getenv("SMTPD_USE_SSL", "False"))
+                         or _strtobool(os.getenv("SMTPD_USE_TLS", "False")))
 
     def convert_to_bool(self, value):
         """Consistently convert to bool."""
         if isinstance(value, str):
-            return bool(strtobool(value))
+            return bool(_strtobool(value))
         return bool(value)
 
     @property

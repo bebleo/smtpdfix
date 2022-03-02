@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from smtpdfix.configuration import Config
+from smtpdfix.configuration import Config, _strtobool
 
 values = [
     ("host", "mail.localhost", "mail.localhost", str),
@@ -43,6 +43,22 @@ def handler():
         def handle(self, result):
             result.append(True)
     yield Handler()
+
+
+@pytest.mark.parametrize("val", ["y", "yes", "t", "true", "on", "1"])
+def test_strtobool_true(val):
+    assert _strtobool(val) is True
+
+
+@pytest.mark.parametrize("val", ["n", "no", "f", "false", "off", "0"])
+def test_strtobool_false(val):
+    assert _strtobool(val) is False
+
+
+@pytest.mark.parametrize("val", ["-1", "maybe", "error"])
+def test_strtobool_error(val):
+    with pytest.raises(ValueError):
+        assert _strtobool(val) is False
 
 
 def test_init():
