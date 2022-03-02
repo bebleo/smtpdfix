@@ -8,6 +8,7 @@ Release date: TBD
 - `generate_certs` has been removed from the public API. [Issue #95](https://github.com/bebleo/smtpdfix/issues/95)
 - Corrects minor error in READMIE.md [Issue #140](https://github.com/bebleo/smtpdfix/issues/140)
 - Fixes a previously unreported bug where self-signed certificates would be rejected if no CA was generated and trusted. Now any certificate file, including the one generated internally, will be trusted.
+- Drops the dependecy on the `distutils` package in preparation for its removal with python 3.12. [Issue #114](https://github.com/bebleo/smtpdfix/issues/114)
 
 ## Version 0.3.3
 
