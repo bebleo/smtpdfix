@@ -23,7 +23,7 @@ jobs:
 
     steps:
       - name: "Checkout code"
-        uses: actions/checkout@v3 # v2.4.0
+        uses: actions/checkout@b0e28b5ac45a892f91e7d036f8200cf5ed489415 # v3 # v2.4.0
         with:
           persist-credentials: false
 
@@ -40,15 +40,6 @@ jobs:
           # For private repositories, `publish_results` will automatically be set to `false`, regardless
           # of the value entered here.
           publish_results: true
-
-      # Upload the results as artifacts (optional). Commenting out will disable uploads of run results in SARIF
-      # format to the repository Actions tab.
-      # - name: "Upload artifact"
-      #   uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # v2.3.1
-      #   with:
-      #     name: SARIF file
-      #     path: results.sarif
-      #     retention-days: 5
 
       # Upload the results to GitHub's code scanning dashboard.
       - name: "Upload to code-scanning"
