@@ -32,7 +32,7 @@ jobs:
     steps:
     - uses: actions/checkout@b0e28b5ac45a892f91e7d036f8200cf5ed489415 # v3
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@0ebf233433c08fb9061af664d501c3f3ff0e9e20 # v3
+      uses: actions/setup-python@9c644ca2ab8e57ea0a487b5ec2f8290740378bfd # v3
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
@@ -72,7 +72,7 @@ jobs:
     steps:
     - uses: actions/checkout@b0e28b5ac45a892f91e7d036f8200cf5ed489415 # v3
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@0ebf233433c08fb9061af664d501c3f3ff0e9e20 # v3
+      uses: actions/setup-python@9c644ca2ab8e57ea0a487b5ec2f8290740378bfd # v3
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
