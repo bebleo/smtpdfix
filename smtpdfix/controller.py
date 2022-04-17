@@ -90,15 +90,12 @@ class AuthController(Controller):
 
         def resolve_file(basepath, file_):
             # Resolve the file paths in order:
-            #   1. return None if None
-            #   2. if the file exists return the path as string
-            #   3. try to combine basepath and the filename and if that exists
+            #   1. if the file exists return the path as string
+            #   2. try to combine basepath and the filename and if that exists
             #      return as a string.
             # NB: the paths are returned as strings becuase PYPY3 doesn't
             # support paths in sslcontext.load_cert_chain()
-            if file_ is None:
-                return
-            elif Path(file_).is_file():
+            if Path(file_).is_file():
                 return str(Path(file_))
             elif basepath.joinpath(file_).resolve().is_file():
                 return str(basepath.joinpath(file_).resolve())
@@ -108,7 +105,7 @@ class AuthController(Controller):
                                     file_)
 
         cert_path = resolve_file(certs_path, cert_file)
-        key_path = resolve_file(certs_path, key_file)
+        key_path = resolve_file(certs_path, key_file) if key_file else None
 
         context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
         context.check_hostname = False
