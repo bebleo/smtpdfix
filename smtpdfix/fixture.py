@@ -21,7 +21,7 @@ class _Authenticator(Authenticator):
             username == self.config.login_username
             and password == self.config.login_password
         ):
-            log.debug(("Validating username and password for succeeded"))
+            log.debug("Validating username and password for succeeded")
             return True
 
         log.debug("Validating username and password failed")

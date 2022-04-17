@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, Set
+from typing import Any
 
 from .typing import CallableHandler
 
@@ -10,7 +10,7 @@ log = logging.getLogger(__name__)
 
 class EventHandler():
     def __init__(self) -> None:
-        self._handlers: Set[CallableHandler] = set()
+        self._handlers: set[CallableHandler] = set()
 
     def __iadd__(self, handler: CallableHandler) -> EventHandler:
         self._handlers.add(handler)
