@@ -170,7 +170,7 @@ class AuthController(Controller):
         self.config.OnChanged -= self.reset
 
         # Ignoring this for the purposes of type checking on the grounds that
-        #
+        # this works and can't be replaced for now.
         self.__init__(  # type: ignore
             loop=None if self.loop.is_closed() else self.loop,
             hostname=self.config.host,
