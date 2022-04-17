@@ -1,13 +1,9 @@
 class Authenticator():
-    def __call__(self, server, session, envelope, mechanism, auth_data):
-        # We don't implement the call and override this to prevent use
-        raise NotImplementedError()  # pragma: no cover
-
-    def validate(self, username, password):
+    def validate(self, username: str, password: str) -> bool:
         """Validate that the passward authenticates the username."""
         raise NotImplementedError()  # pragma: no cover
 
-    def verify(self, username):
+    def verify(self, username: str) -> bool:
         """Method to verify that an address or username is correct.
 
         Possible inputs are:
@@ -20,6 +16,6 @@ class Authenticator():
         """
         raise NotImplementedError()  # pragma: no cover
 
-    def get_password(self, username):
+    def get_password(self, username: str) -> str:
         """Returns the password for a given username."""
         raise NotImplementedError()  # pragma: no cover

@@ -3,6 +3,7 @@ import socket
 from datetime import datetime, timedelta
 from ipaddress import ip_address
 from pathlib import Path
+from typing import Union
 
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
@@ -14,7 +15,10 @@ from cryptography.x509.oid import NameOID
 log = logging.getLogger(__name__)
 
 
-def _generate_certs(path, days=3652, key_size=2048, separate_key=False):
+def _generate_certs(path: Union[Path, str],
+                    days: int = 3652,
+                    key_size: int = 2048,
+                    separate_key: bool = False) -> None:
     # DO NOT USE THIS FOR ANYTHING PRODUCTION RELATED, EVER!
     # Generate private key
     # 2048 is the minimum that works as of 3.9

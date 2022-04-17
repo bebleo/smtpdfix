@@ -1,9 +1,11 @@
 import os
 from pathlib import Path
+from typing import Any, Optional, Tuple, Union
 
 from dotenv import load_dotenv
 
 from .event_handler import EventHandler
+from .typing import PathType
 
 _current_dir = Path(__file__).parent
 load_dotenv()
@@ -28,7 +30,9 @@ def _strtobool(val: str) -> bool:
 
 
 class Config():
-    def __init__(self, filename=None, override=False):
+    def __init__(self,
+                 filename: Optional[PathType] = None,
+                 override: bool = False) -> None:
         if filename:
             load_dotenv(filename, override=override)
 
@@ -43,8 +47,9 @@ class Config():
                                                   "False"))
         self._auth_require_tls = _strtobool(os.getenv("SMTPD_AUTH_REQUIRE_TLS",
                                                       "True"))
-        self._ssl_cert_path = os.getenv("SMTPD_SSL_CERTS_PATH",
-                                        _current_dir.joinpath("certs"))
+        self._ssl_cert_path: PathType = os.getenv(
+            "SMTPD_SSL_CERTS_PATH",
+            _current_dir.joinpath("certs"))
         self._ssl_cert_files = (
             os.getenv("SMTPD_SSL_CERTIFICATE_FILE", "./cert.pem"),
             os.getenv("SMTPD_SSL_KEY_FILE"))
@@ -53,110 +58,111 @@ class Config():
         self._use_ssl = (_strtobool(os.getenv("SMTPD_USE_SSL", "False"))
                          or _strtobool(os.getenv("SMTPD_USE_TLS", "False")))
 
-    def convert_to_bool(self, value):
+    def convert_to_bool(self, value: Any) -> bool:
         """Consistently convert to bool."""
         if isinstance(value, str):
             return bool(_strtobool(value))
         return bool(value)
 
     @property
-    def host(self):
+    def host(self) -> Optional[str]:
         return self._host
 
     @host.setter
-    def host(self, value):
+    def host(self, value: Optional[str]) -> None:
         self._host = value
         self.OnChanged()
 
     @property
-    def port(self):
+    def port(self) -> int:
         return self._port
 
     @port.setter
-    def port(self, value):
+    def port(self, value: int) -> None:
         self._port = int(value)
         self.OnChanged()
 
     @property
-    def ready_timeout(self):
+    def ready_timeout(self) -> float:
         return self._ready_timeout
 
     @ready_timeout.setter
-    def ready_timeout(self, value):
+    def ready_timeout(self, value: float) -> None:
         self._ready_timeout = float(value)
         self.OnChanged()
 
     @property
-    def login_username(self):
+    def login_username(self) -> str:
         return self._login_username
 
     @login_username.setter
-    def login_username(self, value):
+    def login_username(self, value: str) -> None:
         self._login_username = value
         self.OnChanged()
 
     @property
-    def login_password(self):
+    def login_password(self) -> str:
         return self._login_password
 
     @login_password.setter
-    def login_password(self, value):
+    def login_password(self, value: str) -> None:
         self._login_password = value
         self.OnChanged()
 
     @property
-    def enforce_auth(self):
+    def enforce_auth(self) -> bool:
         return self._enforce_auth
 
     @enforce_auth.setter
-    def enforce_auth(self, value):
+    def enforce_auth(self, value: bool) -> None:
         self._enforce_auth = self.convert_to_bool(value)
         self.OnChanged()
 
     @property
-    def auth_require_tls(self):
+    def auth_require_tls(self) -> bool:
         return self._auth_require_tls
 
     @auth_require_tls.setter
-    def auth_require_tls(self, value):
+    def auth_require_tls(self, value: bool) -> None:
         self._auth_require_tls = self.convert_to_bool(value)
         self.OnChanged()
 
     @property
-    def ssl_certs_path(self):
+    def ssl_certs_path(self) -> PathType:
         return self._ssl_cert_path
 
     @ssl_certs_path.setter
-    def ssl_certs_path(self, value):
+    def ssl_certs_path(self, value: PathType) -> None:
         self._ssl_cert_path = value
         self.OnChanged()
 
     @property
-    def ssl_cert_files(self):
+    def ssl_cert_files(self) -> Tuple[str, Optional[str]]:
         return self._ssl_cert_files
 
     @ssl_cert_files.setter
-    def ssl_cert_files(self, value):
+    def ssl_cert_files(self,
+                       value: Union[str, Tuple[str, Optional[str]]]) -> None:
         if isinstance(value, tuple):
-            self._ssl_cert_files = value
+            self._ssl_cert_files = (value[0], value[1])
         else:
             self._ssl_cert_files = (value, None)
         self.OnChanged()
 
     @property
-    def use_starttls(self):
+    def use_starttls(self) -> bool:
         return self._use_starttls
 
     @use_starttls.setter
-    def use_starttls(self, value):
+    def use_starttls(self, value: Any) -> None:
         self._use_starttls = self.convert_to_bool(value)
         self.OnChanged()
 
     @property
-    def use_ssl(self):
+    def use_ssl(self) -> bool:
         return self._use_ssl
 
     @use_ssl.setter
-    def use_ssl(self, value):
+    def use_ssl(self, value: Any) -> None:
         self._use_ssl = self.convert_to_bool(value)
         self.OnChanged()
