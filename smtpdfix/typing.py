@@ -7,7 +7,7 @@ from pytest import __version__ as pytest_version
 # Type aliases
 AsyncServer = asyncio.base_events.Server
 CallableHandler = Callable[..., Optional[Dict[Any, Any]]]
-PathType = Union[str, bytes, os.PathLike]
+PathType = Union[str, os.PathLike]
 ServerCoroutine = Coroutine[Any, Any, asyncio.base_events.Server]
 
 # Because the location of the TempPathFactory type definition is moved in

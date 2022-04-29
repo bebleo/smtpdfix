@@ -8,6 +8,7 @@ from .authenticator import Authenticator
 from .certs import _generate_certs
 from .configuration import Config
 from .controller import AuthController
+from .typing import TempPathFactory
 
 log = logging.getLogger(__name__)
 
@@ -56,7 +57,7 @@ class SMTPDFix():
 
 @pytest.fixture
 def smtpd(
-    tmp_path_factory: pytest.TempPathFactory
+    tmp_path_factory: TempPathFactory
 ) -> Generator[AuthController, None, None]:
     """A small SMTP server for use when testing applications that send email
     messages. To access the messages call `smtpd.messages` which returns a copy
