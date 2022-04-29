@@ -3,7 +3,6 @@ __all__ = (
     "Authenticator",
     "AuthMessage",
     "Config",
-    "generate_certs",
     "smtpd",
     "SMTPDFix",
 )
