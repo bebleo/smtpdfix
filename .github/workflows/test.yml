@@ -54,9 +54,35 @@ jobs:
         token: ${{ secrets.CODECOV_TOKEN }}
         fail_ci_if_error: true
 
+  typing:
+
+    name: Ensure package is typed
+    needs: build
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ["3.7","3.10"]
+    timeout-minutes: 5
+
+    steps:
+    - uses: actions/checkout@b0e28b5ac45a892f91e7d036f8200cf5ed489415 # v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@98f2ad02fd48d057ee3b4d4f66525b231c3e52b6 # v3
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip setuptools wheel
+        pip install .[typing]
+    - name: Check typing
+      run: |
+        mypy
+
   minimum:
 
     name: Check minimum versions
+    needs: build
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:

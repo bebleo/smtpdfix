@@ -3,20 +3,22 @@ import hmac
 import logging
 import secrets
 from datetime import datetime
+from email.message import Message as EmailMessage
+from typing import List
 
 from aiosmtpd.handlers import Message
-from aiosmtpd.smtp import MISSING, AuthResult, auth_mechanism
+from aiosmtpd.smtp import MISSING, SMTP, AuthResult, auth_mechanism
 
 log = logging.getLogger(__name__)
 
 
 class AuthMessage(Message):
-    def __init__(self, messages):
+    def __init__(self, messages: List[EmailMessage]) -> None:
         super().__init__()
         self._messages = messages
 
     @auth_mechanism("CRAM-MD5")
-    async def auth_CRAM_MD5(self, server, args):
+    async def auth_CRAM_MD5(self, server: SMTP, args: List[str]) -> AuthResult:
         log.debug("AUTH CRAM-MD5 received")
 
         # Generate challenge
@@ -39,7 +41,7 @@ class AuthMessage(Message):
         log.debug("AUTH CRAM-MD5 failed")
         return AuthResult(success=False, handled=False)
 
-    async def auth_LOGIN(self, server, args):
+    async def auth_LOGIN(self, server: SMTP, args: List[str]) -> AuthResult:
         log.info("AUTH LOGIN received")
 
         login = []
@@ -64,21 +66,21 @@ class AuthMessage(Message):
         log.info("AUTH LOGIN failed.")
         return AuthResult(success=False, handled=False)
 
-    async def auth_PLAIN(self, server, args):
+    async def auth_PLAIN(self, server: SMTP, args: List[str]) -> AuthResult:
         log.debug("AUTH PLAIN received")
 
-        response = None
+        response = b""
         if len(args) >= 2:
             response = base64.b64decode(args[1])
         else:
             response = await server.challenge_auth("")
-        response = response.decode()
-        response = response.split()
-        if len(response) < 2:
+        decoded_resp = response.decode()
+        split_resp: List[str] = decoded_resp.split()
+        if len(split_resp) < 2:
             return AuthResult(success=False, handled=False)
         if (
-            len(response) >= 2
-            and server._authenticator.validate(response[0], response[-1])
+            len(split_resp) >= 2
+            and server._authenticator.validate(split_resp[0], split_resp[-1])
         ):
             log.debug("AUTH PLAIN succeeded")
             return AuthResult(success=True, handled=True)
@@ -86,5 +88,5 @@ class AuthMessage(Message):
         log.debug("AUTH PLAIN failed")
         return AuthResult(success=False, handled=False)
 
-    def handle_message(self, message):
+    def handle_message(self, message: EmailMessage) -> None:
         self._messages.append(message)

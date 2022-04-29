@@ -1,35 +1,34 @@
 import asyncio
 import errno
 import logging
-import ssl
 from contextlib import ExitStack
 from os import strerror
 from pathlib import Path
 from socket import create_connection
-from typing import Coroutine
+from ssl import CERT_OPTIONAL, Purpose, SSLContext, create_default_context
+from typing import Any, List, Optional
 
 from aiosmtpd.controller import Controller, get_localhost
 from aiosmtpd.smtp import SMTP
 
+from .authenticator import Authenticator
 from .configuration import Config
 from .handlers import AuthMessage
-
-# For use as a type alias in AuthController._run
-AsyncServer = asyncio.base_events.Server
+from .typing import AsyncServer, PathType, ServerCoroutine
 
 log = logging.getLogger(__name__)
 
 
 class AuthController(Controller):
     def __init__(self,
-                 loop=None,
-                 hostname=None,
-                 port=None,
-                 ready_timeout=None,
-                 ssl_context=None,
-                 config=None,
-                 authenticator=None,
-                 **kwargs):
+                 loop: Optional[asyncio.AbstractEventLoop] = None,
+                 hostname: Optional[str] = None,
+                 port: Optional[int] = None,
+                 ready_timeout: Optional[float] = None,
+                 ssl_context: Optional[SSLContext] = None,
+                 config: Optional[Config] = None,
+                 authenticator: Optional[Authenticator] = None,
+                 **kwargs: Any) -> None:
         self.config = config or Config()
         self._messages = kwargs.get("messages") or []
         self._ssl_context = ssl_context
@@ -42,12 +41,12 @@ class AuthController(Controller):
         _loop = loop or asyncio.new_event_loop()
         _loop.set_exception_handler(self._handle_exception)
 
-        def context_or_none():
+        def context_or_none() -> Optional[SSLContext]:
             # Determines whether to return a sslContext or None to avoid a
             # situation where both could be used. Prefers STARTTLS to TLS.
             if (self.config.use_ssl and not self.config.use_starttls):
                 context = ssl_context or self._get_ssl_context()
-                context.verify_mode = ssl.CERT_OPTIONAL
+                context.verify_mode = CERT_OPTIONAL
                 return context
 
             return None
@@ -70,7 +69,7 @@ class AuthController(Controller):
         self.config.OnChanged += self.reset
         log.info(f"SMTPDFix running on {self.hostname}:{self.port}")
 
-    def factory(self):
+    def factory(self) -> SMTP:
         use_starttls = self.config.use_starttls
         context = self._get_ssl_context() if use_starttls else None
 
@@ -81,14 +80,14 @@ class AuthController(Controller):
                     tls_context=context,
                     authenticator=self._authenticator)
 
-    def _get_ssl_context(self):
+    def _get_ssl_context(self) -> SSLContext:
         if self._ssl_context is not None:
             return self._ssl_context
 
         certs_path = Path(self.config.ssl_certs_path).resolve()
         cert_file, key_file = self.config.ssl_cert_files
 
-        def resolve_file(basepath, file_):
+        def _resolve_file(basepath: Path, file_: PathType) -> str:
             # Resolve the file paths in order:
             #   1. if the file exists return the path as string
             #   2. try to combine basepath and the filename and if that exists
@@ -104,16 +103,16 @@ class AuthController(Controller):
                                     strerror(errno.ENOENT),
                                     file_)
 
-        cert_path = resolve_file(certs_path, cert_file)
-        key_path = resolve_file(certs_path, key_file) if key_file else None
+        cert_path = _resolve_file(certs_path, cert_file)
+        key_path = _resolve_file(certs_path, key_file) if key_file else None
 
-        context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+        context = create_default_context(Purpose.CLIENT_AUTH)
         context.check_hostname = False
         context.load_verify_locations(cert_path)
         context.load_cert_chain(cert_path, keyfile=key_path)
         return context
 
-    def _handle_exception(self, loop, context):
+    def _handle_exception(self, loop: Any, context: Any) -> None:
         loop.default_exception_handler(context)
 
         status = "421 Service not available. Closing connection."
@@ -121,7 +120,7 @@ class AuthController(Controller):
         self.smtpd.transport.close()
         self.server.close()
 
-    def _run(self, ready_event):
+    def _run(self, ready_event: Any) -> None:
         asyncio.set_event_loop(self.loop)
         try:
             # Need to do two-step assignments here to ensure IDEs can properly
@@ -132,7 +131,7 @@ class AuthController(Controller):
             if self.ssl_context:
                 coro_kwargs["ssl_handshake_timeout"] = 5.0
 
-            srv_coro: Coroutine = self.loop.create_server(
+            srv_coro: ServerCoroutine = self.loop.create_server(
                 self._factory_invoker,
                 host=self.hostname,
                 port=self.port,
@@ -157,9 +156,9 @@ class AuthController(Controller):
         self.server.close()
         self.loop.run_until_complete(self.server.wait_closed())
         self.loop.close()
-        self.server = None
+        self.server = None  # type: ignore
 
-    def reset(self, persist_messages=True):
+    def reset(self, persist_messages: bool = True) -> None:
         _running = False
         try:
             self.stop()
@@ -170,7 +169,9 @@ class AuthController(Controller):
         # Remove the handler to avoid recursion
         self.config.OnChanged -= self.reset
 
-        self.__init__(
+        # Ignoring this for the purposes of type checking on the grounds that
+        # this works and can't be replaced for now.
+        self.__init__(  # type: ignore
             loop=None if self.loop.is_closed() else self.loop,
             hostname=self.config.host,
             port=self.config.port,
@@ -183,7 +184,7 @@ class AuthController(Controller):
         if _running:
             self.start()
 
-    def _trigger_server(self):
+    def _trigger_server(self) -> None:
         hostname = self.hostname or get_localhost()
         with ExitStack() as stk:
             conn = create_connection((hostname, self.port), 1.0)
@@ -193,5 +194,5 @@ class AuthController(Controller):
             _ = s.recv(1024)
 
     @property
-    def messages(self):
+    def messages(self) -> List[Any]:
         return self._messages.copy()
