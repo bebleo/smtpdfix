@@ -28,6 +28,9 @@ class _Authenticator(Authenticator):
         log.debug("Validating username and password failed")
         return False
 
+    def verify(self, username: str) -> bool:
+        return super().verify(username)
+
     def get_password(self, username: Optional[str]) -> str:
         return self.config.login_password
 

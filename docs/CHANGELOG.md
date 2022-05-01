@@ -11,7 +11,8 @@ Release date: TBD
 - Drops the dependecy on the `distutils` package in preparation for its removal with python 3.12. [Issue #114](https://github.com/bebleo/smtpdfix/issues/114)
 - Updates the `ready_timeout` from five seconds to ten seconds to mitigate issues where the fixture fails to start in time. See [Issue #80](https://github.com/bebleo/smtpdfix/issues/80)
 - Previously the `AuthController._get_ssl_context.resolve_context` method would return `None` if the `file_` argument was `None`. This will now raise an error instead. The method has been renamed `_resolve_context` to clarify that it should not be considered part of the public API.
-- Adds PyPy 3.9 to CI and `tox.ini` along with appropriate entries in the `minimum\requirements.txt` to reflect that PyPy 3.9 requires cryptography >= 37.0.0. [Issue #166](https://github.com/bebleo/smtpdfix/issurs/166s)
+- Adds PyPy 3.9 to CI and `tox.ini` along with appropriate entries in the `minimum\requirements.txt` to reflect that PyPy 3.9 requires cryptography >= 37.0.0. [Issue #166](https://github.com/bebleo/smtpdfix/issues/166)
+- Mark the Authenticator class as being abstract by setting the metaclass to be `abc.ABCMeta` and decorating the methods with `@abc.abstractmethod`
 
 ## Version 0.3.3
 
