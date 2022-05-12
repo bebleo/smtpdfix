@@ -1,8 +1,13 @@
-class Authenticator():
+from abc import ABCMeta, abstractmethod
+
+
+class Authenticator(metaclass=ABCMeta):
+    @abstractmethod
     def validate(self, username: str, password: str) -> bool:
         """Validate that the passward authenticates the username."""
         raise NotImplementedError()  # pragma: no cover
 
+    @abstractmethod
     def verify(self, username: str) -> bool:
         """Method to verify that an address or username is correct.
 
@@ -16,6 +21,7 @@ class Authenticator():
         """
         raise NotImplementedError()  # pragma: no cover
 
+    @abstractmethod
     def get_password(self, username: str) -> str:
         """Returns the password for a given username."""
         raise NotImplementedError()  # pragma: no cover

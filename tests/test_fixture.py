@@ -6,6 +6,7 @@ from unittest import mock
 import pytest
 
 from smtpdfix import Config
+from smtpdfix.fixture import _Authenticator
 
 
 def encode(message):
@@ -205,3 +206,19 @@ def test_monkeypatch(monkeypatch, smtpd):
         code, repl = client.docmd("DATA", "")
         assert code == 530
         assert repl.startswith(b"5.7.0 Authentication required")
+
+
+class TestDefaultAuthenticator:
+    _config = Config()
+    _auth = _Authenticator(_config)
+
+    def test_validate(cls, user):
+        assert cls._auth.validate(user.username, user.password)
+
+    def test_verify(cls, user):
+        with pytest.raises(NotImplementedError):
+            cls._auth.verify(user.username)
+
+    def test_get_password(cls, user):
+        password = cls._auth.get_password(user.username)
+        assert password == user.password
