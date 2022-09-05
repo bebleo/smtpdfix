@@ -13,6 +13,7 @@ Release date: TBD
 - Previously the `AuthController._get_ssl_context.resolve_context` method would return `None` if the `file_` argument was `None`. This will now raise an error instead. The method has been renamed `_resolve_context` to clarify that it should not be considered part of the public API.
 - Adds PyPy 3.9 to CI and `tox.ini` along with appropriate entries in the `minimum\requirements.txt` to reflect that PyPy 3.9 requires cryptography >= 37.0.0. [Issue #166](https://github.com/bebleo/smtpdfix/issues/166)
 - Mark the Authenticator class as being abstract by setting the metaclass to be `abc.ABCMeta` and decorating the methods with `@abc.abstractmethod`
+- On systems where the hostname does not resolve to an IP address the key and certificate will now generate. [Issue #195](https://github.com/bebleo/smtpdfix/195) reported by [Andreas Motl (@amotl)](https://github.com/amotl).
 
 ## Version 0.3.3
 

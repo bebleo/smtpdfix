@@ -35,7 +35,6 @@ def _generate_certs(path: Union[Path, str],
 
     # Generate public certificate
     hostname = socket.gethostname()
-    ip = socket.gethostbyname(hostname)
     subject = Name([NameAttribute(NameOID.COMMON_NAME, "smtpdfix_cert")])
     alt_names = [
         DNSName("localhost"),
@@ -44,8 +43,18 @@ def _generate_certs(path: Union[Path, str],
         IPAddress(ip_address("127.0.0.1")),
         IPAddress(ip_address("0.0.0.1")),
         IPAddress(ip_address("::1")),
-        IPAddress(ip_address(ip)),
     ]
+
+    # Because on misconfigured systems it's possible to have a hostname that
+    # doesn't resolve to an IP we catch the error and skip adding it to the
+    # list of altnames. (issue #195)
+    try:
+        ip = socket.gethostbyname(hostname)
+        alt_names.append(IPAddress(ip_address(ip)))
+    except socket.gaierror as err:
+        log.info(f"{hostname} failed to resolve to ip")
+        log.error(err.strerror)
+
     # Set it so the certificate can be a root certificate with
     # ca=true, path_length=0 means it can only sign itself.
     constraints = BasicConstraints(ca=True, path_length=0)
