@@ -1,8 +1,8 @@
 # Change Log
 
-## Unreleased Changes
+## Version 0.4.0
 
-Release date: TBD
+Release date: 2022-09-05
 
 - Support for python 3.6 has been dropped and python 3.7 or later is required. [Issue #113](https://github.com/bebleo/smtpdfix/issues/113)
 - `generate_certs` has been removed from the public API. [Issue #95](https://github.com/bebleo/smtpdfix/issues/95)
