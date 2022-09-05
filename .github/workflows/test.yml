@@ -50,7 +50,7 @@ jobs:
       run: |
         pytest -p no:smtpd --cov --cov-report=xml
     - name: Upload coverage report to Codecov
-      uses: codecov/codecov-action@50ffd5fc58ed613b7848c7604df3a1effc13d659 # v2.1.0
+      uses: codecov/codecov-action@81cd2dc8148241f03f5839d295e000b8f761e378 # v2.1.0
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         fail_ci_if_error: true
