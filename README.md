@@ -40,7 +40,7 @@ $ pip install -e .[test]
 
 ## Using
 
-The `SMTPDFix` plugin, `smtpd`, automatically registers for use with pytest when you install smtpdfix. To use it simply add to you test method.
+The `SMTPDFix` plugin, `smtpd`, automatically registers for use with pytest when you install smtpdfix. To use it simply add to your test method.
 
 ```python
 from smtplib import SMTP
