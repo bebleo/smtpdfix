@@ -1,5 +1,9 @@
 # Change Log
 
+## Unreleased changes
+
+Release date: TBD
+
 ## Version 0.4.0
 
 Release date: 2022-09-05
