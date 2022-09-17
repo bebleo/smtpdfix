@@ -30,7 +30,7 @@ jobs:
     timeout-minutes: 10
 
     steps:
-    - uses: actions/checkout@b0e28b5ac45a892f91e7d036f8200cf5ed489415 # v3
+    - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # v3
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@b55428b1882923874294fa556849718a1d7f2ca5 # v4.1.0
       with:
@@ -62,7 +62,7 @@ jobs:
     timeout-minutes: 5
 
     steps:
-    - uses: actions/checkout@b0e28b5ac45a892f91e7d036f8200cf5ed489415 # v3
+    - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # v3
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@b55428b1882923874294fa556849718a1d7f2ca5 # v4.1.0
       with:
@@ -93,7 +93,7 @@ jobs:
     timeout-minutes: 5
 
     steps:
-    - uses: actions/checkout@b0e28b5ac45a892f91e7d036f8200cf5ed489415 # v3
+    - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # v3
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@b55428b1882923874294fa556849718a1d7f2ca5 # v4.1.0
       with:
