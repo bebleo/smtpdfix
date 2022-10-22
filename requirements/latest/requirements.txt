@@ -1,4 +1,4 @@
 aiosmtpd==1.4.2
-cryptography==38.0.1
+cryptography==38.0.2
 pytest==7.1.3
 python-dotenv==0.21.0
