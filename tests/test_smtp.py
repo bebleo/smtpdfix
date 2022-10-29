@@ -28,7 +28,7 @@ def test_auth_first(cmd: str, smtpd: Any) -> None:
 @pytest.mark.asyncio
 @patch("smtpdfix.handlers.AuthMessage")
 async def test_starttls_with_arg(mock_AuthMessage: Mock, future: Any) -> None:
-    from smtpdfix.smtp import SMTP as _SMTP
+    from smtpdfix.smtp import _SMTP
     smtpd: _SMTP = _SMTP(mock_AuthMessage)
     with patch.object(smtpd, "push", return_value=future) as mock_push:
         await smtpd.smtp_STARTTLS("arg")
@@ -39,7 +39,7 @@ async def test_starttls_with_arg(mock_AuthMessage: Mock, future: Any) -> None:
 @patch("smtpdfix.handlers.AuthMessage")
 async def test_starttls_no_context(mock_AuthMessage: Mock,
                                    future: Any) -> None:
-    from smtpdfix.smtp import SMTP as _SMTP
+    from smtpdfix.smtp import _SMTP
     smtpd: _SMTP = _SMTP(mock_AuthMessage)
     with patch.object(smtpd, "push", return_value=future) as mock_push:
         await smtpd.smtp_STARTTLS(None)
@@ -52,7 +52,7 @@ async def test_starttls_no_context(mock_AuthMessage: Mock,
 async def test_starttls_CancelledError(mock_AuthMessage: Mock,
                                        mock_SSLContext: Mock,
                                        future: Any) -> None:
-    from smtpdfix.smtp import SMTP as _SMTP
+    from smtpdfix.smtp import _SMTP
 
     mock_loop = Mock()
     mock_loop.start_tls.side_effect = CancelledError()
@@ -73,7 +73,7 @@ async def test_starttls_Exception(mock_AuthMessage: Mock,
                                   future: Any) -> None:
     from aiosmtpd.smtp import TLSSetupException
 
-    from smtpdfix.smtp import SMTP as _SMTP
+    from smtpdfix.smtp import _SMTP
 
     mock_loop = Mock()
     mock_loop.start_tls.side_effect = Exception()
