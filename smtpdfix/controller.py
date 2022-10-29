@@ -9,12 +9,15 @@ from ssl import CERT_OPTIONAL, Purpose, SSLContext, create_default_context
 from typing import Any, List, Optional
 
 from aiosmtpd.controller import Controller, get_localhost
-from aiosmtpd.smtp import SMTP
 
 from .authenticator import Authenticator
 from .configuration import Config
 from .handlers import AuthMessage
+from .smtp import SMTP
 from .typing import AsyncServer, PathType, ServerCoroutine
+
+# from aiosmtpd.smtp import SMTP
+
 
 log = logging.getLogger(__name__)
 

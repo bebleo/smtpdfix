@@ -1,8 +1,11 @@
 # Change Log
 
-## Unreleased changes
+## Version 0.4.1
 
-Release date: TBD
+Release date: 2022-10-29
+
+- Adds support for python 3.11.
+- Corrects an error related to `aiomsmtpd` that prevented StartTLS commands from working correctly. [Issue #227](https://github.com/bebleo/smtpdfix/227)
 
 ## Version 0.4.0
 
@@ -10,7 +13,7 @@ Release date: 2022-09-05
 
 - Support for python 3.6 has been dropped and python 3.7 or later is required. [Issue #113](https://github.com/bebleo/smtpdfix/issues/113)
 - `generate_certs` has been removed from the public API. [Issue #95](https://github.com/bebleo/smtpdfix/issues/95)
-- Corrects minor error in READMIE.md [Issue #140](https://github.com/bebleo/smtpdfix/issues/140)
+- Corrects minor error in README.md [Issue #140](https://github.com/bebleo/smtpdfix/issues/140)
 - Fixes a previously unreported bug where self-signed certificates would be rejected if no CA was generated and trusted. Now any certificate file, including the one generated internally, will be trusted.
 - Drops the dependecy on the `distutils` package in preparation for its removal with python 3.12. [Issue #114](https://github.com/bebleo/smtpdfix/issues/114)
 - Updates the `ready_timeout` from five seconds to ten seconds to mitigate issues where the fixture fails to start in time. See [Issue #80](https://github.com/bebleo/smtpdfix/issues/80)
