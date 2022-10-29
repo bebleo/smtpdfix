@@ -13,7 +13,7 @@ from aiosmtpd.controller import Controller, get_localhost
 from .authenticator import Authenticator
 from .configuration import Config
 from .handlers import AuthMessage
-from .smtp import SMTP
+from .smtp import _SMTP
 from .typing import AsyncServer, PathType, ServerCoroutine
 
 # from aiosmtpd.smtp import SMTP
@@ -72,16 +72,16 @@ class AuthController(Controller):
         self.config.OnChanged += self.reset
         log.info(f"SMTPDFix running on {self.hostname}:{self.port}")
 
-    def factory(self) -> SMTP:
+    def factory(self) -> _SMTP:
         use_starttls = self.config.use_starttls
         context = self._get_ssl_context() if use_starttls else None
 
-        return SMTP(handler=self.handler,
-                    require_starttls=self.config.use_starttls,
-                    auth_required=self.config.enforce_auth,
-                    auth_require_tls=self.config.auth_require_tls,
-                    tls_context=context,
-                    authenticator=self._authenticator)
+        return _SMTP(handler=self.handler,
+                     require_starttls=self.config.use_starttls,
+                     auth_required=self.config.enforce_auth,
+                     auth_require_tls=self.config.auth_require_tls,
+                     tls_context=context,
+                     authenticator=self._authenticator)
 
     def _get_ssl_context(self) -> SSLContext:
         if self._ssl_context is not None:

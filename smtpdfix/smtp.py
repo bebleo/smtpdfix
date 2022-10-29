@@ -1,10 +1,9 @@
 import asyncio
 
-from aiosmtpd.smtp import SMTP as _SMTP
-from aiosmtpd.smtp import TLSSetupException, syntax
+from aiosmtpd.smtp import SMTP, TLSSetupException, syntax
 
 
-class SMTP(_SMTP):
+class _SMTP(SMTP):
 
     @syntax('STARTTLS', when='tls_context')
     async def smtp_STARTTLS(self, arg: str) -> None:
