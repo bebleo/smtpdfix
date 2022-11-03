@@ -1,6 +1,6 @@
 import os
-from collections import namedtuple
 from email.message import EmailMessage
+from typing import List, NamedTuple
 
 import pytest
 
@@ -9,7 +9,12 @@ import pytest
 pytest_plugins = ["smtpdfix", "pytester"]
 
 
-def pytest_collection_modifyitems(items):
+class User(NamedTuple):
+    username: str
+    password: str
+
+
+def pytest_collection_modifyitems(items: List[pytest.Item]) -> None:
     # Mark each test as timing out after 10 seconds to prevent the server
     # hanging on errors. Note that this can lead to the entire test run
     # failing.
@@ -20,7 +25,7 @@ def pytest_collection_modifyitems(items):
 
 
 @pytest.fixture
-def msg():
+def msg() -> EmailMessage:
     msg = EmailMessage()
     msg["Subject"] = "Foo"
     msg["Sender"] = "from.addr@example.org"
@@ -30,8 +35,7 @@ def msg():
 
 
 @pytest.fixture
-def user():
-    user = namedtuple("User", "username, password")
-    user.username = os.getenv("SMTPD_USERNAME", "user")
-    user.password = os.getenv("SMTPD_PASSWORD", "password")
-    return user
+def user() -> User:
+    username = os.getenv("SMTPD_USERNAME", "user")
+    password = os.getenv("SMTPD_PASSWORD", "password")
+    return User(username, password)
