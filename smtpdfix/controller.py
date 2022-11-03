@@ -16,9 +16,6 @@ from .handlers import AuthMessage
 from .smtp import _SMTP
 from .typing import AsyncServer, PathType, ServerCoroutine
 
-# from aiosmtpd.smtp import SMTP
-
-
 log = logging.getLogger(__name__)
 
 
@@ -159,7 +156,9 @@ class AuthController(Controller):
         self.server.close()
         self.loop.run_until_complete(self.server.wait_closed())
         self.loop.close()
-        self.server = None  # type: ignore
+        # This done this way to accomodate type checking. Was originally the
+        # more sensible self.server = None
+        setattr(self, "server", None)
 
     def reset(self, persist_messages: bool = True) -> None:
         _running = False

@@ -1,10 +1,12 @@
 import logging
 import os
 import ssl
+from email.message import EmailMessage
 from pathlib import Path
 from smtplib import SMTP, SMTP_SSL, SMTPSenderRefused, SMTPServerDisconnected
 
 import pytest
+from pytest import FixtureRequest, TempPathFactory
 
 from smtpdfix.certs import _generate_certs
 from smtpdfix.configuration import Config
@@ -14,7 +16,7 @@ from smtpdfix.fixture import _Authenticator
 log = logging.getLogger(__name__)
 
 
-def test_missing_auth_handler(smtpd):
+def test_missing_auth_handler(smtpd: AuthController) -> None:
     smtpd.config.auth_require_tls = False
     with SMTP(smtpd.hostname, smtpd.port) as client:
         client.helo()
@@ -22,7 +24,8 @@ def test_missing_auth_handler(smtpd):
         assert code != 235  # This should be 504
 
 
-def test_use_starttls(smtpd, msg):
+def test_use_starttls(smtpd: AuthController,
+                      msg: EmailMessage) -> None:
     smtpd.config.use_starttls = True
     with SMTP(smtpd.hostname, smtpd.port) as client:
         with pytest.raises(SMTPSenderRefused) as error:
@@ -31,7 +34,9 @@ def test_use_starttls(smtpd, msg):
     assert error.type == SMTPSenderRefused
 
 
-def test_custom_ssl_context(request, tmp_path_factory, msg):
+def test_custom_ssl_context(request: FixtureRequest,
+                            tmp_path_factory: TempPathFactory,
+                            msg: EmailMessage) -> None:
     path = tmp_path_factory.mktemp("certs")
     _generate_certs(path, separate_key=True)
 
@@ -53,7 +58,7 @@ def test_custom_ssl_context(request, tmp_path_factory, msg):
     assert len(server.messages) == 1
 
 
-def test_missing_certs(request, msg):
+def test_missing_certs(request: FixtureRequest, msg: EmailMessage) -> None:
     with pytest.raises(FileNotFoundError) as error:
         _config = Config()
         _config.use_starttls = True
@@ -72,7 +77,9 @@ def test_missing_certs(request, msg):
     assert error.type == FileNotFoundError
 
 
-def test_custom_cert_and_key(request, tmp_path_factory, msg):
+def test_custom_cert_and_key(request: FixtureRequest,
+                             tmp_path_factory: TempPathFactory,
+                             msg: EmailMessage) -> None:
     path = tmp_path_factory.mktemp("certs")
     _generate_certs(path, separate_key=True)
     _config = Config()
@@ -90,7 +97,9 @@ def test_custom_cert_and_key(request, tmp_path_factory, msg):
     assert len(server.messages) == 1
 
 
-def test_TLS_not_supported(request, tmp_path_factory, msg, user):
+def test_TLS_not_supported(request: FixtureRequest,
+                           tmp_path_factory: TempPathFactory,
+                           msg: EmailMessage) -> None:
     path = tmp_path_factory.mktemp("certs")
     _generate_certs(path)
     ssl_cert_files = str(path.joinpath("cert.pem"))
@@ -115,7 +124,7 @@ def test_TLS_not_supported(request, tmp_path_factory, msg, user):
             assert len(server.messages) == 1
 
 
-def test_config_file(request, msg):
+def test_config_file(request: FixtureRequest, msg: EmailMessage) -> None:
     _original_env = os.environ.copy()
     config_file = Path(__file__).parent.joinpath("assets/.test.env")
     _config = Config(filename=config_file, override=True)
@@ -134,8 +143,8 @@ def test_config_file(request, msg):
     os.environ.update(_original_env)
 
 
-def test_exception_handler(request, msg):
-    def raise_error():
+def test_exception_handler(request: FixtureRequest, msg: EmailMessage) -> None:
+    def raise_error() -> None:
         raise Exception("Deliberately raised error.")
 
     server = AuthController()
