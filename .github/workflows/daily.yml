@@ -19,7 +19,7 @@ jobs:
         python-version: ["3.7", "3.8", "3.9", "3.10", pypy-3.7, pypy-3.9]
 
     steps:
-    - uses: actions/checkout@1f9a0c22da41e6ebfa534300ef656657ea2c6707 # v3
+    - uses: actions/checkout@5c3ccc22eb2c950a0fa5bc7c47190d8e3f7e681a # v3
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@13ae5bb136fac2878aff31522b9efb785519f984 # v4.1.0
       with:
