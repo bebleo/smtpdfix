@@ -29,10 +29,10 @@ class _Authenticator(Authenticator):
         return False
 
     def verify(self, username: str) -> bool:
-        return super().verify(username)
+        raise NotImplementedError
 
     def get_password(self, username: Optional[str]) -> str:
-        return self.config.login_password
+        return str(self.config.login_password)
 
 
 class SMTPDFix():
