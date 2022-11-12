@@ -1,17 +1,21 @@
+from email.message import EmailMessage
 from pathlib import Path
 from smtplib import SMTP
 from typing import Any
 
+from pytest import MonkeyPatch, TempPathFactory
+
 from smtpdfix import SMTPDFix
 
 
-def test_smtpdfix(msg):
+def test_smtpdfix(msg: EmailMessage) -> None:
     with SMTPDFix() as server, SMTP(server.hostname, server.port) as client:
         client.send_message(msg)
         assert len(server.messages) == 1
 
 
-def test_misconfigured_socket(monkeypatch, tmp_path_factory):
+def test_misconfigured_socket(monkeypatch: MonkeyPatch,
+                              tmp_path_factory: TempPathFactory) -> None:
     # As reported in #195 a misconfigured system will raise an error if
     # the hostname won't resolve to an IP address
     def raise_GAIError(*args: Any) -> None:
