@@ -1,8 +1,10 @@
 # Change Log
 
-## Unreleased Changes
+## Version 0.4.2
 
-Release date: TBD
+Release date: 2023-03-25
+
+- Pin version of `cryptography` to be 39.0.1 or later and less than 40.0.0 when installing with PyPy to address issues when running under the new version.
 
 ## Version 0.4.1
 
