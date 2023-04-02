@@ -13,5 +13,3 @@ from .configuration import Config
 from .controller import AuthController
 from .fixture import SMTPDFix, smtpd
 from .handlers import AuthMessage
-
-config = Config()

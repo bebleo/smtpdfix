@@ -2,13 +2,10 @@ import os
 from pathlib import Path
 from typing import Any, Optional, Tuple, Union
 
-from dotenv import load_dotenv
-
 from .event_handler import EventHandler
 from .typing import PathType
 
 _current_dir = Path(__file__).parent
-load_dotenv()
 
 
 def _strtobool(val: str) -> bool:
@@ -30,11 +27,7 @@ def _strtobool(val: str) -> bool:
 
 
 class Config():
-    def __init__(self,
-                 filename: Optional[PathType] = None,
-                 override: bool = False) -> None:
-        if filename:
-            load_dotenv(filename, override=override)
+    def __init__(self) -> None:
 
         self.OnChanged = EventHandler()
 

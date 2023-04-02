@@ -62,8 +62,7 @@ class AuthController(Controller):
 
         # The event handler for changes to the config goes here to prevent it
         # firing when the obkect is initialized.
-        if hostname is not None:
-            self.config.host = hostname
+        self.config.host = _hostname
         if port is not None:
             self.config.port = port
         self.config.OnChanged += self.reset
