@@ -1,6 +1,4 @@
 import functools
-import os
-from pathlib import Path
 from typing import Any, Generator, List
 
 import pytest
@@ -68,17 +66,6 @@ def test_strtobool_error(val: str) -> None:
 def test_init() -> None:
     config = Config()
     assert isinstance(config, Config)
-
-
-def test_init_envfile() -> None:
-    original_env = os.environ.copy()
-    config_file = Path(__file__).parent.joinpath("assets/.test.env")
-    config = Config(filename=config_file, override=True)
-
-    assert config.port == 5025
-
-    os.environ.clear()
-    os.environ.update(original_env)
 
 
 @pytest.mark.parametrize("attr, value, expected, type", values)

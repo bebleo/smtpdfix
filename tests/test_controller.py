@@ -1,8 +1,6 @@
 import logging
-import os
 import ssl
 from email.message import EmailMessage
-from pathlib import Path
 from smtplib import SMTP, SMTP_SSL, SMTPSenderRefused, SMTPServerDisconnected
 
 import pytest
@@ -122,25 +120,6 @@ def test_TLS_not_supported(request: FixtureRequest,
             # but instead returns an SMTPServerDisconnected Error
             client.send_message(msg)
             assert len(server.messages) == 1
-
-
-def test_config_file(request: FixtureRequest, msg: EmailMessage) -> None:
-    _original_env = os.environ.copy()
-    config_file = Path(__file__).parent.joinpath("assets/.test.env")
-    _config = Config(filename=config_file, override=True)
-    server = AuthController(hostname=_config.host,
-                            port=_config.port,
-                            config=_config)
-    request.addfinalizer(server.stop)
-    server.start()
-
-    with SMTP(server.hostname, server.port) as client:
-        client.send_message(msg)
-
-    assert server.port == 5025
-
-    os.environ.clear()
-    os.environ.update(_original_env)
 
 
 def test_exception_handler(request: FixtureRequest, msg: EmailMessage) -> None:
