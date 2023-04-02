@@ -1,5 +1,15 @@
 # Change Log
 
+## Unreleased Changes
+
+Release date: TBD
+
+**Includes Potentially Breaking Changes:**
+
+Previously `smtpdfix` would load a `.env` file automatically using `python-dotenv`. This behaviour has been corrected and .env files must be loaded separately.
+
+- As of version 0.5.0 Smtpdfix no longer uses `python-dotenv` to load a `.env` file by default. [Issue #274](https://github.com/bebleo/smtpdfix/274) reported by [Emmanuel Belair (@e-belair)](https://github.com/e-belair)
+
 ## Version 0.4.2
 
 Release date: 2023-03-25

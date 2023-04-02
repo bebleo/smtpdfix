@@ -130,8 +130,6 @@ Property         | Variable               | Default              | Description
 `ssl_cert_path`  | `SMTPD_SSL_CERTS_PATH` | `./certs/`           | The path to the key and certificate in PEM format for encryption with SSL/TLS or StartTLS.
 `ssl_cert_files` | `SMTPD_SSL_CERT_FILE` and `SMTPD_SSL_KEY_FILE` | `("cert.pem", None)` | A tuple of the path for the certificate file and key file in PEM format. See [Resolving certificate and key paths](#resolving-certificate-and-key-paths) for more details.
 
-> If environment variables are included in a `.env` file they'll be loaded automatically.
-
 ### Resolving certificate and key paths
 
 In order to resolve the certificate and key paths for the SSL/TLS context SMTPDFix does the following:
