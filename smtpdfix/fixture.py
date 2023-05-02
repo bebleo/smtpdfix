@@ -2,6 +2,7 @@ import logging
 import os
 from typing import Any, Generator, Optional
 
+import portpicker
 import pytest
 
 from .authenticator import Authenticator
@@ -38,10 +39,14 @@ class _Authenticator(Authenticator):
 class SMTPDFix():
     def __init__(self,
                  hostname: Optional[str] = None,
-                 port: int = 8025,
+                 port: Optional[int] = None,
                  config: Optional[Config] = None) -> None:
         self.hostname = hostname
-        self.port = int(port) if port is not None else 8025
+        self.port = (
+            int(port)
+            if port is not None
+            else portpicker.pick_unused_port()
+        )
         self.config = config or Config()
 
     def __enter__(self) -> AuthController:
