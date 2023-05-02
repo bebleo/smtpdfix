@@ -1,15 +1,18 @@
 # Change Log
 
-## Unreleased Changes
+## Version 0.5.0
 
-Release date: TBD
+Release date: 2023-05-02
 
 **Includes Potentially Breaking Changes:**
 
 Previously `smtpdfix` would load a `.env` file automatically using `python-dotenv`. This behaviour has been corrected and .env files must be loaded separately.
 
+Previous versions used port 8025 by default, as of version 0.5.0 a random port is used instead.
+
 - As of version 0.5.0 Smtpdfix no longer uses `python-dotenv` to load a `.env` file by default. [Issue #274](https://github.com/bebleo/smtpdfix/274) reported by [Emmanuel Belair (@e-belair)](https://github.com/e-belair)
 - A random unused port is used instead of the default 8025 port. [Issue #820](https://github.com/bebleo/smtpdfix/issues/280) reported by [Éloi Rivard](https://github.com/azmeuk)
+- Replaced the deprecated key `license_file` with `license_files` as per warning during build.
 
 ## Version 0.4.2
 
