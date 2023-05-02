@@ -2,6 +2,8 @@ import os
 from pathlib import Path
 from typing import Any, Optional, Tuple, Union
 
+import portpicker
+
 from .event_handler import EventHandler
 from .typing import PathType
 
@@ -32,7 +34,9 @@ class Config():
         self.OnChanged = EventHandler()
 
         self._host = os.getenv("SMTPD_HOST")
-        self._port = int(os.getenv("SMTPD_PORT", 8025))
+        self._port = int(
+            os.getenv("SMTPD_PORT", portpicker.pick_unused_port())
+        )
         self._ready_timeout = float(os.getenv("SMTPD_READY_TIMEOUT", 10.0))
         self._login_username = os.getenv("SMTPD_LOGIN_NAME", "user")
         self._login_password = os.getenv("SMTPD_LOGIN_PASSWORD", "password")
