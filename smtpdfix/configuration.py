@@ -5,7 +5,8 @@ from typing import Any, Optional, Tuple, Union
 import portpicker
 
 from .event_handler import EventHandler
-from .typing import PathType
+
+PathType = Union[str, os.PathLike]
 
 _current_dir = Path(__file__).parent
 

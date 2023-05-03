@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import logging
-from typing import Any
+from typing import Any, Callable, Dict, Optional
 
-from .typing import CallableHandler
+CallableHandler = Callable[..., Optional[Dict[Any, Any]]]
 
 log = logging.getLogger(__name__)
 

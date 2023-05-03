@@ -6,15 +6,17 @@ from os import strerror
 from pathlib import Path
 from socket import create_connection
 from ssl import CERT_OPTIONAL, Purpose, SSLContext, create_default_context
-from typing import Any, List, Optional
+from typing import Any, Coroutine, List, Optional
 
 from aiosmtpd.controller import Controller, get_localhost
 
 from .authenticator import Authenticator
-from .configuration import Config
+from .configuration import Config, PathType
 from .handlers import AuthMessage
 from .smtp import _SMTP
-from .typing import AsyncServer, PathType, ServerCoroutine
+
+AsyncServer = asyncio.base_events.Server
+ServerCoroutine = Coroutine[Any, Any, asyncio.base_events.Server]
 
 log = logging.getLogger(__name__)
 
