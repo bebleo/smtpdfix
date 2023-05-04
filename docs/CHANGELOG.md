@@ -4,6 +4,8 @@
 
 Release date: TBD
 
+- remove redundant `smtpdfix.typing`.
+
 ## Version 0.5.0
 
 Release date: 2023-05-02
