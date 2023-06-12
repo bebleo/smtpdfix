@@ -3,4 +3,4 @@ cryptography==39.0.2; python_implementation=="PyPy" and python_version<="3.7"
 cryptography==40.0.2; python_implementation=="PyPy" and python_version>="3.8"
 cryptography==40.0.2; python_implementation!="PyPy"
 portpicker==1.5.2
-pytest==7.3.1
+pytest==7.3.2
