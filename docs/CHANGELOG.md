@@ -5,6 +5,7 @@
 Release date: TBD
 
 - remove redundant `smtpdfix.typing`.
+- Drop support for PyPy 3.7 from testing.
 
 ## Version 0.5.0
 
