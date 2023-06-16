@@ -13,6 +13,9 @@ on:
 permissions:
   contents: read
 
+env:
+  TIMEOUT: 5
+
 jobs:
   build:
 
@@ -21,13 +24,13 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11-dev", pypy-3.8, pypy-3.9]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", pypy-3.8, pypy-3.9]
         include:
           - os: macos-latest
-            python-version: "3.11-dev"
+            python-version: "3.11"
           - os: windows-latest
-            python-version: "3.11-dev"
-    timeout-minutes: 10
+            python-version: "3.11"
+    timeout-minutes: $TIMEOUT
 
     steps:
     - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
@@ -58,8 +61,8 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        python-version: ["3.7","3.11-dev"]
-    timeout-minutes: 5
+        python-version: ["3.7","3.11"]
+    timeout-minutes: $TIMEOUT
 
     steps:
     - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
@@ -84,13 +87,13 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        python-version: ["3.7", "3.11-dev", pypy-3.8, pypy-3.9]
+        python-version: ["3.7", "3.11", pypy-3.8, pypy-3.9]
         include:
           - os: macos-latest
-            python-version: "3.11-dev"
+            python-version: "3.11"
           - os: windows-latest
-            python-version: "3.11-dev"
-    timeout-minutes: 5
+            python-version: "3.11"
+    timeout-minutes: $TIMEOUT
 
     steps:
     - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
