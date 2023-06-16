@@ -1,6 +1,4 @@
 aiosmtpd==1.4.4.post2
-cryptography==39.0.2; python_implementation=="PyPy" and python_version<="3.7"
-cryptography==41.0.1; python_implementation=="PyPy" and python_version>="3.8"
-cryptography==41.0.1; python_implementation!="PyPy"
+cryptography==41.0.1
 portpicker==1.5.2
 pytest==7.3.2
