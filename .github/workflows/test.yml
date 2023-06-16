@@ -105,7 +105,8 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip setuptools wheel
-        pip install .[dev] -r requirements/minimum/requirements.txt
+        pip install -r requirements/minimum/requirements.txt
+        pip install --no-deps .
     - name: Test with pytest
       run: |
         pytest -p no:smtpd
