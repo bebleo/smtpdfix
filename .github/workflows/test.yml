@@ -13,9 +13,6 @@ on:
 permissions:
   contents: read
 
-env:
-  TIMEOUT: 5
-
 jobs:
   build:
 
@@ -30,7 +27,7 @@ jobs:
             python-version: "3.11"
           - os: windows-latest
             python-version: "3.11"
-    timeout-minutes: $TIMEOUT
+    timeout-minutes: 5
 
     steps:
     - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
@@ -62,7 +59,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         python-version: ["3.7","3.11"]
-    timeout-minutes: $TIMEOUT
+    timeout-minutes: 5
 
     steps:
     - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
@@ -93,7 +90,7 @@ jobs:
             python-version: "3.11"
           - os: windows-latest
             python-version: "3.11"
-    timeout-minutes: $TIMEOUT
+    timeout-minutes: 5
 
     steps:
     - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
