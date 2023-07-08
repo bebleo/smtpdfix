@@ -1,8 +1,8 @@
 # Change Log
 
-## Unreleased Changes
+## Version 0.5.1
 
-Release date: TBD
+Release date: 2023-07-07
 
 - Removes redundant `smtpdfix.typing` module.
 - Drop support for PyPy 3.7 from testing.
