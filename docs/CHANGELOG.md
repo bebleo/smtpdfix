@@ -4,6 +4,8 @@
 
 Release Date: TBD
 
+- Testing against python 3.7 to 3.12 added to tox and GitHub CI.
+
 ## Version 0.5.1
 
 Release date: 2023-07-07
