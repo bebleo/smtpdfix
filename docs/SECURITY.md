@@ -2,14 +2,17 @@
 
 ## Supported Versions
 
-Currently we support only the latest version with updates.
+Currently only the latest version is supported with updates.
 
 ## Reporting a Vulnerability
 
-Please do **not** report vulnerabilites through the public
-issue tracker.
+To securely report a vulnerability, please [open an advisory on GitHub](https://github.com/bebleo/smtpdfix/security/advisories/new). This form is also accessible when [submitting a new issue](https://github.com/bebleo/smtpdfix/issues/new/choose).
 
-Vulnerabilities should be sent by email to bebleo@yahoo.com
-Please include as much supporting information as possible.
-We will acknowledge your email as soon as possible and
-request additional details if necessary.
+## Vulnerability Process
+
+1. Your report will be acknowledged within ten business days.
+2. The report will be investigated and updated with any relevant information.
+3. If the report is not confirmed, no further action will be taken and the issue will be closed.
+4. If the report is confirmed, action will be taken as soon as possible to fix it:
+    1. Commits will be handled in a private repository for review and testing.
+    2. Release a new patch version from the private repository.
