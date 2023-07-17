@@ -4,6 +4,9 @@
 
 Release Date: TBD
 
+- Testing against PyPy in tox is now against versions PyPy 3.9 and PyPy 3.10.
+- Stop tox installing when running on GitHub CI.
+
 ## Version 0.5.1
 
 Release date: 2023-07-07
