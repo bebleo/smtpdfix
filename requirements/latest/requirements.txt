@@ -1,4 +1,4 @@
 aiosmtpd==1.4.4.post2
 cryptography==41.0.3
-portpicker==1.5.2
+portpicker==1.6.0
 pytest==7.4.0
