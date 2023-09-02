@@ -1,5 +1,7 @@
 import functools
+from pathlib import Path  # noqa: F401
 from typing import Any, Generator, List
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -21,7 +23,6 @@ values = [
     ("auth_require_tls", "0", False, bool),
     ("auth_require_tls", False, False, bool),
     ("auth_require_tls", "False", False, bool),
-    ("ssl_certs_path", "./certs", "./certs", str),
     ("ssl_cert_files",
         ("./certs/cert.pem", "./certs/key.pem"),
         ("./certs/cert.pem", "./certs/key.pem"),
@@ -69,7 +70,13 @@ def test_init() -> None:
 
 
 @pytest.mark.parametrize("attr, value, expected, type", values)
-def test_set_values(attr: str, value: Any, expected: Any, type: Any) -> None:
+@patch("smtpdfix.configuration.Path.is_file")
+def test_set_values(mock_is_file: Any,
+                    attr: str,
+                    value: Any,
+                    expected: Any,
+                    type: Any) -> None:
+    mock_is_file.return_value = True
     config = Config()
     setattr(config, attr, value)
     assert isinstance(getattr(config, attr), type)
@@ -77,7 +84,12 @@ def test_set_values(attr: str, value: Any, expected: Any, type: Any) -> None:
 
 
 @pytest.mark.parametrize("prop", props)
-def test_event_handler_fires(prop: str, handler: FakeHandler) -> None:
+@patch("smtpdfix.configuration.Path.__new__")
+def test_event_handler_fires(mock_Path: MagicMock,
+                             prop: str,
+                             handler: FakeHandler) -> None:
+    mock_Path.return_value = MagicMock()
+    mock_Path.is_file = True
     config = Config()
     result: List[Any] = []
     config.OnChanged += functools.partial(handler.handle, result)
