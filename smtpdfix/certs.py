@@ -3,7 +3,7 @@ import socket
 from datetime import datetime, timedelta
 from ipaddress import ip_address
 from pathlib import Path
-from typing import Union
+from typing import Optional, Tuple, Union
 
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
@@ -18,7 +18,27 @@ log = logging.getLogger(__name__)
 def _generate_certs(path: Union[Path, str],
                     days: int = 3652,
                     key_size: int = 2048,
-                    separate_key: bool = False) -> None:
+                    separate_key: bool = False) -> Tuple[Path, Optional[Path]]:
+    """DO NOT USE THIS FOR ANYTHING PRODUCTION RELATED, EVER!
+
+    Params:
+    - path: the `Path` or `str` of the directory to write the file to.
+    - days: an `int` of the number of days the certificate will be valid.
+    - key_size: an `int` representing the byte size of the key.
+    - separate_key: a `bool` representing whether the private key should be
+      written to a separate file.
+
+    Returns:
+    - By default returns a `tuple` with a `Path` to the certificate file
+      "cert.pem" and `None` for the key file.
+    - If separate_key was `True` a `tuple` with the paths to the certificate
+      file "cert.pem" and key file "key.pem" (each as a `Path`) will be
+      returned.
+
+    Changed as of v0.5.2
+    - Now returns a tuple of the location of the cert file and, if separate,
+      the key file. Previously always returned `None`
+    """
     # DO NOT USE THIS FOR ANYTHING PRODUCTION RELATED, EVER!
     # Generate private key
     # 2048 is the minimum that works as of 3.9
@@ -74,3 +94,5 @@ def _generate_certs(path: Union[Path, str],
     with open(cert_path, "ab") as f:
         f.write(cert.public_bytes(serialization.Encoding.PEM))
     log.debug("Certificate generated")
+
+    return tuple([cert_path, key_path if separate_key else None])

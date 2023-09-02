@@ -1,3 +1,4 @@
+import logging
 import os
 from pathlib import Path
 from typing import Any, Optional, Tuple, Union
@@ -5,6 +6,8 @@ from typing import Any, Optional, Tuple, Union
 import portpicker
 
 from .event_handler import EventHandler
+
+log = logging.getLogger(__name__)
 
 PathType = Union[str, os.PathLike]
 
@@ -30,8 +33,13 @@ def _strtobool(val: str) -> bool:
 
 
 class Config():
-    def __init__(self) -> None:
+    """Holds all of the configuration values for the Controller.
 
+    Changed in v0.5.2:
+    - Rmoved the SSL_Cert_Path property
+    """
+    def __init__(self) -> None:
+        # Sets an event handler on the object
         self.OnChanged = EventHandler()
 
         self._host = os.getenv("SMTPD_HOST")
@@ -45,16 +53,31 @@ class Config():
                                                   "False"))
         self._auth_require_tls = _strtobool(os.getenv("SMTPD_AUTH_REQUIRE_TLS",
                                                       "True"))
-        self._ssl_cert_path: PathType = os.getenv(
-            "SMTPD_SSL_CERTS_PATH",
-            _current_dir.joinpath("certs"))
-        self._ssl_cert_files = (
-            os.getenv("SMTPD_SSL_CERTIFICATE_FILE", "./cert.pem"),
-            os.getenv("SMTPD_SSL_KEY_FILE"))
+        self._ssl_cert_files = (os.getenv("SMTPD_SSL_CERTIFICATE_FILE"),
+                                os.getenv("SMTPD_SSL_KEY_FILE"))
         self._use_starttls = _strtobool(os.getenv("SMTPD_USE_STARTTLS",
                                                   "False"))
         self._use_ssl = (_strtobool(os.getenv("SMTPD_USE_SSL", "False"))
                          or _strtobool(os.getenv("SMTPD_USE_TLS", "False")))
+        # Check to ensure that the _ssl_cert_files are either none or resolve
+        assert self._check_cert_files()
+
+    def _check_cert_files(self) -> bool:
+        """Check that the certificate and, optional, key files exist or are
+        None.
+
+        Returns:
+        - `True` if there are no errors.
+
+        Raises:
+        - FileNotFoundError if the certificate of key file is not None and does
+          resolve to a file.
+        """
+        for file_ in self._ssl_cert_files:
+            if file_ is not None and Path(file_).is_file() is False:
+                raise FileNotFoundError
+                log.debug(f"File not found at {file_}")
+        return True
 
     def convert_to_bool(self, value: Any) -> bool:
         """Consistently convert to bool."""
@@ -126,15 +149,6 @@ class Config():
         self.OnChanged()
 
     @property
-    def ssl_certs_path(self) -> PathType:
-        return self._ssl_cert_path
-
-    @ssl_certs_path.setter
-    def ssl_certs_path(self, value: PathType) -> None:
-        self._ssl_cert_path = value
-        self.OnChanged()
-
-    @property
     def ssl_cert_files(self) -> Tuple[str, Optional[str]]:
         return self._ssl_cert_files
 
@@ -145,6 +159,7 @@ class Config():
             self._ssl_cert_files = (value[0], value[1])
         else:
             self._ssl_cert_files = (value, None)
+        assert self._check_cert_files()
         self.OnChanged()
 
     @property
