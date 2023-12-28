@@ -11,6 +11,9 @@ Release Date: TBD
 **Fixes & Maintenance**
 
 - Testing against python 3.7 to 3.12 added to tox and GitHub CI.
+- Testing against PyPy in tox is now against versions PyPy 3.9 and PyPy 3.10.
+- Stop tox installing when running on GitHub CI.
+- Removes deprecated `datetime.utcnow()`. [Issue #338](https://github.com/bebleo/smtpdfix/issues/338).
 
 ## Version 0.5.1
 

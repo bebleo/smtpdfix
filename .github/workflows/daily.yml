@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12.0-beta.4", pypy-3.9]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12", pypy-3.9]
 
     steps:
     - uses: actions/checkout@v3
@@ -24,10 +24,11 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
+        cache: pip
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install .[dev]
+        pip install .[testing]
     - name: Test with pytest
       run: |
         pytest -p no:smtpd --cov

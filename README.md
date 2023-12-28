@@ -173,11 +173,20 @@ Many libraries for sending email have built-in methods for testing and using the
 
 ## Developing
 
-To develop and test smtpdfix you will need to install [pytest-asyncio](https://github.com/pytest-dev/pytest-asyncio) to run asynchronous tests, [isort](https://pycqa.github.io/isort/) to sort imports and [flake8](https://flake8.pycqa.org/en/latest/) to lint. To install in a virtual environment for development:
+To develop and test smtpdfix you will need to install:
++ [pytest-asyncio](https://github.com/pytest-dev/pytest-asyncio) to run asynchronous tests,
++ [pytest-cov](https://github.com/pytest-dev/pytest-cov) to ensure 100% code coverages,
++ [pytest-timeout](https://github.com/pytest-dev/pytest-timeout) so that tests timeout,
++ [isort](https://pycqa.github.io/isort/) to sort imports,
++ [flake8](https://flake8.pycqa.org/en/latest/) to lint,
++ [mypy](https://mypy.readthedocs.io/en/stable/) for type checking,, and finally
++ [tox](https://tox.wiki/) to run a complete set of tests.
+
+To install all of these in a in a virtual environment for development:
 
 ```bash
 $ python -m venv venv
-$ ./venv/scripts/activate
+$ source venv/bin/activate
 $ pip install -e .[dev]
 ```
 
@@ -191,13 +200,6 @@ Quick tests can be handled by running pytest directly:
 
 ```bash
 $ pytest -p no:smtpd --cov
-```
-
-Before submitting a pull request with your changes you should ensure that all imports are sorted and that the code passes linting with flake8.
-
-```bash
-$ isort .
-$ flake8 .
 ```
 
 We include a [pre-commit](https://pre-commit.com/) configuration file to automate checks and clean up imports before pushing code. In order to install pre-commit git hooks:

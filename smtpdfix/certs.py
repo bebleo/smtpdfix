@@ -1,6 +1,6 @@
 import logging
 import socket
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from ipaddress import ip_address
 from pathlib import Path
 from typing import Optional, Tuple, Union
@@ -16,7 +16,7 @@ log = logging.getLogger(__name__)
 
 
 def _generate_certs(path: Union[Path, str],
-                    days: int = 3652,
+                    days: int = 365,
                     key_size: int = 2048,
                     separate_key: bool = False) -> Tuple[Path, Optional[Path]]:
     """DO NOT USE THIS FOR ANYTHING PRODUCTION RELATED, EVER!
@@ -83,8 +83,8 @@ def _generate_certs(path: Union[Path, str],
             .issuer_name(subject)
             .subject_name(subject)
             .serial_number(random_serial_number())
-            .not_valid_before(datetime.utcnow())
-            .not_valid_after(datetime.utcnow() + timedelta(days=days))
+            .not_valid_before(datetime.now(timezone.utc))
+            .not_valid_after(datetime.now(timezone.utc) + timedelta(days=days))
             .add_extension(SubjectAlternativeName(alt_names), critical=False)
             .public_key(key.public_key())
             .add_extension(constraints, critical=False)
