@@ -36,7 +36,7 @@ class Config():
     """Holds all of the configuration values for the Controller.
 
     Changed in v0.5.2:
-    - Rmoved the SSL_Cert_Path property
+    - Removed the SSL_Cert_Path property
     """
     def __init__(self) -> None:
         # Sets an event handler on the object
