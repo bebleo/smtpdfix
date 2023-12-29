@@ -79,8 +79,8 @@ class Config():
         """
         for file_ in self._ssl_cert_files:
             if file_ is not None and Path(file_).is_file() is False:
-                raise FileNotFoundError
                 log.debug(f"File not found at {file_}")
+                raise FileNotFoundError
         return True
 
     def convert_to_bool(self, value: Any) -> bool:
