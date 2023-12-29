@@ -83,6 +83,12 @@ def test_set_values(mock_is_file: Any,
     assert getattr(config, attr) == expected
 
 
+def test_file_not_found():
+    config = Config()
+    with pytest.raises(FileNotFoundError):
+        config.ssl_cert_files = "rubbish"
+
+
 @pytest.mark.parametrize("prop", props)
 @patch("smtpdfix.configuration.Path.__new__")
 def test_event_handler_fires(mock_Path: MagicMock,

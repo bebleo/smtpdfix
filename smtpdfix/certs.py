@@ -1,9 +1,10 @@
 import logging
 import socket
+from collections import namedtuple
 from datetime import datetime, timedelta, timezone
 from ipaddress import ip_address
 from pathlib import Path
-from typing import Optional, Tuple, Union
+from typing import Union
 
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
@@ -14,11 +15,13 @@ from cryptography.x509.oid import NameOID
 
 log = logging.getLogger(__name__)
 
+Cert = namedtuple("Cert", ["cert", "key"], defaults=[None, None])
+
 
 def _generate_certs(path: Union[Path, str],
                     days: int = 365,
                     key_size: int = 2048,
-                    separate_key: bool = False) -> Tuple[Path, Optional[Path]]:
+                    separate_key: bool = False) -> Cert:
     """DO NOT USE THIS FOR ANYTHING PRODUCTION RELATED, EVER!
 
     Params:
@@ -95,4 +98,4 @@ def _generate_certs(path: Union[Path, str],
         f.write(cert.public_bytes(serialization.Encoding.PEM))
     log.debug("Certificate generated")
 
-    return tuple([cert_path, key_path if separate_key else None])
+    return Cert(cert_path, [key_path if separate_key else None])

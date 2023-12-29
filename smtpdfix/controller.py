@@ -11,7 +11,7 @@ from typing import Any, Coroutine, List, Optional
 from aiosmtpd.controller import Controller, get_localhost
 
 from .authenticator import Authenticator
-from .configuration import Config, PathType
+from .configuration import Config
 from .handlers import AuthMessage
 from .smtp import _SMTP
 
@@ -87,12 +87,10 @@ class AuthController(Controller):
 
         cert_file, key_file = self.config.ssl_cert_files
 
-        def _resolve_file(file_: PathType) -> str:
+        def _resolve_file(file_: Optional[str]) -> str:
             # NB: the paths are returned as strings becuase PYPY3 doesn't
             # support paths in sslcontext.load_cert_chain()
-            if file_ is None:
-                raise FileNotFoundError
-            if Path(file_).is_file():
+            if file_ and Path(file_).is_file():
                 return str(Path(file_))
 
             raise FileNotFoundError(errno.ENOENT,
