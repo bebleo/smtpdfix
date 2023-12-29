@@ -59,23 +59,15 @@ def test_custom_ssl_context(request: FixtureRequest,
 def test_missing_certs(request: FixtureRequest, msg: EmailMessage) -> None:
     _config = Config()
     _config.use_starttls = True
+    _config.ssl_cert_files = None
     _authenticator = _Authenticator(config=_config)
     server = AuthController(hostname=_config.host,
                             port=_config.port,
                             config=_config,
                             authenticator=_authenticator)
-    request.addfinalizer(server.stop)
-    # with pytest.raises(FileNotFoundError) as error:
-    # TODO: Figure out why this passes when it should not.
-    server.start()
-
-    with SMTP(server.hostname, server.port) as client:
-        client.starttls()
-        client.send_message(msg)
-
-    assert len(server.messages) == 1
-
-    # assert error.type == FileNotFoundError
+    with pytest.raises(FileNotFoundError):
+        server.start()
+        server.stop()
 
 
 def test_custom_cert_and_key(request: FixtureRequest,

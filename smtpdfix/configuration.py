@@ -1,7 +1,7 @@
 import logging
 import os
 from pathlib import Path
-from typing import Any, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, Optional, Tuple, Union
 
 import portpicker
 
@@ -9,8 +9,12 @@ from .event_handler import EventHandler
 
 log = logging.getLogger(__name__)
 
-PathType = Union[str, os.PathLike]
+if TYPE_CHECKING:  # pragma: no cover
+    PathType = Union[str, os.PathLike[Any]]
+else:
+    PathType = Union[str, os.PathLike]
 
+# TODO: remove unused _current_dir
 _current_dir = Path(__file__).parent
 
 
@@ -149,7 +153,7 @@ class Config():
         self.OnChanged()
 
     @property
-    def ssl_cert_files(self) -> Tuple[str, Optional[str]]:
+    def ssl_cert_files(self) -> Tuple[Optional[str], Optional[str]]:
         return self._ssl_cert_files
 
     @ssl_cert_files.setter
