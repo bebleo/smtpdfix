@@ -14,9 +14,6 @@ if TYPE_CHECKING:  # pragma: no cover
 else:
     PathType = Union[str, os.PathLike]
 
-# TODO: remove unused _current_dir
-_current_dir = Path(__file__).parent
-
 
 def _strtobool(val: str) -> bool:
     """Convert a string representation of truth to true (1) or false (0).
@@ -79,7 +76,7 @@ class Config():
         """
         for file_ in self._ssl_cert_files:
             if file_ is not None and Path(file_).is_file() is False:
-                log.debug(f"File not found at {file_}")
+                log.debug("File not found: verify cert and key config")
                 raise FileNotFoundError
         return True
 
