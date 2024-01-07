@@ -33,7 +33,7 @@ jobs:
     - name: Ensure localhost
       if: ${{ matrix.os == 'macos-latest'}}
       run: |
-        # host localhost || true
+        # Set localhost on MacOS runners
         sudo networksetup -setdnsservers Ethernet 9.9.9.9
         host localhost
     - uses: actions/checkout@v3
@@ -69,6 +69,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: Ensure localhost
+      if: ${{ matrix.os == 'macos-latest'}}
+      run: |
+        # Set localhost on MacOS runners
+        sudo networksetup -setdnsservers Ethernet 9.9.9.9
+        host localhost
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
       with:
@@ -100,6 +106,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: Ensure localhost
+      if: ${{ matrix.os == 'macos-latest'}}
+      run: |
+        # Set localhost on MacOS runners
+        sudo networksetup -setdnsservers Ethernet 9.9.9.9
+        host localhost
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
       with:
