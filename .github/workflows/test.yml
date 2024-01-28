@@ -21,7 +21,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", pypy-3.9, pypy-3.10]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12.0", pypy-3.9, pypy-3.10]
         include:
           - os: macos-latest
             python-version: "3.11"
@@ -30,13 +30,13 @@ jobs:
     timeout-minutes: 5
 
     steps:
+    - uses: actions/checkout@v3
     - name: Ensure localhost
       if: ${{ matrix.os == 'macos-latest'}}
       run: |
         # Set localhost on MacOS runners
         sudo networksetup -setdnsservers Ethernet 9.9.9.9
         host localhost
-    - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
       with:

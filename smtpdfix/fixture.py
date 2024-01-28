@@ -77,10 +77,10 @@ def smtpd(
                 code, resp = client.noop()
                 assert code == 250
     """
-    if os.getenv("SMTPD_SSL_CERTS_PATH") is None:
+    if os.getenv("SMTPD_SSL_CERTIFICATE_FILE") is None:
         path = tmp_path_factory.mktemp("certs")
-        _generate_certs(path)
-        os.environ["SMTPD_SSL_CERTS_PATH"] = str(path.resolve())
+        cert, _ = _generate_certs(path, separate_key=False)
+        os.environ["SMTPD_SSL_CERTIFICATE_FILE"] = str(cert.resolve())
 
     with SMTPDFix() as fixture:
         yield fixture
