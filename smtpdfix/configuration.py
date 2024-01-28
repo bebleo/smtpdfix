@@ -43,7 +43,7 @@ class Config():
         # Sets an event handler on the object
         self.OnChanged = EventHandler()
 
-        self._host = os.getenv("SMTPD_HOST")
+        self._host = os.getenv("SMTPD_HOST", "localhost")
         self._port = int(
             os.getenv("SMTPD_PORT", portpicker.pick_unused_port())
         )
