@@ -33,10 +33,15 @@ jobs:
     - uses: actions/checkout@v4
     - name: Ensure localhost
       if: ${{ matrix.os == 'macos-latest'}}
+      # run: |
+        # # Set localhost on MacOS runners
+        # sudo networksetup -setdnsservers Ethernet 9.9.9.9
+        # host localhost
       run: |
-        # Set localhost on MacOS runners
-        sudo networksetup -setdnsservers Ethernet 9.9.9.9
-        host localhost
+        # Make "localhost" DNS entry available; see https://github.com/actions/runner-images/issues/6383
+        # sudo networksetup -setdnsservers Ethernet 9.9.9.9
+        echo -e "$(ipconfig getifaddr en0) $(hostname -f) $(hostname -s)" | sudo tee -a /etc/hosts 
+        echo `sudo lsof -PiTCP -sTCP:LISTEN`
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
       with:
