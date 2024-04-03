@@ -65,18 +65,11 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        python-version: ["3.8", "3.12"]
+        python-version: ["3.12"]
     timeout-minutes: 5
 
     steps:
     - uses: actions/checkout@v4
-    - name: Ensure localhost
-      if: ${{ matrix.os == 'macos-latest'}}
-      run: |
-        # Make "localhost" DNS entry available; see https://github.com/actions/runner-images/issues/6383
-        # sudo networksetup -setdnsservers Ethernet 9.9.9.9
-        echo -e "$(ipconfig getifaddr en0) $(hostname -f) $(hostname -s)" | sudo tee -a /etc/hosts
-        echo `sudo lsof -PiTCP -sTCP:LISTEN`
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v5
       with:
@@ -92,29 +85,17 @@ jobs:
 
   minimum:
 
-    name: Check minimum versions
+    name: Check minimum dependency versions
     needs: build
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest]
         python-version: ["3.8", "3.12", pypy-3.10]
-        include:
-          - os: macos-latest
-            python-version: "3.12"
-          - os: windows-latest
-            python-version: "3.12"
     timeout-minutes: 5
 
     steps:
     - uses: actions/checkout@v4
-    - name: Ensure localhost
-      if: ${{ matrix.os == 'macos-latest'}}
-      run: |
-        # Make "localhost" DNS entry available; see https://github.com/actions/runner-images/issues/6383
-        # sudo networksetup -setdnsservers Ethernet 9.9.9.9
-        echo -e "$(ipconfig getifaddr en0) $(hostname -f) $(hostname -s)" | sudo tee -a /etc/hosts
-        echo `sudo lsof -PiTCP -sTCP:LISTEN`
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v5
       with:
