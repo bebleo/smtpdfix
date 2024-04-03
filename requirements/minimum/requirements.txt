@@ -1,4 +1,4 @@
-aiosmtpd==1.4.0
+aiosmtpd==1.4.5
 cryptography==42.0.4;
 portpicker==1.1.0
 pytest==6.2.0; python_version<="3.9"
