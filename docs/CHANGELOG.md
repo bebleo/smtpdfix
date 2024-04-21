@@ -1,20 +1,21 @@
 # Change Log
 
-## Unreleased Changes
+## Version 0.5.2
 
-Release Date: TBD
+Release Date: 2024-04-21
 
 **Breaking Changes**
 
 - `Config.SSL_Cert_Path` removed from the public API.
+- Support for python 3.7 has been dropped.
 
 **Fixes & Maintenance**
 
-- Testing against python 3.7 to 3.12 added to tox and GitHub CI.
+- Testing against python 3.8 to 3.12 added to tox and GitHub CI.
 - Testing against PyPy in tox is now against versions PyPy 3.9 and PyPy 3.10.
 - Stop tox installing when running on GitHub CI.
 - Removes deprecated `datetime.utcnow()`. [Issue #338](https://github.com/bebleo/smtpdfix/issues/338).
-- Testing against python 3.7 to 3.12 added to tox and GitHub CI.
+- Testing against python 3.8 to 3.12 added to tox and GitHub CI.
 
 ## Version 0.5.1
 
