@@ -6,7 +6,7 @@ __all__ = (
     "smtpd",
     "SMTPDFix",
 )
-__version__ = "0.5.2"
+__version__ = "0.5.3a1"
 
 from .authenticator import Authenticator
 from .configuration import Config
