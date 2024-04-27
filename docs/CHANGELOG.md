@@ -4,6 +4,8 @@
 
 Release Date: TBD
 
+- Obsolete refences to `Config.SSL_Cert_Path` removed from the public API. [Issue #392](https://github.com/bebleo/smtpdfix/392) reported by [Holly Evans (@holly-evans)](https://github.com/holly-evans)
+
 ## Version 0.5.2
 
 Release Date: 2024-04-21
