@@ -5,7 +5,8 @@ from contextlib import ExitStack
 from os import strerror
 from pathlib import Path
 from socket import create_connection
-from ssl import CERT_OPTIONAL, Purpose, SSLContext, create_default_context
+from ssl import (CERT_NONE, CERT_OPTIONAL, Purpose, SSLContext,
+                 create_default_context)
 from typing import Any, Coroutine, List, Optional
 
 from aiosmtpd.controller import Controller, get_localhost
@@ -185,8 +186,13 @@ class AuthController(Controller):
         with ExitStack() as stk:
             conn = create_connection((hostname, self.port), 1.0)
             s = stk.enter_context(conn)
-            # connecting using the ssl_context removed as this fails under
-            # python 3.10 when using opportunistic SSL
+
+            if self.config.use_ssl and not self.config.use_starttls:
+                client_context = create_default_context(Purpose.SERVER_AUTH)
+                client_context.check_hostname = False
+                client_context.verify_mode = CERT_NONE
+                s = client_context.wrap_socket(s, server_hostname=hostname)
+
             _ = s.recv(1024)
 
     @property
