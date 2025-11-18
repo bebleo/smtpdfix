@@ -58,13 +58,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Ensure localhost
-      if: ${{ matrix.os == 'macos-latest'}}
-      run: |
-        # Make "localhost" DNS entry available; see https://github.com/actions/runner-images/issues/6383
-        # sudo networksetup -setdnsservers Ethernet 9.9.9.9
-        echo -e "$(ipconfig getifaddr en0) $(hostname -f) $(hostname -s)" | sudo tee -a /etc/hosts
-        echo `sudo lsof -PiTCP -sTCP:LISTEN`
+    # - name: Ensure localhost
+      # if: ${{ matrix.os == 'macos-latest'}}
+      # run: |
+      #   # Make "localhost" DNS entry available; see https://github.com/actions/runner-images/issues/6383
+      #   # sudo networksetup -setdnsservers Ethernet 9.9.9.9
+      #   echo -e "$(ipconfig getifaddr en0) $(hostname -f) $(hostname -s)" | sudo tee -a /etc/hosts
+      #   echo `sudo lsof -PiTCP -sTCP:LISTEN`
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v5
       with:
@@ -136,3 +136,4 @@ jobs:
     - name: Test with pytest
       run: |
         pytest -p no:smtpd
+
