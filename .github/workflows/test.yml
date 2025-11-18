@@ -52,14 +52,14 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest, windows-latest]
+        os: [macos-13, windows-latest]
         python-version: ["3.14"]
     timeout-minutes: 5
 
     steps:
     - uses: actions/checkout@v4
     - name: Turn off TLS verfication
-      if: ${{ matrix.os == 'macos-latest'}}
+      if: ${{ matrix.os == 'macos-13'}}
       run: |
         export GITHUB_ACTIONS_RUNNER_TLS_NO_VERIFY=1
       #   # Make "localhost" DNS entry available; see https://github.com/actions/runner-images/issues/6383
@@ -137,6 +137,7 @@ jobs:
     - name: Test with pytest
       run: |
         pytest -p no:smtpd
+
 
 
 
