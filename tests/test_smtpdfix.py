@@ -29,3 +29,16 @@ def test_misconfigured_socket(monkeypatch: MonkeyPatch,
     _generate_certs(path)
 
     assert Path.joinpath(path, "cert.pem").is_file()
+
+
+def test_configured_socket(monkeypatch: MonkeyPatch,
+                           tmp_path_factory: TempPathFactory) -> None:
+    # Ensure that a properly configured socket still works
+    import socket
+    monkeypatch.setattr(socket, "gethostname", lambda: "127.0.0.1")
+
+    from smtpdfix.certs import _generate_certs
+    path = tmp_path_factory.mktemp("certs")
+    _generate_certs(path)
+
+    assert Path.joinpath(path, "cert.pem").is_file()
