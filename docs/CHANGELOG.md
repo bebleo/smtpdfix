@@ -7,6 +7,7 @@ Release Date: TBD
 - Obsolete refences to `Config.SSL_Cert_Path` removed from the public API. [Issue #392](https://github.com/bebleo/smtpdfix/392) reported by [Holly Evans (@holly-evans)](https://github.com/holly-evans)
 - Suport for Python 3.13 has been added.
 - Testing in tox and Github CI against PyPy 3.11 has been added; testing against PyPy 3.10 in Github CI has been dropped.
+- Fixes to improve performance when using SSL [Issue #388](https://github.com/bebleo/smtpdfix/388) [Éloi Rivard](https://github.com/azmeuk)
 
 ## Version 0.5.2
 
