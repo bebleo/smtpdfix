@@ -58,9 +58,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    # - name: Ensure localhost
-      # if: ${{ matrix.os == 'macos-latest'}}
-      # run: |
+    - name: Turn off TLS verfication
+      if: ${{ matrix.os == 'macos-latest'}}
+      run: |
+        export GITHUB_ACTIONS_RUNNER_TLS_NO_VERIFY=1
       #   # Make "localhost" DNS entry available; see https://github.com/actions/runner-images/issues/6383
       #   # sudo networksetup -setdnsservers Ethernet 9.9.9.9
       #   echo -e "$(ipconfig getifaddr en0) $(hostname -f) $(hostname -s)" | sudo tee -a /etc/hosts
@@ -136,5 +137,6 @@ jobs:
     - name: Test with pytest
       run: |
         pytest -p no:smtpd
+
 
 
