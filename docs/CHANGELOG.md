@@ -1,5 +1,11 @@
 # Change Log
 
+## Unreleased Changes
+
+Release Date: TBD
+
+- Support for Python versions 3.8 and 3.9 dropped. Minimum supported version is Python 3.10.
+
 ## Version 0.5.3
 
 Release Date: 2025-11-20
