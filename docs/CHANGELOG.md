@@ -1,8 +1,8 @@
 # Change Log
 
-## Unreleased Changes
+## Version 0.5.3
 
-Release Date: TBD
+Release Date: 2025-11-20
 
 - Obsolete refences to `Config.SSL_Cert_Path` removed from the public API. [Issue #392](https://github.com/bebleo/smtpdfix/392) reported by [Holly Evans (@holly-evans)](https://github.com/holly-evans)
 - Support for Python 3.13 and 3.14 have been added.
