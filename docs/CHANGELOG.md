@@ -8,6 +8,7 @@ Release Date: TBD
 - Support for Python 3.13 and 3.14 have been added.
 - Testing in tox and Github CI against PyPy 3.11 has been added; testing against PyPy 3.10 in Github CI has been dropped.
 - Fixes to improve performance when using SSL [Issue #388](https://github.com/bebleo/smtpdfix/388) [Éloi Rivard](https://github.com/azmeuk)
+- Updates Code of Conduct to be adapted from version 3.0 of the Contributor Convenant and revises the contact email for reporting.
 
 ## Version 0.5.2
 
