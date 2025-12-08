@@ -1,4 +1,4 @@
 aiosmtpd==1.4.6
 cryptography==46.0.3
 portpicker==1.6.0
-pytest==9.0.1
+pytest==9.0.2
