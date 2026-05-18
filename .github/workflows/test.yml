@@ -21,7 +21,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        python-version: ["3.8", "3.14", pypy-3.11]
+        python-version: ["3.10", "3.14", pypy-3.11]
     timeout-minutes: 5
 
     steps:
@@ -52,20 +52,18 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-13, windows-latest]
+        os: [macos-latest, windows-latest]
         python-version: ["3.14"]
     timeout-minutes: 5
 
     steps:
     - uses: actions/checkout@v6
     - name: Turn off TLS verfication
-      if: ${{ matrix.os == 'macos-13'}}
+      if: ${{ matrix.os == 'macos-latest'}}
       run: |
-        # export GITHUB_ACTIONS_RUNNER_TLS_NO_VERIFY=1
+        export GITHUB_ACTIONS_RUNNER_TLS_NO_VERIFY=1
         # Make "localhost" DNS entry available; see https://github.com/actions/runner-images/issues/6383
-        # sudo networksetup -setdnsservers Ethernet 9.9.9.9
-        echo -e "$(ipconfig getifaddr en0) $(hostname -f) $(hostname -s)" | sudo tee -a /etc/hosts
-        echo `sudo lsof -PiTCP -sTCP:LISTEN`
+        sudo networksetup -setdnsservers Ethernet 9.9.9.9
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v6
       with:
@@ -119,7 +117,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        python-version: ["3.8", "3.13", pypy-3.11]
+        python-version: ["3.10", "3.14", pypy-3.11]
     timeout-minutes: 5
 
     steps:
@@ -137,8 +135,3 @@ jobs:
     - name: Test with pytest
       run: |
         pytest -p no:smtpd
-
-
-
-
-
