@@ -1,5 +1,12 @@
 # Change Log
 
+## Version 0.6.0
+
+Release Date: TBD
+
+- Dropped support for Python 3.8, 3.9, and PyPy 3.9
+- Updated testing on MacOS for Github Actions
+
 ## Version 0.5.3
 
 Release Date: 2025-11-20
