@@ -61,7 +61,8 @@ jobs:
     - name: Turn off TLS verfication
       if: ${{ matrix.os == 'macos-latest'}}
       run: |
-        export GITHUB_ACTIONS_RUNNER_TLS_NO_VERIFY=1
+        # Disable IPv6 on macOS runner network service
+        sudo networksetup -setv6off Ethernet
         # Make "localhost" DNS entry available; see https://github.com/actions/runner-images/issues/6383
         sudo networksetup -setdnsservers Ethernet 9.9.9.9
     - name: Set up Python ${{ matrix.python-version }}
