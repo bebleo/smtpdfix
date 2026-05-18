@@ -58,13 +58,18 @@ jobs:
 
     steps:
     - uses: actions/checkout@v6
-    - name: Turn off TLS verfication
+    - name: Fix hosts file on macOS
       if: ${{ matrix.os == 'macos-latest'}}
       run: |
-        # Disable IPv6 on macOS runner network service
-        sudo networksetup -setv6off Ethernet
-        # Make "localhost" DNS entry available; see https://github.com/actions/runner-images/issues/6383
-        sudo networksetup -setdnsservers Ethernet 9.9.9.9
+        # Force 127.0.0.1 back into the local hosts file if missing
+        if ! grep -q "127.0.0.1 localhost" /etc/hosts; then
+          echo "127.0.0.1 localhost" | sudo tee -a /etc/hosts
+        fi
+        if ! grep -q "::1 localhost" /etc/hosts; then
+          echo "::1 localhost" | sudo tee -a /etc/hosts
+        fi
+        # Set the environment variable for the tests to use the loopback address
+        export SMTPD_HOST=127.0.0.1
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v6
       with:
