@@ -58,18 +58,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v6
-    - name: Fix hosts file on macOS
+    - name: Fix asyncio localhost on macOS
       if: ${{ matrix.os == 'macos-latest'}}
       run: |
-        # Force 127.0.0.1 back into the local hosts file if missing
-        if ! grep -q "127.0.0.1 localhost" /etc/hosts; then
-          echo "127.0.0.1 localhost" | sudo tee -a /etc/hosts
-        fi
-        if ! grep -q "::1 localhost" /etc/hosts; then
-          echo "::1 localhost" | sudo tee -a /etc/hosts
-        fi
-        # Set the environment variable for the tests to use the loopback address
-        export SMTPD_HOST=127.0.0.1
+        # On macOS, asyncio resolves "localhost" to ::1 (IPv6) which can cause
+        # connection failures in CI. Force tests to use 127.0.0.1 instead.
+        echo "SMTPD_HOST=127.0.0.1" >> $GITHUB_ENV
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v6
       with:
