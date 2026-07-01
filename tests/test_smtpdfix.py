@@ -1,3 +1,4 @@
+from concurrent.futures import TimeoutError as FuturesTimeoutError
 from email.message import EmailMessage
 from pathlib import Path
 from smtplib import SMTP
@@ -6,6 +7,7 @@ from typing import Any
 from pytest import MonkeyPatch, TempPathFactory
 
 from smtpdfix import SMTPDFix
+from smtpdfix.certs import _generate_certs
 
 
 def test_smtpdfix(msg: EmailMessage) -> None:
@@ -24,7 +26,6 @@ def test_misconfigured_socket(monkeypatch: MonkeyPatch,
                        "provided, or not known")
     monkeypatch.setattr("socket.gethostbyname", raise_GAIError)
 
-    from smtpdfix.certs import _generate_certs
     path = tmp_path_factory.mktemp("certs")
     _generate_certs(path)
 
@@ -37,8 +38,23 @@ def test_configured_socket(monkeypatch: MonkeyPatch,
     import socket
     monkeypatch.setattr(socket, "gethostname", lambda: "127.0.0.1")
 
-    from smtpdfix.certs import _generate_certs
     path = tmp_path_factory.mktemp("certs")
+    _generate_certs(path)
+
+    assert Path.joinpath(path, "cert.pem").is_file()
+
+
+def test_gethostbyname_timeout(monkeypatch: MonkeyPatch,
+                               tmp_path_factory: TempPathFactory) -> None:
+    # Simulate a system where the hostname lookup times out (e.g. macOS CI)
+    # and verify that cert generation still succeeds without the host IP SAN.
+    def timeout_gethostbyname(host: str) -> str:
+        raise FuturesTimeoutError()
+
+    monkeypatch.setattr("smtpdfix.certs.socket.gethostbyname",
+                        timeout_gethostbyname)
+
+    path = tmp_path_factory.mktemp("certs_timeout")
     _generate_certs(path)
 
     assert Path.joinpath(path, "cert.pem").is_file()

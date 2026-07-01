@@ -1,3 +1,4 @@
+import concurrent.futures
 import logging
 import socket
 from collections import namedtuple
@@ -71,12 +72,17 @@ def _generate_certs(path: Union[Path, str],
     # Because on misconfigured systems it's possible to have a hostname that
     # doesn't resolve to an IP we catch the error and skip adding it to the
     # list of altnames. (issue #195)
+    # We also apply a short timeout because some systems (e.g. macOS CI)
+    # can block for 60+ seconds before the DNS resolver returns an error.
     try:
-        ip = socket.gethostbyname(hostname)
+        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+            ip = executor.submit(socket.gethostbyname, hostname).result(timeout=5.0)
         alt_names.append(IPAddress(ip_address(ip)))
     except socket.gaierror as err:
         log.info(f"{hostname} failed to resolve to ip")
         log.error(err.strerror)
+    except concurrent.futures.TimeoutError:
+        log.info(f"{hostname} hostname lookup timed out")
 
     # Set it so the certificate can be a root certificate with
     # ca=true, path_length=0 means it can only sign itself.
