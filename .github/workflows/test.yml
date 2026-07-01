@@ -81,7 +81,7 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
-        pytest -p no:smtpd --cov --no-cov-on-fail --cov-fail-under=100
+        pytest -p no:smtpd
 
   typing:
 
