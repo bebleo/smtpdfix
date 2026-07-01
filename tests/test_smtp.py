@@ -59,6 +59,8 @@ async def test_starttls_CancelledError(mock_AuthMessage: Mock,
     smtpd: _SMTP = _SMTP(mock_AuthMessage,
                          tls_context=mock_SSLContext,
                          loop=mock_loop)
+    smtpd.transport = Mock()
+    smtpd.protocol = Mock()
     with patch.object(smtpd, "push", return_value=future) as mock_push:
         with pytest.raises(CancelledError):
             await smtpd.smtp_STARTTLS(None)
@@ -71,15 +73,15 @@ async def test_starttls_CancelledError(mock_AuthMessage: Mock,
 async def test_starttls_Exception(mock_AuthMessage: Mock,
                                   mock_SSLContext: Mock,
                                   future: Any) -> None:
-    from aiosmtpd.smtp import TLSSetupException
-
-    from smtpdfix.smtp import _SMTP
+    from smtpdfix.smtp import _SMTP, TLSSetupException
 
     mock_loop = Mock()
     mock_loop.start_tls.side_effect = Exception()
     smtpd: _SMTP = _SMTP(mock_AuthMessage,
                          tls_context=mock_SSLContext,
                          loop=mock_loop)
+    smtpd.transport = Mock()
+    smtpd.protocol = Mock()
     with patch.object(smtpd, "push", return_value=future) as mock_push:
         with pytest.raises(TLSSetupException):
             await smtpd.smtp_STARTTLS(None)

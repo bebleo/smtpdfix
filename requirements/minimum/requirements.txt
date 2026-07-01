@@ -1,5 +1,4 @@
-aiosmtpd==1.4.6
-cryptography==44.0.2;
+cryptography==49.0.0
 portpicker==1.1.0
 pytest==6.2.5; python_version<="3.13"  # Due to an error with assertion rewrites under 3.10+
 pytest==7.3.2; python_version>="3.14"

@@ -1,6 +1,6 @@
 # SMTPDFix: Test email, locally
 
-A simple SMTP server based on `aiosmtpd` for use as a fixture with pytest that supports encryption and authentication. All this does is receives messages and appends them to a list as an `email.Message`.
+A simple SMTP server based on `asyncio` for use as a fixture with pytest that supports encryption and authentication. All this does is receives messages and appends them to a list as an `email.Message`.
 
 ⚠ **Not intended for use with production systems.** ⚠
 

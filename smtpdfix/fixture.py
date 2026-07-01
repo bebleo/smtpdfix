@@ -1,6 +1,8 @@
 import logging
 import os
-from typing import Any, Generator, Optional
+import socket
+from collections.abc import Generator
+from typing import Any
 
 import portpicker
 import pytest
@@ -31,16 +33,18 @@ class _Authenticator(Authenticator):
     def verify(self, username: str) -> bool:
         raise NotImplementedError
 
-    def get_password(self, username: Optional[str]) -> str:
+    def get_password(self, username: str | None) -> str:
         return str(self.config.login_password)
 
 
 class SMTPDFix():
     def __init__(self,
-                 hostname: Optional[str] = None,
-                 port: Optional[int] = None,
-                 config: Optional[Config] = None) -> None:
+                 hostname: str | None = None,
+                 port: int | None = None,
+                 sock: socket.socket | None = None,
+                 config: Config | None = None) -> None:
         self.hostname = hostname
+        self.sock = sock
         self.port = (
             int(port)
             if port is not None
@@ -52,6 +56,7 @@ class SMTPDFix():
         self.controller = AuthController(
             hostname=self.hostname,
             port=self.port,
+            sock=self.sock,
             config=self.config,
             authenticator=_Authenticator(self.config)
         )

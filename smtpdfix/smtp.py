@@ -2,92 +2,87 @@ import asyncio
 import logging
 import socket
 from ssl import SSLContext
-from typing import Any, Dict, Iterable, Optional, Union
-
-from aiosmtpd.smtp import (DATA_SIZE_DEFAULT, SMTP, AuthCallbackType,
-                           AuthenticatorType, TLSSetupException, syntax)
+from typing import Any, cast
 
 log = logging.getLogger(__name__)
 
 
-class _SMTP(SMTP):
-    """Patch for the SMTP protocol from aiosmtpd."""
+class TLSSetupException(Exception):
+    """Raised when upgrading an SMTP connection to TLS fails."""
+
+
+class _SMTP:
+    """Small SMTP session helper focused on STARTTLS handling."""
+
     def __init__(
-            self,
-            handler: Any,
-            *args: Any,
-            data_size_limit: int = DATA_SIZE_DEFAULT,
-            enable_SMTPUTF8: bool = False,
-            decode_data: bool = False,
-            hostname: Optional[str] = None,
-            ident: Optional[str] = None,
-            tls_context: Optional[SSLContext] = None,
-            require_starttls: bool = False,
-            timeout: float = 300,
-            auth_required: bool = False,
-            auth_require_tls: bool = True,
-            auth_exclude_mechanism: Optional[Iterable[str]] = None,
-            auth_callback: Optional[AuthCallbackType] = None,
-            command_call_limit: Union[int, Dict[str, int], None] = None,
-            authenticator: Optional[AuthenticatorType] = None,
-            proxy_protocol_timeout: Optional[Union[int, float]] = None,
-            loop: Optional[asyncio.AbstractEventLoop] = None
-    ):
-        if hostname:  # pragma: no cover
-            _hostname = hostname
-        else:
-            _hostname = socket.gethostname()
+        self,
+        handler: Any,
+        *args: Any,
+        hostname: str | None = None,
+        tls_context: SSLContext | None = None,
+        loop: asyncio.AbstractEventLoop | None = None,
+        transport: asyncio.BaseTransport | None = None,
+        protocol: asyncio.BaseProtocol | None = None,
+        reader: Any = None,
+        writer: Any = None,
+        **kwargs: Any,
+    ) -> None:
+        del args, kwargs, handler
+        self.hostname = hostname or socket.gethostname()
+        self.tls_context = tls_context
+        self.loop = loop or asyncio.get_event_loop()
+        self.transport = transport
+        self.protocol = protocol
+        self._reader = reader
+        self._writer = writer
 
-        super().__init__(
-            handler=handler,
-            *args,
-            data_size_limit=data_size_limit,
-            enable_SMTPUTF8=enable_SMTPUTF8,
-            decode_data=decode_data,
-            hostname=_hostname,
-            ident=ident,
-            tls_context=tls_context,
-            require_starttls=require_starttls,
-            timeout=timeout,
-            auth_required=auth_required,
-            auth_require_tls=auth_require_tls,
-            auth_exclude_mechanism=auth_exclude_mechanism,
-            auth_callback=auth_callback,
-            command_call_limit=command_call_limit,
-            authenticator=authenticator,
-            proxy_protocol_timeout=proxy_protocol_timeout,
-            loop=loop,
-        )
+    async def push(self, status: str) -> None:
+        if self._writer is None:
+            return
+        self._writer.write(f"{status}\r\n".encode("ascii"))
+        await self._writer.drain()
 
-    @syntax('STARTTLS', when='tls_context')
-    async def smtp_STARTTLS(self, arg: str) -> None:
-        """Process the STARTTLS command when received.
-
-        Overrides the smtp_STARTTLS from aiosmtpd because that
-        implementation fails on python 3.11"""
+    async def smtp_STARTTLS(
+        self, arg: str | None
+    ) -> asyncio.Transport | None:
+        """Process the STARTTLS command and upgrade the client transport."""
         if arg:
             log.info("Unexpected argument received with STARTTLS command")
-            await self.push('501 Syntax: STARTTLS')
-            return
+            await self.push("501 Syntax: STARTTLS")
+            return cast(asyncio.Transport | None, self.transport)
         if not self.tls_context:
             log.info("STARTTLS received but TLS not configured")
-            await self.push('454 TLS not available')
-            return
-        await self.push('220 Ready to start TLS')
+            await self.push("454 TLS not available")
+            return cast(asyncio.Transport | None, self.transport)
+
+        await self.push("220 Ready to start TLS")
+        if self.transport is None or self.protocol is None:
+            raise TLSSetupException()
 
         try:
-            self._original_transport = self.transport
             new_transport = await self.loop.start_tls(
-                                       transport=self.transport,
-                                       protocol=self,
-                                       sslcontext=self.tls_context,
-                                       server_side=True,
-                                       ssl_handshake_timeout=5.0)
-            self._reader._transport = new_transport
-            self._writer._transport = new_transport
-            self._tls_protocol = new_transport.get_protocol()
-            log.info("Connection upgraded to TLS after STARTTLS received")
+                transport=self.transport,
+                protocol=self.protocol,
+                sslcontext=self.tls_context,
+                server_side=True,
+                ssl_handshake_timeout=5.0,
+            )
+            if new_transport is None:
+                raise TLSSetupException()
+            self.transport = new_transport
 
+            # Streams currently expose transport via private attributes.
+            if (
+                self._reader is not None
+                and hasattr(self._reader, "_transport")
+            ):
+                self._reader._transport = new_transport
+            if (
+                self._writer is not None
+                and hasattr(self._writer, "_transport")
+            ):
+                self._writer._transport = new_transport
+            return new_transport
         except asyncio.CancelledError:
             raise
         except Exception as error:
