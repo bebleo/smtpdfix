@@ -81,11 +81,11 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       timeout-minutes: 2
+      
       run: |
         pytest -p no:smtpd
 
   typing:
-
     name: Ensure package is typed
     needs: build
     runs-on: ${{ matrix.os }}
@@ -134,5 +134,6 @@ jobs:
         pip install -r requirements/minimum/requirements.txt
         pip install --no-deps .
     - name: Test with pytest
+      env: GITHUB_ACTIONS_RUNNER_TLS_NO_VERIFY: 1
       run: |
         pytest -p no:smtpd
