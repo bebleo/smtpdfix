@@ -43,23 +43,33 @@ class SMTPDFix():
                  port: int | None = None,
                  sock: socket.socket | None = None,
                  config: Config | None = None) -> None:
-        self.hostname = hostname
         self.sock = sock
-        self.port = (
-            int(port)
-            if port is not None
-            else portpicker.pick_unused_port()
-        )
+        if sock is not None:
+            self.hostname = None
+            self.port = None
+        else:
+            self.hostname = hostname
+            self.port = (
+                int(port)
+                if port is not None
+                else portpicker.pick_unused_port()
+            )
         self.config = config or Config()
 
     def __enter__(self) -> AuthController:
-        self.controller = AuthController(
-            hostname=self.hostname,
-            port=self.port,
-            sock=self.sock,
-            config=self.config,
-            authenticator=_Authenticator(self.config)
-        )
+        if self.sock is not None:
+            self.controller = AuthController(
+                sock=self.sock,
+                config=self.config,
+                authenticator=_Authenticator(self.config)
+            )
+        else:
+            self.controller = AuthController(
+                hostname=self.hostname,
+                port=self.port,
+                config=self.config,
+                authenticator=_Authenticator(self.config)
+            )
         self.controller.start()
         return self.controller
 
