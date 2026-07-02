@@ -5,7 +5,7 @@
 Release Date: TBD
 
 - Dropped support for Python 3.8, 3.9, PyPy 3.9, and PyPy 3.10
-- Updated testing on MacOS for Github Actions
+- Updated testing on macOS for GitHub Actions
 - Removed dependency on `aiosmtpd` and created a custom implementation.
 
 ## Version 0.5.3
