@@ -468,14 +468,34 @@ class AuthController:
         self.loop.call_soon_threadsafe(self.loop.stop)
 
         if self.thread is not None and self.thread.is_alive():
-            self.thread.join(timeout=0.01)
+            self.thread.join(timeout=self.ready_timeout)
+
+        self._close_loop()
 
         self._started = False
+
+    def _close_loop(self) -> None:
+        if self.loop.is_closed() or self.loop.is_running():
+            return
+
+        try:
+            self.loop.run_until_complete(self.loop.shutdown_asyncgens())
+        except Exception:
+            pass
+
+        try:
+            self.loop.run_until_complete(self.loop.shutdown_default_executor())
+        except Exception:
+            pass
+
+        self.loop.close()
 
     def reset(self, persist_messages: bool = True) -> None:
         was_running = self._started
         if was_running:
             self.stop()
+        else:
+            self._close_loop()
 
         self.config.OnChanged -= self.reset
         if not persist_messages:
