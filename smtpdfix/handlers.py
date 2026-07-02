@@ -47,7 +47,7 @@ class AuthMessage:
         )
         expected = mac.hexdigest().encode("ascii")
         if hmac.compare_digest(expected, received):
-            log.debug("AUTH CARM-MD5 succeeded")
+            log.debug("AUTH CRAM-MD5 succeeded")
             return AuthResult(success=True, handled=True, auth_data=username)
         log.debug("AUTH CRAM-MD5 failed")
         return AuthResult(success=False, handled=False)
