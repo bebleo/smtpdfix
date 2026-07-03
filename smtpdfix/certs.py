@@ -53,7 +53,7 @@ def _generate_certs(path: Union[Path, str],
     if separate_key:
         cert.private_key_pem.write_to_path(key_path)
         cert.cert_chain_pems[0].write_to_path(cert_path)
-        return Cert(cert_path, [key_path])
+        return Cert(cert_path, key_path)
 
     cert.private_key_and_cert_chain_pem.write_to_path(cert_path)
     log.debug("Certificate generated")
