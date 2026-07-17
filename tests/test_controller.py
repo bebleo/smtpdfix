@@ -1,4 +1,5 @@
 import logging
+import socket
 import ssl
 from email.message import EmailMessage
 from smtplib import SMTP, SMTP_SSL, SMTPSenderRefused, SMTPServerDisconnected
@@ -132,3 +133,20 @@ def test_exception_handler(request: FixtureRequest, msg: EmailMessage) -> None:
             client.send_message(msg)
 
         assert len(server.messages) == 1
+
+
+def test_start_with_prebound_socket(request: FixtureRequest,
+                                    msg: EmailMessage) -> None:
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.bind(("127.0.0.1", 0))
+    sock.listen(5)
+
+    server = AuthController(sock=sock)
+    request.addfinalizer(sock.close)
+    request.addfinalizer(server.stop)
+    server.start()
+
+    with SMTP(server.hostname, server.port) as client:
+        client.send_message(msg)
+
+    assert len(server.messages) == 1

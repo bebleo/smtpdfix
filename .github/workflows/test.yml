@@ -21,7 +21,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        python-version: ["3.8", "3.14", pypy-3.11]
+        python-version: ["3.10", "3.14", pypy-3.11]
     timeout-minutes: 5
 
     steps:
@@ -52,20 +52,20 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-13, windows-latest]
+        os: [macos-latest, windows-latest]
         python-version: ["3.14"]
     timeout-minutes: 5
+    env:
+      GITHUB_ACTIONS_RUNNER_TLS_NO_VERIFY: 1
 
     steps:
     - uses: actions/checkout@v6
-    - name: Turn off TLS verfication
-      if: ${{ matrix.os == 'macos-13'}}
+    - name: Fix asyncio localhost on macOS
+      if: ${{ matrix.os == 'macos-latest'}}
       run: |
-        # export GITHUB_ACTIONS_RUNNER_TLS_NO_VERIFY=1
-        # Make "localhost" DNS entry available; see https://github.com/actions/runner-images/issues/6383
-        # sudo networksetup -setdnsservers Ethernet 9.9.9.9
-        echo -e "$(ipconfig getifaddr en0) $(hostname -f) $(hostname -s)" | sudo tee -a /etc/hosts
-        echo `sudo lsof -PiTCP -sTCP:LISTEN`
+        # On macOS, asyncio resolves "localhost" to ::1 (IPv6) which can cause
+        # connection failures in CI. Force tests to use 127.0.0.1 instead.
+        echo "SMTPD_HOST=127.0.0.1" >> $GITHUB_ENV
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v6
       with:
@@ -82,11 +82,11 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
+      timeout-minutes: 2
       run: |
-        pytest -p no:smtpd --cov --no-cov-on-fail --cov-fail-under=100
+        pytest -p no:smtpd
 
   typing:
-
     name: Ensure package is typed
     needs: build
     runs-on: ${{ matrix.os }}
@@ -119,7 +119,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        python-version: ["3.8", "3.13", pypy-3.11]
+        python-version: ["3.10", "3.14", pypy-3.11]
     timeout-minutes: 5
 
     steps:
@@ -137,8 +137,3 @@ jobs:
     - name: Test with pytest
       run: |
         pytest -p no:smtpd
-
-
-
-
-

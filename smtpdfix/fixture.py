@@ -1,6 +1,8 @@
 import logging
 import os
-from typing import Any, Generator, Optional
+import socket
+from collections.abc import Generator
+from typing import Any
 
 import portpicker
 import pytest
@@ -31,30 +33,43 @@ class _Authenticator(Authenticator):
     def verify(self, username: str) -> bool:
         raise NotImplementedError
 
-    def get_password(self, username: Optional[str]) -> str:
+    def get_password(self, username: str | None) -> str:
         return str(self.config.login_password)
 
 
 class SMTPDFix():
     def __init__(self,
-                 hostname: Optional[str] = None,
-                 port: Optional[int] = None,
-                 config: Optional[Config] = None) -> None:
-        self.hostname = hostname
-        self.port = (
-            int(port)
-            if port is not None
-            else portpicker.pick_unused_port()
-        )
+                 hostname: str | None = None,
+                 port: int | None = None,
+                 sock: socket.socket | None = None,
+                 config: Config | None = None) -> None:
+        self.sock = sock
+        if sock is not None:
+            self.hostname = None
+            self.port = None
+        else:
+            self.hostname = hostname
+            self.port = (
+                int(port)
+                if port is not None
+                else portpicker.pick_unused_port()
+            )
         self.config = config or Config()
 
     def __enter__(self) -> AuthController:
-        self.controller = AuthController(
-            hostname=self.hostname,
-            port=self.port,
-            config=self.config,
-            authenticator=_Authenticator(self.config)
-        )
+        if self.sock is not None:
+            self.controller = AuthController(
+                sock=self.sock,
+                config=self.config,
+                authenticator=_Authenticator(self.config)
+            )
+        else:
+            self.controller = AuthController(
+                hostname=self.hostname,
+                port=self.port,
+                config=self.config,
+                authenticator=_Authenticator(self.config)
+            )
         self.controller.start()
         return self.controller
 
