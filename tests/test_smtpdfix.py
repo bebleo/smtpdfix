@@ -1,3 +1,4 @@
+import socket
 from email.message import EmailMessage
 from pathlib import Path
 from smtplib import SMTP
@@ -12,6 +13,18 @@ def test_smtpdfix(msg: EmailMessage) -> None:
     with SMTPDFix() as server, SMTP(server.hostname, server.port) as client:
         client.send_message(msg)
         assert len(server.messages) == 1
+
+
+def test_smtpdfix_with_prebound_socket(msg: EmailMessage) -> None:
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        sock.bind(("127.0.0.1", 0))
+        sock.listen(5)
+
+        with SMTPDFix(sock=sock) as server:
+            with SMTP(server.hostname, server.port) as client:
+                client.send_message(msg)
+
+            assert len(server.messages) == 1
 
 
 def test_generate_certs(tmp_path_factory: TempPathFactory) -> None:

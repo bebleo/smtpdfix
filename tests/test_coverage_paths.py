@@ -245,6 +245,19 @@ def test_controller_init_sock_getsockname_oserror() -> None:
     assert controller.hostname
 
 
+def test_close_loop_ignores_shutdown_errors() -> None:
+    loop = Mock()
+    loop.is_closed.return_value = False
+    loop.is_running.return_value = False
+    loop.run_until_complete.side_effect = RuntimeError("boom")
+    controller = AuthController(loop=loop)
+
+    controller._close_loop()
+
+    assert loop.run_until_complete.call_count == 2
+    loop.close.assert_called_once()
+
+
 @pytest.mark.asyncio
 async def test_controller_start_async_and_stop_async_branches() -> None:
     controller = AuthController()
