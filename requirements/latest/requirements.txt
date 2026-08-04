@@ -1,4 +1,4 @@
 aiosmtpd==1.4.6
-cryptography==46.0.3
+cryptography==50.0.0
 portpicker==1.6.0
 pytest==9.1.1
